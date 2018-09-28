@@ -1,5 +1,6 @@
 codegen
-dev
 *.prj
 *.mexmaci64
-INP_Empirical1000.mat
+*.o
+build
+.idea
