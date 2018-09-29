@@ -1,0 +1,7 @@
+.RData
+.Rhistory
+*.c
+*.h
+R
+inst
+man

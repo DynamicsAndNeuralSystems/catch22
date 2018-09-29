@@ -1,0 +1,6 @@
+function out = DN_HistogramMode_10(y)
+
+% no combination of single functions
+coder.inline('never');
+
+out = DN_HistogramMode(y, 10);

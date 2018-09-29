@@ -1,0 +1,9 @@
+codegen
+*.prj
+*.mexmaci64
+*.o
+C_polished
+generated
+header
+timeSeries*
+featureOutputs
