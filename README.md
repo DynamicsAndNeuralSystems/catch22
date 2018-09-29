@@ -1,7 +1,10 @@
-# catch22
-This is a collection of 22 time series features contained in the [HCTSA](https://github.com/benfulcher/hctsa) coded in C. For raw C usage, scroll down.
+# _catch22_ - CAnonical Time-series CHaracteristics
+This is a collection of 22 time series features contained in the [_hctsa_](https://github.com/benfulcher/hctsa)-toolbox coded in C.
 
-# Using the catch22-features from Python, Matlab and R
+* B.D. Fulcher and N.S. Jones. [_hctsa_: A computational framework for automated time-series phenotyping using massive feature extraction](http://www.cell.com/cell-systems/fulltext/S2405-4712\(17\)30438-6). *Cell Systems* **5**, 527 (2017).
+* B.D. Fulcher, M.A. Little, N.S. Jones [Highly comparative time-series analysis: the empirical structure of time series and their methods](http://rsif.royalsocietypublishing.org/content/10/83/20130048.full). *J. Roy. Soc. Interface* **10**, 83 (2013).
+
+# Using the _catch22_-features from Python, Matlab and R
 
 The fast C-coded functions in this repository can be used in Python, Matlab and R following the instructions below. Only tested on OS X so far.
 
