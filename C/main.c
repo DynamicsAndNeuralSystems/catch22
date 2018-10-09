@@ -23,7 +23,7 @@
 // check if data qualifies to be cought22
 int quality_check(const double y[], const int size)
 {
-    int minSize = 100;
+    int minSize = 40;
     
     if(size < minSize)
     {

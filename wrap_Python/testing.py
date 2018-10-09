@@ -1,7 +1,7 @@
 import catch22
 
 features = dir(catch22)
-features = [item for item in features if not '__' in item];
+features = [item for item in features if not '__' in item]
 
 for dataFile in ['../testData/test.txt', '../testData/test2.txt']:
 

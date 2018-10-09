@@ -22,6 +22,8 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
     // fit a spline with 3 nodes to the data
     splinefit(y, size, ySpline);
     
+    //printf("spline fit complete.\n");
+    
     // subtract spline from data to remove trend
     double * ySub = malloc(size * sizeof(double));
     for(int i = 0; i < size; i++){
@@ -38,6 +40,8 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
         acf[tau-1] = autocov_lag(ySub, size, tau);
         //printf("acf[%i] = %1.9f\n", tau-1, acf[tau-1]);
     }
+    
+    //printf("ACF computed.\n");
     
     // find troughts and peaks
     double * troughs = malloc(acmax * sizeof(double));
@@ -64,6 +68,9 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
         }
     }
     
+    //printf("%i troughs and %i peaks found.\n", nTroughs, nPeaks);
+    
+    
     // search through all peaks for one that meets the conditions:
     // (a) a trough before it
     // (b) difference between peak and trough is at least 0.01
@@ -79,9 +86,12 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
         iPeak = peaks[i];
         thePeak = acf[iPeak];
         
+        //printf("i=%i/%i, iPeak=%i, thePeak=%1.3f\n", i, nPeaks-1, iPeak, thePeak);
+        
         // find trough before this peak
         int j = -1;
-        while(troughs[j+1] < iPeak){
+        while(troughs[j+1] < iPeak && j+1 < nTroughs){
+            // printf("j=%i/%i, iTrough=%i, theTrough=%1.3f\n", j+1, nTroughs-1, (int)troughs[j+1], acf[(int)troughs[j+1]]);
             j++;
         }
         if(j == -1)
@@ -104,6 +114,14 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
         out = iPeak;
         break;
     }
+    
+    //printf("Before freeing stuff.\n");
+    
+    free(ySpline);
+    free(ySub);
+    free(acf);
+    free(troughs);
+    free(peaks);
     
     return out;
     

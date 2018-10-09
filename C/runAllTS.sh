@@ -8,6 +8,6 @@ do
 	extension="${filename##*.}"
 	filename="${filename%.*}"
 
-	./run_features $entry "./featureOutputs/"$filename"output.txt"
+	./run_features $entry #"./featureOutputs/"$filename"output.txt"
 
 done

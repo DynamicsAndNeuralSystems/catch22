@@ -122,9 +122,10 @@ double * co_autocorrs(const double y[], const int size)
 int co_firstzero(const double y[], const int size, const int maxtau)
 {
     
-    double * autocorrs = malloc(size * sizeof * autocorrs);
+    //double * autocorrs = malloc(size * sizeof * autocorrs);
+    //autocorrs = co_autocorrs(y, size);
     
-    autocorrs = co_autocorrs(y, size);
+    double * autocorrs = co_autocorrs(y, size);
     
     int zerocrossind = 0;
     while(autocorrs[zerocrossind] > 0 && zerocrossind < maxtau)
