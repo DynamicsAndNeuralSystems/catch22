@@ -1,5 +1,5 @@
 # _catch22_ - CAnonical Time-series CHaracteristics
-This is a collection of 22 time series features contained in the [_hctsa_](https://github.com/benfulcher/hctsa)-toolbox coded in C.
+This is a collection of 22 time series features contained in the [_hctsa_](https://github.com/benfulcher/hctsa) toolbox coded in C.
 
 * B.D. Fulcher and N.S. Jones. [_hctsa_: A computational framework for automated time-series phenotyping using massive feature extraction](http://www.cell.com/cell-systems/fulltext/S2405-4712\(17\)30438-6). *Cell Systems* **5**, 527 (2017).
 * B.D. Fulcher, M.A. Little, N.S. Jones [Highly comparative time-series analysis: the empirical structure of time series and their methods](http://rsif.royalsocietypublishing.org/content/10/83/20130048.full). *J. Roy. Soc. Interface* **10**, 83 (2013).
@@ -96,7 +96,3 @@ Each line of the output correponds to one feature; the three comma-separated ent
 ### Testing
 
 Sample outputs for the time series `test.txt` and `test2.txt` are provided as `test_output.txt` and `test2_output.txt`. The first two entries per line should always be the same. The third one (execution time) will be different.
-
-
-
-
