@@ -10,25 +10,24 @@ The fast C-coded functions in this repository can be used in Python, Matlab and 
 
 ## Python
 
-Go to the directory `./wrap_Python` and run
+Go to the directory `wrap_Python` and run
 
 ```
-(sudo) python setup.py build
-(sudo) python setup.py install
+python setup.py build
+python setup.py install
 ```
 
-The module is now available under the name `catch22`. Each function contained in the module takes arrays as tuple or lists (no `Numpy`-arrays). In Python:
-
-```
-import catch22
-```
-
-To test, navigate to the `./wrap_Python` in the console and run:
+To test that this works run:
 
 ```
 $ python testing.py
 ```
 
+The module is now available under the name `catch22`. Each function contained in the module takes arrays as tuple or lists (not `Numpy`-arrays). In Python:
+
+```
+import catch22
+```
 
 ## R
 
