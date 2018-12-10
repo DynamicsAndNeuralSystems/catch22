@@ -10,7 +10,7 @@ The fast C-coded functions in this repository can be used in Python, Matlab and 
 
 ## Python
 
-Go to the directory `wrap_Python` and run
+Go to the directory `wrap_Python` and run the following (NB: use `python3` in place of `python` for python 3)
 
 ```
 python setup.py build
@@ -23,10 +23,12 @@ To test that this works run:
 $ python testing.py
 ```
 
-The module is now available under the name `catch22`. Each function contained in the module takes arrays as tuple or lists (not `Numpy`-arrays). In Python:
+The module is now available under the name `catch22`. Each function contained in the module takes arrays as tuple or lists (not `Numpy`-arrays).
+For loaded data, `tsData` in Python:
 
-```
+```python
 import catch22
+catch22.CO_f1ecac(tsData)
 ```
 
 ## R
@@ -54,9 +56,9 @@ $ Rscript testing.R
 
 ## Matlab
 
-Go to the `./wrap_Matlab` directory and call `mexAll` from within Matlab. Include the folder in your Matlab path to use the package.
+Go to the `wrap_Matlab` directory and call `mexAll` from within Matlab. Include the folder in your Matlab path to use the package.
 
-To test, navigate to `./wrap_Matlab` directory from within Matlab and run:
+To test, navigate to `wrap_Matlab` directory from within Matlab and run:
 
 ```
 testing
