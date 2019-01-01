@@ -23,7 +23,7 @@
 // check if data qualifies to be cought22
 int quality_check(const double y[], const int size)
 {
-    int minSize = 40;
+    int minSize = 20;
     
     if(size < minSize)
     {
@@ -293,7 +293,7 @@ int main2(int argc, char * argv[])
     
     // open a certain file
     FILE * infile;
-    infile = fopen("/Users/carl/PycharmProjects/catch22/C/timeSeries/tsid0252.txt", "r");
+    infile = fopen("/Users/carl/PycharmProjects/catch22/C/timeSeries/ItalyPowerDemand_998.txt", "r");
     int array_size = 15000;
     double * y = malloc(array_size * sizeof(double));
     int size = 0;
