@@ -23,12 +23,18 @@ To test that this works run:
 $ python testing.py
 ```
 
-The module is now available under the name `catch22`. Each function contained in the module takes arrays as tuple or lists (not `Numpy`-arrays).
-For loaded data, `tsData` in Python:
+The module is now available under the name `catch22`. Each feature function can be accessed individually and takes arrays as tuple or lists (not `Numpy`-arrays). E.g., for loaded data, `tsData` in Python:
 
 ```python
 import catch22
 catch22.CO_f1ecac(tsData)
+```
+
+All features are bundeled in the method `catch22_all` which also accepts numpy arrays and gives back a dictionary containing the entries `catch22_all['names']` for feature names and `catch22_all['values']` for feature outputs.
+
+```python
+from catch22 import catch22_all
+catch22_all(tsData)
 ```
 
 ## R
@@ -39,29 +45,37 @@ Copy all `.c`- and `.h`-files from `./C_Functions` to `./wrap_R/src`. Then go to
 
 ```
 R CMD build catch22
-R CMD INSTALL catch22_0.1.tar.gz
+R CMD INSTALL catch22_x.y.tar.gz
 ```
 
-The module is now available under the name `catch22`. In `R`:
-
-```
-library(catch22)
-```
-
-To test, navigate to `./wrap_R` in the console and run:
+To test if the installation was successful, navigate to `./wrap_R` in the console and run:
 
 ```
 $ Rscript testing.R
 ```
 
+The module is now available in `R` as `catch22`. Single functions can be accessed by their name, all functions are bundeled as `catch22_all` which can be called with a data vector `tsData` as an argument and gives back a data frame with the variables `name` for feature names and `values` for feature outputs: 
+
+```
+library(catch22)
+catch22_out = catch22_all(tsData);
+print(catch22_out)
+```
+
 ## Matlab
 
-Go to the `wrap_Matlab` directory and call `mexAll` from within Matlab. Include the folder in your Matlab path to use the package.
+Go to the `wrap_Matlab` directory and call `mexAll` from within Matlab. Include the folder in your Matlab path to use the package. 
 
-To test, navigate to `wrap_Matlab` directory from within Matlab and run:
+To test, navigate to the `wrap_Matlab` directory from within Matlab and run:
 
 ```
 testing
+```
+
+All feature can be called individually, e.g. `catch22_CO_f1ecac`. Alternatively, all features are bundeled in a function `catch22_all` which returns an array of feature outputs and, as a second output, a cell array of feature names. With loaded data `tsData`:
+
+```
+[vals, names] = catch22_all(data);
 ```
 
 # Raw C

@@ -328,9 +328,9 @@ static PyMethodDef catch22Methods[] = {
 };
 
 
-PyMODINIT_FUNC initcatch22(void)
+PyMODINIT_FUNC initcatch22_C(void)
 {
-    (void) Py_InitModule("catch22", catch22Methods);
+    (void) Py_InitModule("catch22_C", catch22Methods);
 }
 
 
@@ -343,6 +343,6 @@ int main(int argc, char *argv[])
     Py_Initialize();
     
     /* Add a static module */
-    initcatch22();
+    initcatch22_C();
     
 }

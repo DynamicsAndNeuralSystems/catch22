@@ -1,3 +1,4 @@
 useDynLib(catch22, .registration=TRUE)
 exportPattern("^[[:alpha:]]+")
+export("catch22_all")
 importFrom(Rcpp, evalCpp)
