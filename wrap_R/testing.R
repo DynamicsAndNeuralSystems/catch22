@@ -8,7 +8,7 @@ features = read.table("../featureList.txt");
 featureVec = c(t(features));
 
 for (feature in featureVec){
-    print(feature)
+    cat(paste(feature, ': '))
     fh = get(feature);
-    print(fh(dataVec))
+    cat(paste(fh(dataVec), '\n'))
 }

@@ -1,7 +1,13 @@
 import catch22
 
-features = dir(catch22)
-features = [item for item in features if not '__' in item]
+# get feature names from package content
+# features = dir(catch22)
+# features = [item for item in features if not '__' in item]
+
+# alternatively, get the feature names from the same source as the other wrappers
+with open('../featureList.txt') as f:
+    features = f.readlines()
+features = [x.strip() for x in features] 
 
 for dataFile in ['../testData/test.txt', '../testData/test2.txt']:
 
