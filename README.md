@@ -6,7 +6,7 @@ This is a collection of 22 time series features contained in the [_hctsa_](https
 
 # Using the _catch22_-features from Python, Matlab and R
 
-The fast C-coded functions in this repository can be used in Python, Matlab and R following the instructions below. Only tested on OS X so far.
+The fast C-coded functions in this repository can be used in Python, Matlab and R following the instructions below. Only tested on OS X so far. Requires Clang.
 
 ## Python
 
