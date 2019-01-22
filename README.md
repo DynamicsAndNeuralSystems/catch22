@@ -10,7 +10,7 @@ The fast C-coded functions in this repository can be used in Python, Matlab and 
 
 ## Python
 
-Go to the directory `wrap_Python` and run the following (NB: use `python3` in place of `python` for python 3)
+Go to the directory `wrap_Python` and run the following (NB: python 3 is not yet supported)
 
 ```
 python setup.py build
