@@ -10,7 +10,11 @@ The fast C-coded functions in this repository can be used in Python, Matlab and 
 
 ## Python
 
-Go to the directory `wrap_Python` and run the following (NB: python 3 is not yet supported)
+Installation of the Python wrapper differs slightly between Python 2 and 3. 
+
+### Installation Python 2
+
+Go to the directory `wrap_Python` and run the following
 
 ```
 python setup.py build
@@ -23,7 +27,18 @@ or alternatively, using pip, go to main directory and run
 pip install -e wrap_Python
 ```
 
-To test that the _catch22_ wrapper was installed successfully and works run:
+### Installation Python 3
+
+Only manual installation through `distutils`
+
+```
+python3 setup_P3.py build
+python3 setup_P3.py install
+```
+
+### Test Python 2 and 3
+
+To test that the _catch22_ wrapper was installed successfully and works run (NB: replace `python` with `python3` for Python 3):
 
 ```
 $ python testing.py
