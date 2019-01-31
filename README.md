@@ -1,5 +1,5 @@
 # _catch22_ - CAnonical Time-series CHaracteristics
-This is a collection of 22 time series features contained in the [_hctsa_](https://github.com/benfulcher/hctsa) toolbox coded in C.
+This is a collection of 22 time series features contained in the [_hctsa_](https://github.com/benfulcher/hctsa) toolbox coded in C. Features were selected by their classification performance across a collection of 93 real-world time-series classification problems.
 
 For information on how this feature set was constructed see our preprint:
 
@@ -12,29 +12,56 @@ For information on the full set of over 7000 features, see the following (open) 
 
 # Using the _catch22_-features from Python, Matlab and R
 
-The fast C-coded functions in this repository can be used in Python, Matlab, and R following the instructions below. Only tested on OS X so far.
+The fast C-coded functions in this repository can be used in Python, Matlab, and R following the instructions below. Time series are normalised internally. The wrappers are only tested on OS X so far and require Clang.
 
 ## Python
 
-Go to the directory `wrap_Python` and run the following (NB: use `python3` in place of `python` for python 3)
+Installation of the Python wrapper differs slightly between Python 2 and 3.
+
+### Installation Python 2
+
+Go to the directory `wrap_Python` and run the following
 
 ```
 python setup.py build
 python setup.py install
 ```
 
-To test that this works run:
+or alternatively, using pip, go to main directory and run
+
+```
+pip install -e wrap_Python
+```
+
+### Installation Python 3
+
+Only manual installation through `distutils`
+
+```
+python3 setup_P3.py build
+python3 setup_P3.py install
+```
+
+### Test Python 2 and 3
+
+To test that the _catch22_ wrapper was installed successfully and works run (NB: replace `python` with `python3` for Python 3):
 
 ```
 $ python testing.py
 ```
 
-The module is now available under the name `catch22`. Each function contained in the module takes arrays as tuple or lists (not `Numpy`-arrays).
-For loaded data, `tsData` in Python:
+The module is now available under the name `catch22`. Each feature function can be accessed individually and takes arrays as tuple or lists (not `Numpy`-arrays). E.g., for loaded data, `tsData` in Python:
 
 ```python
 import catch22
 catch22.CO_f1ecac(tsData)
+```
+
+All features are bundeled in the method `catch22_all` which also accepts numpy arrays and gives back a dictionary containing the entries `catch22_all['names']` for feature names and `catch22_all['values']` for feature outputs.
+
+```python
+from catch22 import catch22_all
+catch22_all(tsData)
 ```
 
 ## R
@@ -45,29 +72,37 @@ Copy all `.c`- and `.h`-files from `./C_Functions` to `./wrap_R/src`. Then go to
 
 ```
 R CMD build catch22
-R CMD INSTALL catch22_0.1.tar.gz
+R CMD INSTALL catch22_x.y.tar.gz
 ```
 
-The module is now available under the name `catch22`. In `R`:
-
-```
-library(catch22)
-```
-
-To test, navigate to `./wrap_R` in the console and run:
+To test if the installation was successful, navigate to `./wrap_R` in the console and run:
 
 ```
 $ Rscript testing.R
+```
+
+The module is now available in `R` as `catch22`. Single functions can be accessed by their name, all functions are bundeled as `catch22_all` which can be called with a data vector `tsData` as an argument and gives back a data frame with the variables `name` for feature names and `values` for feature outputs:
+
+```
+library(catch22)
+catch22_out = catch22_all(tsData);
+print(catch22_out)
 ```
 
 ## Matlab
 
 Go to the `wrap_Matlab` directory and call `mexAll` from within Matlab. Include the folder in your Matlab path to use the package.
 
-To test, navigate to `wrap_Matlab` directory from within Matlab and run:
+To test, navigate to the `wrap_Matlab` directory from within Matlab and run:
 
 ```
 testing
+```
+
+All feature can be called individually, e.g. `catch22_CO_f1ecac`. Alternatively, all features are bundeled in a function `catch22_all` which returns an array of feature outputs and, as a second output, a cell array of feature names. With loaded data `tsData`:
+
+```
+[vals, names] = catch22_all(data);
 ```
 
 # Raw C

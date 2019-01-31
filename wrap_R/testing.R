@@ -4,11 +4,6 @@ library(foreign);
 data = read.table("../testData/test.txt");
 dataVec = c(t(data));
 
-features = read.table("../featureList.txt");
-featureVec = c(t(features));
+catch22_out = catch22_all(dataVec);
 
-for (feature in featureVec){
-    print(feature)
-    fh = get(feature);
-    print(fh(dataVec))
-}
+print(catch22_out)

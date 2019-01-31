@@ -1,4 +1,4 @@
-#include <Python/Python.h>
+#include <Python.h>
 
 // include functions
 #include "../C/CO_AutoCorr.h"
@@ -328,21 +328,16 @@ static PyMethodDef catch22Methods[] = {
 };
 
 
-PyMODINIT_FUNC initcatch22_C(void)
-{
-    (void) Py_InitModule("catch22_C", catch22Methods);
-}
+static struct PyModuleDef catch22_Cmodule = {
+    PyModuleDef_HEAD_INIT,
+    "catch22_C",   /* name of module */
+    "22 Canonical Time-series CHaracteristcs", /* module documentation, may be NULL */
+    -1,       /* size of per-interpreter state of the module,
+                 or -1 if the module keeps state in global variables. */
+    catch22Methods,
+};
 
-
-int main(int argc, char *argv[])
+PyMODINIT_FUNC PyInit_catch22_C(void)
 {
-    /* Pass argv[0] to the Python interpreter */
-    Py_SetProgramName(argv[0]);
-    
-    /* Initialize the Python interpreter.  Required. */
-    Py_Initialize();
-    
-    /* Add a static module */
-    initcatch22_C();
-    
+    return PyModule_Create(&catch22_Cmodule);
 }
