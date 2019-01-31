@@ -3,7 +3,7 @@ This is a collection of 22 time series features contained in the [_hctsa_](https
 
 For information on how this feature set was constructed see our preprint:
 
-* C.H. Lubba, S.S. Sethi, P. Knaute, S.R. Schultz, B.D. Fulcher, N.S. Jones. [_catch22_: CAnonical Time-series CHaracteristics](https://arxiv.org/abs/1901.10200)
+* C.H. Lubba, S.S. Sethi, P. Knaute, S.R. Schultz, B.D. Fulcher, N.S. Jones. [_catch22_: CAnonical Time-series CHaracteristics](https://arxiv.org/abs/1901.10200). arXiv (2019).
 
 For information on the full set of over 7000 features, see the following (open) publications:
 
