@@ -35,7 +35,6 @@ double SB_MotifThree_quantile_hh(const double y[], const int size)
                 sizes_r1[i]++;
             }
         }
-        
     }
     
     // words of length 2
@@ -80,6 +79,31 @@ double SB_MotifThree_quantile_hh(const double y[], const int size)
     for (int i = 0; i < alphabet_size; i++) {
         hh += f_entropy(out2[i], alphabet_size);
     }
+    
+    free(yt);
+    free(out);
+    
+    // free nested array
+    for (int i = 0; i < alphabet_size; i++) {
+        free(r1[i]);
+    }
+    free(r1);
+    free(sizes_r1);
+    
+    for (int i = 0; i < alphabet_size; i++) {
+        for (int j = 0; j < alphabet_size; j++) {
+            free(r2[i][j]);
+        }
+    }
+    for (int i = 0; i < alphabet_size; i++) {
+        free(r2[i]);
+        free(sizes_r2[i]);
+        free(out2[i]);
+    }
+    free(r2);
+    free(sizes_r2);
+    free(out2);
+    
     
     return hh;
     

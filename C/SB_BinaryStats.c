@@ -37,6 +37,8 @@ double SB_BinaryStats_diff_longstretch0(const double y[], const int size){
         }
     }
     
+    free(yBin);
+    
     return maxstretch0;
 }
 
@@ -64,6 +66,8 @@ double SB_BinaryStats_mean_longstretch1(const double y[], const int size){
         }
         
     }
+    
+    free(yBin);
     
     return maxstretch1;
 }

@@ -17,6 +17,10 @@ int num_bins_auto(const double y[], const int size){
     double maxVal = max(y, size);
     double minVal = min(y, size);
     
+    if (stddev(y, size) < 0.001){
+        return 0;
+    }
+    
     return ceil((maxVal-minVal)/(3.5*stddev(y, size)/pow(size, 1/3.)));
     
 }

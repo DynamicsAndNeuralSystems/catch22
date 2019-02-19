@@ -141,10 +141,10 @@ int co_firstzero(const double y[], const int size, const int maxtau)
 int CO_f1ecac(const double y[], const int size)
 {
     
-    double * autocorrs = malloc(size * sizeof * autocorrs);
+    //double * autocorrs = malloc(size * sizeof * autocorrs);
     
     // compute autocorrelations
-    autocorrs = co_autocorrs(y, size);
+    double * autocorrs = co_autocorrs(y, size);
     
     // threshold to cross
     double thresh = 1.0/exp(1);
@@ -208,6 +208,8 @@ double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
         
         d[i] = sqrt((y[i+1]-y[i])*(y[i+1]-y[i]) + (y[i+tau]-y[i+tau+1])*(y[i+tau]-y[i+tau+1]));
         
+        //printf("d[%i]: %1.3f\n", i, d[i]);
+        
         /*
         if(i<100)
             printf("%i, y[i]=%1.3f, y[i+1]=%1.3f, y[i+tau]=%1.3f, y[i+tau+1]=%1.3f, d[i]: %1.3f\n", i, y[i], y[i+1], y[i+tau], y[i+tau+1], d[i]);
@@ -227,6 +229,9 @@ double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
      */
     
     int nBins = num_bins_auto(d, size-tau-1);
+    if (nBins == 0){
+        return 0;
+    }
     int * histCounts = malloc(nBins * sizeof(double));
     double * binEdges = malloc((nBins + 1) * sizeof(double));
     histcounts_preallocated(d, size-tau-1, nBins, histCounts, binEdges);
@@ -443,6 +448,10 @@ double CO_HistogramAMI_even_2_5(const double y[], const int size)
     free(bins1);
     free(bins2);
     free(jointHistLinear);
+    
+    free(y1);
+    free(y2);
+    free(bins12);
     
     return ami;
 }

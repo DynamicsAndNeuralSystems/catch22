@@ -26,7 +26,7 @@ double IN_AutoMutualInfoStats_40_gaussian_fmmi(const double y[], const int size)
     for(int i = 0; i < tau; i++){
         double ac = autocorr_lag(y,size, i+1);
         ami[i] = -0.5 * log(1 - ac*ac);
-        //printf("ami[%i]=%1.7f\n", i, ami[i]);
+        // printf("ami[%i]=%1.7f\n", i, ami[i]);
     }
     
     // find first minimum of automutual information
@@ -34,9 +34,12 @@ double IN_AutoMutualInfoStats_40_gaussian_fmmi(const double y[], const int size)
     for(int i = 1; i < tau-1; i++){
         if(ami[i] < ami[i-1] & ami[i] < ami[i+1]){
             fmmi = i;
+            // printf("found minimum at %i\n", i);
             break;
         }
     }
-                            
+    
+    free(ami);
+    
     return fmmi;
 }

@@ -83,7 +83,7 @@ void run_features(double y[], int size, FILE * outfile)
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "CO_Embed2_Dist_tau_d_expfit_meandiff", timeTaken);
     
-    //GOOD
+    //GOOD (memory leak?)
     begin = clock();
     result = CO_f1ecac(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
@@ -95,7 +95,7 @@ void run_features(double y[], int size, FILE * outfile)
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "CO_FirstMin_ac", timeTaken);
     
-    // GOOD
+    // GOOD (memory leak?)
     begin = clock();
     result = CO_HistogramAMI_even_2_5(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
@@ -131,7 +131,7 @@ void run_features(double y[], int size, FILE * outfile)
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "FC_LocalSimple_mean3_stderr", timeTaken);
     
-    //GOOD
+    //GOOD (memory leak?)
     begin = clock();
     result = IN_AutoMutualInfoStats_40_gaussian_fmmi(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
@@ -155,13 +155,13 @@ void run_features(double y[], int size, FILE * outfile)
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "SB_BinaryStats_mean_longstretch1", timeTaken);
     
-    //GOOD
+    //GOOD (memory leak?)
     begin = clock();
     result = SB_MotifThree_quantile_hh(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "SB_MotifThree_quantile_hh", timeTaken);
     
-    //GOOD
+    //GOOD (memory leak?)
     begin = clock();
     result = SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
@@ -293,7 +293,7 @@ int main2(int argc, char * argv[])
     
     // open a certain file
     FILE * infile;
-    infile = fopen("/Users/carl/PycharmProjects/catch22/C/timeSeries/ItalyPowerDemand_998.txt", "r");
+    infile = fopen("/Users/carl/PycharmProjects/catch22/C/timeSeriesTest/5values.txt", "r");
     int array_size = 15000;
     double * y = malloc(array_size * sizeof(double));
     int size = 0;

@@ -34,7 +34,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
 { 
     
     // check inputs and call feature C-function
-M_wrapper_double( nlhs, plhs, nrhs, prhs, &MD_hrv_classic_pnn40, 0);
+M_wrapper_double( nlhs, plhs, nrhs, prhs, &MD_hrv_classic_pnn40, 1);
     
     return;
     

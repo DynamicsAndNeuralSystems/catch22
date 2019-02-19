@@ -34,7 +34,7 @@ void mexFunction( int nlhs, mxArray *plhs[],
 { 
     
     // check inputs and call feature C-function
-M_wrapper_double( nlhs, plhs, nrhs, prhs, &IN_AutoMutualInfoStats_40_gaussian_fmmi, 0);
+M_wrapper_double( nlhs, plhs, nrhs, prhs, &IN_AutoMutualInfoStats_40_gaussian_fmmi, 1);
     
     return;
     
