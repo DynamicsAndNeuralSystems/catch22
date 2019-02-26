@@ -11,12 +11,21 @@
 
 double SB_BinaryStats_diff_longstretch0(const double y[], const int size){
     
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
+    
     // binarize
     int * yBin = malloc((size-1) * sizeof(int));
     for(int i = 0; i < size-1; i++){
         
         double diffTemp = y[i+1] - y[i];
-        yBin[i] = diffTemp <= 0 ? 0 : 1;
+        yBin[i] = diffTemp < 0 ? 0 : 1;
         
         /*
         if( i < 300)
@@ -44,12 +53,21 @@ double SB_BinaryStats_diff_longstretch0(const double y[], const int size){
 
 double SB_BinaryStats_mean_longstretch1(const double y[], const int size){
     
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
+    
     // binarize
     int * yBin = malloc((size-1) * sizeof(int));
     double yMean = mean(y, size);
     for(int i = 0; i < size-1; i++){
         
-        yBin[i] = (y[i] - yMean < 0) ? 0 : 1;
+        yBin[i] = (y[i] - yMean <= 0) ? 0 : 1;
         //printf("yBin[%i]=%i\n", i, yBin[i]);
         
     }

@@ -141,7 +141,14 @@ int co_firstzero(const double y[], const int size, const int maxtau)
 int CO_f1ecac(const double y[], const int size)
 {
     
-    //double * autocorrs = malloc(size * sizeof * autocorrs);
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return 0;
+        }
+    }
     
     // compute autocorrelations
     double * autocorrs = co_autocorrs(y, size);
@@ -193,6 +200,15 @@ double CO_Embed2_Basic_tau_incircle(const double y[], const int size, const doub
 double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
 {
     
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
+    
     int tau = co_firstzero(y, size, size);
     
     //printf("co_firstzero ran\n");
@@ -209,6 +225,10 @@ double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
         d[i] = sqrt((y[i+1]-y[i])*(y[i+1]-y[i]) + (y[i+tau]-y[i+tau+1])*(y[i+tau]-y[i+tau+1]));
         
         //printf("d[%i]: %1.3f\n", i, d[i]);
+        if (isnan(d[i])){
+            free(d);
+            return NAN;
+        }
         
         /*
         if(i<100)
@@ -290,9 +310,16 @@ double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
 int CO_FirstMin_ac(const double y[], const int size)
 {
     
-    double * autocorrs = NULL;
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return 0;
+        }
+    }
     
-    autocorrs = co_autocorrs(y, size);
+    double * autocorrs = co_autocorrs(y, size);
     
     int minInd = size;
     for(int i = 1; i < size-1; i++)
@@ -312,6 +339,15 @@ int CO_FirstMin_ac(const double y[], const int size)
 
 double CO_trev_1_num(const double y[], const int size)
 {
+    
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
     
     int tau = 1;
     
@@ -333,6 +369,16 @@ double CO_trev_1_num(const double y[], const int size)
 
 double CO_HistogramAMI_even_2_5(const double y[], const int size)
 {
+    
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
+    
     const int tau = 2;
     const int numBins = 5;
     

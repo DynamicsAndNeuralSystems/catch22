@@ -8,6 +8,15 @@
 
 double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const int lag, const char how[])
 {
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
+    
     // generate log spaced tau vector
     double linLow = log(5);
     double linHigh = log(size/2);

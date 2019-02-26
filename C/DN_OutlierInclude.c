@@ -8,6 +8,16 @@
 
 double DN_OutlierInclude_np_001_mdrmd(const double y[], const int size, const int sign)
 {
+    
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
+    
     double inc = 0.01;
     int tot = 0;
     double * yWork = malloc(size * sizeof(double));

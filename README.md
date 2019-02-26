@@ -12,7 +12,7 @@ For information on the full set of over 7000 features, see the following (open) 
 
 # Using the _catch22_-features from Python, Matlab and R
 
-The fast C-coded functions in this repository can be used in Python, Matlab, and R following the instructions below. Time series are normalised internally. The wrappers are only tested on OS X so far and require Clang.
+The fast C-coded functions in this repository can be used in Python, Matlab, and R following the instructions below. Time series are z-scored internally which means e.g., constant time series will lead to NaN outputs. The wrappers are only tested on OS X so far and require Clang.
 
 ## Python
 

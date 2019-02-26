@@ -13,6 +13,23 @@
 
 double SB_TransitionMatrix_3ac_sumdiagcov(const double y[], const int size)
 {
+    
+    // NaN and const check
+    int constant = 1;
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+        if(y[i] != y[0]){
+            constant = 0;
+        }
+    }
+    if (constant){
+        return NAN;
+    }
+    
     const int numGroups = 3;
     
     int tau = co_firstzero(y, size, size);

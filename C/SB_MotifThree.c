@@ -7,6 +7,15 @@
 
 double SB_MotifThree_quantile_hh(const double y[], const int size)
 {
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
+    
     int tmp_idx, r_idx;
     int dynamic_idx;
     int alphabet_size = 3;

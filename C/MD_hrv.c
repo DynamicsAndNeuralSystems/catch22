@@ -11,6 +11,15 @@
 
 double MD_hrv_classic_pnn40(const double y[], const int size){
     
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
+    
     const int pNNx = 40;
     
     // compute diff

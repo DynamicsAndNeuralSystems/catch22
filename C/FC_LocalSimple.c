@@ -21,6 +21,16 @@ double fc_local_simple(const double y[], const int size, const int train_length)
 
 double FC_LocalSimple_mean_tauresrat(const double y[], const int size, const int train_length)
 {
+    
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
+    
     double * res = malloc((size - train_length) * sizeof *res);
     
     for (int i = 0; i < size - train_length; i++)
@@ -47,6 +57,15 @@ double FC_LocalSimple_mean_tauresrat(const double y[], const int size, const int
 
 double FC_LocalSimple_mean_stderr(const double y[], const int size, const int train_length)
 {
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
+    
     double * res = malloc((size - train_length) * sizeof *res);
     
     for (int i = 0; i < size - train_length; i++)

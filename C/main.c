@@ -293,7 +293,7 @@ int main2(int argc, char * argv[])
     
     // open a certain file
     FILE * infile;
-    infile = fopen("/Users/carl/PycharmProjects/catch22/C/timeSeriesTest/5values.txt", "r");
+    infile = fopen("/Users/carl/PycharmProjects/catch22/C/timeSeries/tsid0002.txt", "r");
     int array_size = 15000;
     double * y = malloc(array_size * sizeof(double));
     int size = 0;
@@ -350,7 +350,7 @@ int main2(int argc, char * argv[])
     result = SB_TransitionMatrix_3ac_sumdiagcov(y, size);
     printf("SB_TransitionMatrix_3ac_sumdiagcov: %1.5f\n", result);
     result = PD_PeriodicityWang_th0_01(y, size);
-    printf("PD_PeriodicityWang_th0_01: %1.5f\n", result);
+    printf("PD_PeriodicityWang_th0_01: %1.f\n", result);
     
     
     

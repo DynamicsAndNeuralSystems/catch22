@@ -98,6 +98,16 @@ int welch(const double y[], const int size, const int NFFT, const double Fs, con
 
 double SP_Summaries_welch_rect(const double y[], const int size, const char what[])
 {
+    
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
+    
     // rectangular window for Welch-spectrum
     double * window = malloc(size * sizeof(double));
     for(int i = 0; i < size; i++){

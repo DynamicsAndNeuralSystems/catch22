@@ -15,6 +15,15 @@
 
 int PD_PeriodicityWang_th0_01(const double * y, const int size){
     
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return 0;
+        }
+    }
+    
     const double th = 0.01;
     
     double * ySpline = malloc(size * sizeof(double));

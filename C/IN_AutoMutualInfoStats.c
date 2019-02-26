@@ -13,6 +13,15 @@
 
 double IN_AutoMutualInfoStats_40_gaussian_fmmi(const double y[], const int size)
 {
+    // NaN check
+    for(int i = 0; i < size; i++)
+    {
+        if(isnan(y[i]))
+        {
+            return NAN;
+        }
+    }
+    
     // maximum time delay
     int tau = 40;
     
