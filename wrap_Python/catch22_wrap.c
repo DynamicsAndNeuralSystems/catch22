@@ -1,4 +1,4 @@
-#include <Python/Python.h>
+#include <python2.7/Python.h>
 
 // include functions
 #include "../C/CO_AutoCorr.h"

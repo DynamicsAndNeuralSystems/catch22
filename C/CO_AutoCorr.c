@@ -395,7 +395,8 @@ double CO_HistogramAMI_even_2_5(const double y[], const int size)
     double minValue = min(y, size);
     
     double binStep = (maxValue - minValue + 0.2)/5;
-    double binEdges[numBins+1] = {0};
+    //double binEdges[numBins+1] = {0};
+	double binEdges[5+1] = {0};
     for(int i = 0; i < numBins+1; i++){
         binEdges[i] = minValue + binStep*i - 0.1;
         // printf("binEdges[%i] = %1.3f\n", i, binEdges[i]);
@@ -418,8 +419,9 @@ double CO_HistogramAMI_even_2_5(const double y[], const int size)
     
     // joint
     double * bins12 = malloc((size-tau) * sizeof(double));
-    double binEdges12[(numBins + 1) * (numBins + 1)] = {0};
-    
+    //double binEdges12[(numBins + 1) * (numBins + 1)] = {0};
+	double binEdges12[(5 + 1) * (5 + 1)] = {0};    
+
     for(int i = 0; i < size-tau; i++){
         bins12[i] = (bins1[i]-1)*(numBins+1) + bins2[i];
         // printf("bins12[%i] = %1.3f\n", i, bins12[i]);
@@ -462,8 +464,10 @@ double CO_HistogramAMI_even_2_5(const double y[], const int size)
     }
 
     // marginals
-    double pi[numBins] = {0};
-    double pj[numBins] = {0};
+    //double pi[numBins] = {0};
+	double pi[5] = {0};
+    //double pj[numBins] = {0};
+	double pj[5] = {0};
     for(int i = 0; i < numBins; i++){
         for(int j = 0; j < numBins; j++){
             pi[i] += pij[i][j];

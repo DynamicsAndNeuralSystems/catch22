@@ -255,7 +255,8 @@ int lsqsolve()
     const int nPoints = 4;
     const int nCoeffs = 3;
     
-    double A[nPoints][nCoeffs] = {};
+    //double A[nPoints][nCoeffs] = {};
+	double A[4][3] = {};
     A[0][0] = 1;
     A[1][0] = 3;
     A[2][0] = 6;
@@ -268,7 +269,8 @@ int lsqsolve()
     A[1][2] = 1;
     A[2][2] = 0;
     A[3][2] = 7;
-    double b[nPoints] = {};
+    //double b[nPoints] = {};
+	double b[4] = {};
     b[0] = 2;
     b[1] = 8;
     b[2] = 3;
