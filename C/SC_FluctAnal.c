@@ -32,7 +32,7 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
     
     // check for uniqueness, use ascending order
     int nTau = nTauSteps;
-    for(int i = 0; i < nTauSteps; i++)
+    for(int i = 0; i < nTauSteps-1; i++)
     {
         
         while (tau[i] == tau[i+1] && i < nTau-1)
@@ -46,7 +46,7 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
         }
     }
     
-    // fewer than 8 points -> leave.
+    // fewer than 12 points -> leave.
     if(nTau < 12){
         return 0;
     }

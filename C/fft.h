@@ -13,7 +13,7 @@ typedef double complex cplx;
 #include <stdlib.h>
 #include <string.h>
 #ifndef CMPLX
-#define CMPLX(x, y) ((cplx)((double)(x) + _Imaginary_I * (double)(y)))
+#define CMPLX(x, y) ((cplx)((double)(x) + _Complex_I * (double)(y)))
 #endif
 extern void twiddles(cplx a[], int size);
 // extern void _fft(cplx a[], cplx out[], int size, int step, cplx tw[]);

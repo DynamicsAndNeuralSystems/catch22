@@ -66,9 +66,9 @@ catch22_all(tsData)
 
 ## R
 
-This assumes your have `R` installed and the package `Rcpp` is available.
+This assumes your have `R` installed and the package `Rcpp` is available. Clang is required.
 
-Copy all `.c`- and `.h`-files from `./C_Functions` to `./wrap_R/src`. Then go to the directory `./wrap_R` and run
+Copy all `.c`- and `.h`-files from `./C` to `./wrap_R/catch22/src`. Then go to the directory `./wrap_R` and run the following two lines while replacing `x.y` by the current version number
 
 ```
 R CMD build catch22
