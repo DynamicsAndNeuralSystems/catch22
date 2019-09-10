@@ -10,4 +10,4 @@ extension_mod = Extension("catch22_C",
 	sources=["catch22_wrap_P3.c"] + sourceFileList, 
 	include_dirs=[sourceDir])
 
-setup(name = "catch22", ext_modules=[extension_mod])
+setup(name = "catch22", ext_modules=[extension_mod], packages=['catch22'])
