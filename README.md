@@ -1,5 +1,5 @@
 # _catch22_ - CAnonical Time-series CHaracteristics
-This is a collection of 22 time series features contained in the [_hctsa_](https://github.com/benfulcher/hctsa) toolbox coded in C. Features were selected by their classification performance across a collection of 93 real-world time-series classification problems.
+This is a collection of 22 time series features contained in the [_hctsa_](https://github.com/benfulcher/hctsa) toolbox coded in C. Features were selected by their classification performance across a collection of 93 real-world time-series classification problems. The included features only evaluate dynamical properties of time series and do not respond to differences in mean or variance. We suggest to add these features of the raw value distribution if they might be useful for your data.
 
 For information on how this feature set was constructed see our preprint:
 
@@ -35,11 +35,17 @@ pip install -e wrap_Python
 
 ### Installation Python 3
 
-Only manual installation through `distutils`
+Manual installation through `distutils`
 
 ```
 python3 setup_P3.py build
 python3 setup_P3.py install
+```
+
+Or using pip
+
+```
+pip install catch22
 ```
 
 ### Test Python 2 and 3
