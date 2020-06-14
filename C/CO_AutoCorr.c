@@ -1,4 +1,12 @@
-#include <complex.h>
+#if __cplusplus
+#   include <complex>
+typedef std::complex< double > cplx;
+#else
+#   include <complex.h>
+//typedef double complex cplx;
+typedef _Dcomplex cplx;
+#endif
+
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -8,11 +16,12 @@
 #include "fft.h"
 #include "histcounts.h"
 
+#include "helper_functions.h"
+
 #ifndef CMPLX
 #define CMPLX(x, y) ((cplx)((double)(x) + _Imaginary_I * (double)(y)))
 #endif
 #define pow2(x) (1 << x)
-typedef double complex cplx;
 
 int nextpow2(int n)
 {
@@ -47,7 +56,7 @@ static void apply_conj(cplx a[], int size, int normalize)
 void dot_multiply(cplx a[], cplx b[], int size)
 {
     for (int i = 0; i < size; i++) {
-        a[i] = a[i] * conj(b[i]);
+        a[i] = _Cmulcc(a[i], conj(b[i]));
     }
 }
 
@@ -60,10 +69,12 @@ double * CO_AutoCorr(const double y[], const int size, const int tau[], const in
     cplx * F = malloc(nFFT * sizeof *F);
     cplx * tw = malloc(nFFT * sizeof *tw);
     for (int i = 0; i < size; i++) {
-        F[i] = CMPLX(y[i] - m, 0.0);
+        cplx tmp = { y[i] - m, 0.0 };
+        F[i] = tmp; //CMPLX(y[i] - m, 0.0);
     }
     for (int i = size; i < nFFT; i++) {
-        F[i] = CMPLX(0.0, 0.0);
+        cplx tmp = { 0.0, 0.0 };
+        F[i] = tmp; // CMPLX(0.0, 0.0);
     }
     // size = nFFT;
 
@@ -73,7 +84,8 @@ double * CO_AutoCorr(const double y[], const int size, const int tau[], const in
     fft(F, nFFT, tw);
     cplx divisor = F[0];
     for (int i = 0; i < nFFT; i++) {
-        F[i] = F[i] / divisor;
+        //F[i] = F[i] / divisor;
+        F[i] = _Cdivcc(F[i], divisor);
     }
     
     double * out = malloc(tau_size * sizeof(out));
@@ -91,13 +103,17 @@ double * co_autocorrs(const double y[], const int size)
     m = mean(y, size);
     nFFT = nextpow2(size) << 1;
     
-    cplx * F = malloc(nFFT * sizeof *F);
-    cplx * tw = malloc(nFFT * sizeof *tw);
+    cplx * F = malloc(nFFT * 2 * sizeof *F);
+    cplx * tw = malloc(nFFT * 2 * sizeof *tw);
     for (int i = 0; i < size; i++) {
-        F[i] = CMPLX(y[i] - m, 0.0);
+        //F[i] = CMPLX(y[i] - m, 0.0);
+        cplx tmp = { y[i] - m, 0.0 };
+        F[i] = tmp;
     }
     for (int i = size; i < nFFT; i++) {
-        F[i] = CMPLX(0.0, 0.0);
+        // F[i] = CMPLX(0.0, 0.0);
+        cplx tmp = { 0.0, 0.0 };
+        F[i] = tmp;
     }
     //size = nFFT;
     
@@ -107,10 +123,10 @@ double * co_autocorrs(const double y[], const int size)
     fft(F, nFFT, tw);
     cplx divisor = F[0];
     for (int i = 0; i < nFFT; i++) {
-        F[i] = F[i] / divisor;
+        F[i] = _Cdivcc(F[i], divisor); // F[i] / divisor;
     }
     
-    double * out = malloc(nFFT * sizeof(out));
+    double * out = malloc(nFFT * 2 * sizeof(out));
     for (int i = 0; i < nFFT; i++) {
         out[i] = creal(F[i]);
     }
@@ -367,6 +383,9 @@ double CO_trev_1_num(const double y[], const int size)
     return out;
 }
 
+#define tau 2
+#define numBins 5
+
 double CO_HistogramAMI_even_2_5(const double y[], const int size)
 {
     
@@ -379,8 +398,8 @@ double CO_HistogramAMI_even_2_5(const double y[], const int size)
         }
     }
     
-    const int tau = 2;
-    const int numBins = 5;
+    //const int tau = 2;
+    //const int numBins = 5;
     
     double * y1 = malloc((size-tau) * sizeof(double));
     double * y2 = malloc((size-tau) * sizeof(double));
@@ -391,8 +410,8 @@ double CO_HistogramAMI_even_2_5(const double y[], const int size)
     }
     
     // set bin edges
-    double maxValue = max(y, size);
-    double minValue = min(y, size);
+    const double maxValue = max_(y, size);
+    const double minValue = min_(y, size);
     
     double binStep = (maxValue - minValue + 0.2)/5;
     //double binEdges[numBins+1] = {0};

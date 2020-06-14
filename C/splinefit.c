@@ -10,6 +10,15 @@
 #include "splinefit.h"
 #include "stats.h"
 
+#define nCoeffs 3
+#define nPoints 4
+
+#define pieces 2
+#define nBreaks 3
+#define deg 3
+#define nSpline 4
+#define piecesExt 8 //3 * deg - 1
+
 
 void matrix_multiply(const int sizeA1, const int sizeA2, const double *A, const int sizeB1, const int sizeB2, const double *B, double *C){
 //void matrix_multiply(int sizeA1, int sizeA2, double **A, int sizeB1, int sizeB2, double **B, double C[sizeA1][sizeB2]){
@@ -68,7 +77,8 @@ void gauss_elimination(int size, double *A, double *b, double *x){
     double factor;
     
     // create temp matrix and vector
-    double *AElim[size];
+    // double *AElim[size];
+    double* AElim[nSpline + 1];
     for (int i = 0; i < size; i++)
         AElim[i] = (double *)malloc(size * sizeof(double));
     double * bElim = malloc(size * sizeof(double));
@@ -250,13 +260,14 @@ void lsqsolve_sub(const int sizeA1, const int sizeA2, const double *A, const int
     
 }
 
+/*
 int lsqsolve()
 {
-    const int nPoints = 4;
-    const int nCoeffs = 3;
+    //const int nPoints = 4;
+    //const int nCoeffs = 3;
     
     //double A[nPoints][nCoeffs] = {};
-	double A[4][3] = {};
+	double A[4][3];
     A[0][0] = 1;
     A[1][0] = 3;
     A[2][0] = 6;
@@ -270,7 +281,7 @@ int lsqsolve()
     A[2][2] = 0;
     A[3][2] = 7;
     //double b[nPoints] = {};
-	double b[4] = {};
+	double b[4];
     b[0] = 2;
     b[1] = 8;
     b[2] = 3;
@@ -295,6 +306,7 @@ int lsqsolve()
     
     
 }
+*/
 
 int iLimit(int x, int lim){
     return x<lim ? x : lim;
@@ -303,11 +315,11 @@ int iLimit(int x, int lim){
 int splinefit(const double *y, const int size, double *yOut)
 {
     // degree of spline
-    const int n = 4;
-    const int deg = 3;
+    //const int nSpline = 4;
+    //const int deg = 3;
     
     // x-positions of spline-nodes
-    const int nBreaks = 3;
+    //const int nBreaks = 3;
     int breaks[nBreaks];
     breaks[0] = 0;
     breaks[1] = (int)floor((double)size/2.0)-1;
@@ -320,7 +332,7 @@ int splinefit(const double *y, const int size, double *yOut)
     h0[0] = breaks[1] - breaks[0];
     h0[1] = breaks[2] - breaks[1];
     
-    const int pieces = 2;
+    //const int pieces = 2;
     
     // repeat spacing
     int hCopy[4];
@@ -365,16 +377,16 @@ int splinefit(const double *y, const int size, double *yOut)
     for(int i = 0; i < deg*3-1; i++){
         hExt[i] = breaksExt[i+1] - breaksExt[i];
     }
-    const int piecesExt = 3*deg-1;
+    //const int piecesExt = 3*deg-1;
     
     // initialise polynomial coefficients
-    double coefs[n*piecesExt][n];
-    for(int i = 0; i < n*piecesExt; i++){
-        for(int j = 0; j < n; j++){
+    double coefs[nSpline*piecesExt][nSpline+1];
+    for(int i = 0; i < nSpline*piecesExt; i++){
+        for(int j = 0; j < nSpline; j++){
         coefs[i][j] = 0;
         }
     }
-    for(int i = 0; i < n*piecesExt; i=i+n){
+    for(int i = 0; i < nSpline*piecesExt; i=i+nSpline){
         coefs[i][0] = 1;
     }
     
@@ -390,27 +402,27 @@ int splinefit(const double *y, const int size, double *yOut)
     // expanded h
     double H[(deg+1)*piecesExt];
     int iiFlat;
-    for(int i = 0; i < n*piecesExt; i++){
-        iiFlat = ii[i%n][i/n];
+    for(int i = 0; i < nSpline*piecesExt; i++){
+        iiFlat = ii[i%nSpline][i/nSpline];
         H[i] = hExt[iiFlat];
     }
     
     //recursive generation of B-splines
-    double Q[n][piecesExt];
-    for(int k = 1; k < n; k++){
+    double Q[nSpline][piecesExt];
+    for(int k = 1; k < nSpline; k++){
         
         //antiderivatives of splines
         for(int j = 0; j<k; j++){
-            for(int l = 0; l<(n*piecesExt); l++){
+            for(int l = 0; l<(nSpline*piecesExt); l++){
                 coefs[l][j] *= H[l]/(k-j);
                 //printf("coefs[%i][%i]=%1.3f\n", l, j, coefs[l][j]);
             }
         }
         
-        for(int l = 0; l<(n*piecesExt); l++){
-            Q[l%n][l/n] = 0;
-            for(int m = 0; m < n; m++){
-                Q[l%n][l/n] += coefs[l][m];
+        for(int l = 0; l<(nSpline*piecesExt); l++){
+            Q[l%nSpline][l/nSpline] = 0;
+            for(int m = 0; m < nSpline; m++){
+                Q[l%nSpline][l/nSpline] += coefs[l][m];
             }
         }
         
@@ -426,7 +438,7 @@ int splinefit(const double *y, const int size, double *yOut)
         
         //cumsum
         for(int l = 0; l<piecesExt; l++){
-            for(int m = 1; m < n; m++){
+            for(int m = 1; m < nSpline; m++){
                 Q[m][l] += Q[m-1][l];
             }
         }
@@ -441,21 +453,21 @@ int splinefit(const double *y, const int size, double *yOut)
         }
         */
         
-        for(int l = 0; l<n*piecesExt; l++){
-            if(l%n == 0)
+        for(int l = 0; l<nSpline*piecesExt; l++){
+            if(l%nSpline == 0)
                 coefs[l][k] = 0;
             else{
-                coefs[l][k] = Q[l%n-1][l/n]; // questionable
+                coefs[l][k] = Q[l%nSpline-1][l/nSpline]; // questionable
             }
             // printf("coefs[%i][%i]=%1.3f\n", l, k, coefs[l][k]);
         }
         
         // normalise antiderivatives by max value
-        double fmax[piecesExt*n];
+        double fmax[piecesExt*nSpline];
         for(int i = 0; i < piecesExt; i++){
-            for(int j = 0; j < n; j++){
+            for(int j = 0; j < nSpline; j++){
                 
-                fmax[i*n+j] = Q[n-1][i];
+                fmax[i*nSpline+j] = Q[nSpline-1][i];
                 
             }
         }
@@ -468,20 +480,20 @@ int splinefit(const double *y, const int size, double *yOut)
         */
         
         for(int j = 0; j < k+1; j++){
-            for(int l = 0; l < n*piecesExt; l++){
+            for(int l = 0; l < nSpline*piecesExt; l++){
                 coefs[l][j] /= fmax[l];
                 // printf("coefs[%i][%i]=%1.3f\n", l, j, coefs[l][j]);
             }
         }
 
         // diff to adjacent antiderivatives
-        for(int i = 0; i < (n*piecesExt)-deg; i++){
+        for(int i = 0; i < (nSpline*piecesExt)-deg; i++){
             for(int j = 0; j < k+1; j ++){
                 coefs[i][j] -= coefs[deg+i][j];
                 //printf("coefs[%i][%i]=%1.3f\n", i, j, coefs[i][j]);
             }
         }
-        for(int i = 0; i < n*piecesExt; i += n){
+        for(int i = 0; i < nSpline*piecesExt; i += nSpline){
             coefs[i][k] = 0;
         }
         
@@ -498,17 +510,17 @@ int splinefit(const double *y, const int size, double *yOut)
     }
     
     // scale coefficients
-    double scale[n*piecesExt];
-    for(int i = 0; i < n*piecesExt; i++)
+    double scale[nSpline*piecesExt];
+    for(int i = 0; i < nSpline*piecesExt; i++)
     {
         scale[i] = 1;
     }
-    for(int k = 0; k < n-1; k++){
-        for(int i = 0; i < (n*piecesExt); i++){
+    for(int k = 0; k < nSpline-1; k++){
+        for(int i = 0; i < (nSpline*piecesExt); i++){
             scale[i] /= H[i];
         }
-        for(int i = 0; i < (n*piecesExt); i++){
-            coefs[i][(n-1)-(k+1)] *= scale[i];
+        for(int i = 0; i < (nSpline*piecesExt); i++){
+            coefs[i][(nSpline-1)-(k+1)] *= scale[i];
         }
     }
     
@@ -523,11 +535,11 @@ int splinefit(const double *y, const int size, double *yOut)
     */
     
     // reduce pieces and sort coefficients by interval number
-    int jj[n][pieces];
-    for(int i = 0; i < n; i++){
+    int jj[nSpline][pieces];
+    for(int i = 0; i < nSpline; i++){
         for(int j = 0; j < pieces; j++){
             if(i == 0)
-                jj[i][j] = n*(1+j);
+                jj[i][j] = nSpline*(1+j);
             else
                 jj[i][j] = deg;
         }
@@ -544,7 +556,7 @@ int splinefit(const double *y, const int size, double *yOut)
     */
         
     
-    for(int i = 1; i < n; i++){
+    for(int i = 1; i < nSpline; i++){
         for(int j = 0; j < pieces; j++){
             jj[i][j] += jj[i-1][j];
         }
@@ -560,12 +572,12 @@ int splinefit(const double *y, const int size, double *yOut)
     }
     */
     
-    double coefsOut[n*pieces][n];
+    double coefsOut[nSpline*pieces][nSpline];
     int jj_flat;
-    for(int i = 0; i < n*pieces; i++){
-        jj_flat = jj[i%n][i/n]-1;
+    for(int i = 0; i < nSpline*pieces; i++){
+        jj_flat = jj[i%nSpline][i/nSpline]-1;
         //printf("jj_flat(%i) = %i\n", i, jj_flat);
-        for(int j = 0; j < n; j++){
+        for(int j = 0; j < nSpline; j++){
             coefsOut[i][j] = coefs[jj_flat][j];
             //printf("coefsOut[%i][%i]=%1.3f\n", i, j, coefsOut[i][j]);
         }
@@ -586,16 +598,16 @@ int splinefit(const double *y, const int size, double *yOut)
     // -- create first B-splines to feed into optimization
     
     // x-values for B-splines
-    int * xsB = malloc((size*n)* sizeof(int));
-    int * indexB = malloc((size*n) * sizeof(int));
+    int * xsB = malloc((size*nSpline)* sizeof(int));
+    int * indexB = malloc((size*nSpline) * sizeof(int));
     
     int breakInd = 1;
     for(int i = 0; i < size; i++){
         if(i >= breaks[breakInd] & breakInd<nBreaks-1)
             breakInd += 1;
-        for(int j = 0; j < n; j++){
-            xsB[i*n+j] = i - breaks[breakInd-1];
-            indexB[i*n+j] = j + (breakInd-1)*n;
+        for(int j = 0; j < nSpline; j++){
+            xsB[i*nSpline+j] = i - breaks[breakInd-1];
+            indexB[i*nSpline+j] = j + (breakInd-1)*nSpline;
         }
     }
     
@@ -610,8 +622,8 @@ int splinefit(const double *y, const int size, double *yOut)
     }
      */
     
-    double * vB = malloc((size*n) * sizeof(double));
-    for(int i = 0; i < size*n; i++){
+    double * vB = malloc((size*nSpline) * sizeof(double));
+    for(int i = 0; i < size*nSpline; i++){
         vB[i] = coefsOut[indexB[i]][0];
     }
     
@@ -622,8 +634,8 @@ int splinefit(const double *y, const int size, double *yOut)
     }
      */
     
-    for(int i = 1; i < n; i ++){
-        for(int j = 0; j < size*n; j++){
+    for(int i = 1; i < nSpline; i ++){
+        for(int j = 0; j < size*nSpline; j++){
             vB[j] = vB[j]*xsB[j] + coefsOut[indexB[j]][i];
         }
         /*
@@ -642,16 +654,16 @@ int splinefit(const double *y, const int size, double *yOut)
      */
     
     
-    double * A = malloc(size*(n+1) * sizeof(double));
+    double * A = malloc(size*(nSpline+1) * sizeof(double));
     
-    for(int i = 0; i < (n+1)*size; i++){
+    for(int i = 0; i < (nSpline+1)*size; i++){
         A[i] = 0;
     }
     breakInd = 0;
-    for(int i = 0; i < n*size; i++){
-        if(i/n >= breaks[1])
+    for(int i = 0; i < nSpline*size; i++){
+        if(i/nSpline >= breaks[1])
             breakInd = 1;
-        A[(i%n)+breakInd + (i/n)*(n+1)] = vB[i];
+        A[(i%nSpline)+breakInd + (i/nSpline)*(nSpline+1)] = vB[i];
     }
     
     /*
@@ -666,9 +678,9 @@ int splinefit(const double *y, const int size, double *yOut)
     
     
     
-    double * x = malloc((n+1)*sizeof(double));
+    double * x = malloc((nSpline+1)*sizeof(double));
     // lsqsolve_sub(int sizeA1, int sizeA2, double *A, int sizeb, double *b, double *x)
-    lsqsolve_sub(size, n+1, A, size, y, x);
+    lsqsolve_sub(size, nSpline+1, A, size, y, x);
     
     /*
     printf("\nsolved x\n");
@@ -678,22 +690,22 @@ int splinefit(const double *y, const int size, double *yOut)
     */
     
     // coeffs of B-splines to combine by optimised weighting in x
-    double C[pieces+n-1][n*pieces];
+    double C[pieces+nSpline-1][nSpline*pieces];
     // initialise to 0
-    for(int i = 0; i < n+1; i++){
-        for(int j = 0; j < n*pieces; j++){
+    for(int i = 0; i < nSpline+1; i++){
+        for(int j = 0; j < nSpline*pieces; j++){
             C[i][j] = 0;
         }
     }
     
     int CRow, CCol, coefRow, coefCol;
-    for(int i = 0; i < n*n*pieces; i++){
+    for(int i = 0; i < nSpline*nSpline*pieces; i++){
         
-        CRow = i%n + (i/n)%2;
-        CCol = i/n;
+        CRow = i%nSpline + (i/nSpline)%2;
+        CCol = i/nSpline;
         
-        coefRow = i%(n*2);
-        coefCol =i/(n*2);
+        coefRow = i%(nSpline*2);
+        coefCol =i/(nSpline*2);
         
         C[CRow][CCol] = coefsOut[coefRow][coefCol];
         
@@ -710,19 +722,19 @@ int splinefit(const double *y, const int size, double *yOut)
     */
     
     // final coefficients
-    double coefsSpline[pieces][n];
+    double coefsSpline[pieces][nSpline];
     for(int i = 0; i < pieces; i++){
-        for(int j = 0; j < n; j++){
+        for(int j = 0; j < nSpline; j++){
             coefsSpline[i][j] = 0;
         }
     }
     
     //multiply with x
-    for(int j = 0; j < n*pieces; j++){
+    for(int j = 0; j < nSpline*pieces; j++){
         coefCol = j/pieces;
         coefRow = j%pieces;
         
-        for(int i = 0; i < n+1; i++){
+        for(int i = 0; i < nSpline+1; i++){
             
             coefsSpline[coefRow][coefCol] += C[i][j]*x[i];
             
@@ -755,7 +767,7 @@ int splinefit(const double *y, const int size, double *yOut)
     }
     */
     
-    for(int i = 1; i < n; i ++){
+    for(int i = 1; i < nSpline; i ++){
         for(int j = 0; j < size; j++){
             secondHalf = j < breaks[1] ? 0 : 1;
             yOut[j] = yOut[j]*(j - breaks[1]*secondHalf) + coefsSpline[secondHalf][i];

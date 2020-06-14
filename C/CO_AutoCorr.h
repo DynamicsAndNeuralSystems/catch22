@@ -1,6 +1,15 @@
 #ifndef CO_AUTOCORR_H
 #define CO_AUTOCORR_H
-#include <complex.h>
+
+#if __cplusplus
+#   include <complex>
+typedef std::complex< double > cplx;
+#else
+#   include <complex.h>
+//typedef double complex cplx;
+typedef _Dcomplex cplx;
+#endif
+
 #include <math.h>
 #include <stdio.h>
 #include <string.h>

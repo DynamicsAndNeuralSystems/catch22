@@ -4,7 +4,7 @@
 #include <stdio.h>
 #include "helper_functions.h"
 
-double min(const double a[], const int size)
+double min_(const double a[], const int size)
 {
     double m = a[0];
     for (int i = 1; i < size; i++) {
@@ -15,7 +15,7 @@ double min(const double a[], const int size)
     return m;
 }
 
-double max(const double a[], const int size)
+double max_(const double a[], const int size)
 {
     double m = a[0];
     for (int i = 1; i < size; i++) {
@@ -254,7 +254,7 @@ int linreg(const int n, const double x[], const double y[], double* m, double* b
     return 0;
 }
 
-double norm(const double a[], const int size)
+double norm_(const double a[], const int size)
 {
     
     double out = 0.0;

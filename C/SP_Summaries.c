@@ -18,7 +18,7 @@ int welch(const double y[], const int size, const int NFFT, const double Fs, con
     int k = floor((double)size/((double)windowWidth/2.0))-1;
     
     // normalising scale factor
-    double KMU = k * pow(norm(window, windowWidth),2);
+    double KMU = k * pow(norm_(window, windowWidth),2);
     
     double * P = malloc(NFFT * sizeof(double));
     for(int i = 0; i < NFFT; i++){
@@ -40,10 +40,13 @@ int welch(const double y[], const int size, const int NFFT, const double Fs, con
         
         // initialise F (
         for (int i = 0; i < windowWidth; i++) {
-            F[i] = CMPLX(xw[i] - m, 0.0);
+            cplx tmp = { xw[i] - m, 0.0 };
+            F[i] = tmp; // CMPLX(xw[i] - m, 0.0);
         }
         for (int i = windowWidth; i < NFFT; i++) {
-            F[i] = CMPLX(0.0, 0.0);
+            // F[i] = CMPLX(0.0, 0.0);
+            cplx tmp = { 0.0, 0.0 };
+            F[i] = tmp;
         }
         
         fft(F, NFFT, tw);
@@ -128,9 +131,10 @@ double SP_Summaries_welch_rect(const double y[], const int size, const char what
     double * w = malloc(nWelch * sizeof(double));
     double * Sw = malloc(nWelch * sizeof(double));
     
+    double PI = 3.14159265359;
     for(int i = 0; i < nWelch; i++){
-        w[i] = 2*M_PI*f[i];
-        Sw[i] = S[i]/(2*M_PI);
+        w[i] = 2*PI*f[i];
+        Sw[i] = S[i]/(2*PI);
         //printf("w[%i]=%1.3f, Sw[%i]=%1.3f\n", i, w[i], i, Sw[i]);
         if(isinf(Sw[i]) | isinf(-Sw[i])){
             return 0;

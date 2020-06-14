@@ -1,3 +1,12 @@
+#if __cplusplus
+#   include <complex>
+typedef std::complex< double > cplx;
+#else
+#   include <complex.h>
+//typedef double complex cplx;
+typedef _Dcomplex cplx;
+#endif
+
 #include <math.h>
 #include <string.h>
 #include <stdlib.h>
@@ -98,4 +107,26 @@ void subset(const int a[], int b[], const int start, const int end)
         b[j++] = a[i];
     }
     return;
+}
+
+cplx _Cminuscc(const cplx x, const cplx y) {
+    cplx result = { x._Val[0] - y._Val[0], x._Val[1] - y._Val[1] };
+    return result;
+}
+
+cplx _Caddcc(const cplx x, const cplx y) {
+    cplx result = { x._Val[0] + y._Val[0], x._Val[1] + y._Val[1] };
+    return result;
+}
+
+cplx _Cdivcc(const cplx x, const cplx y) {
+    double a = x._Val[0];
+    double b = x._Val[1];
+
+    double c = y._Val[0];
+    double d = y._Val[1];
+
+    cplx result = { (a*c + b*d) / (c*c + d*d), (b*c - a*d)/(c*c + d*d)};
+
+    return result;
 }

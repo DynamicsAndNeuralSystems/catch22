@@ -4,10 +4,11 @@
 
 #if __cplusplus
 #   include <complex>
-typedef std::complex< double > cplx;
+    typedef std::complex< double > cplx;
 #else
 #   include <complex.h>
-typedef double complex cplx;
+    //typedef double complex cplx;
+    typedef _Dcomplex cplx;
 #endif
 
 #include <stdlib.h>

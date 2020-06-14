@@ -2,7 +2,7 @@
 #include "main.h"
 #include <math.h>
 #include <stdio.h>
-#include <dirent.h>
+//#include <dirent.h>
 
 #include "DN_HistogramMode_5.h"
 #include "DN_HistogramMode_10.h"
@@ -213,14 +213,14 @@ void print_help(char *argv[], char msg[])
     exit(1);
 }
 
-int main(int argc, char * argv[])
+int main2(int argc, char * argv[])
 {
     FILE * infile, * outfile;
     int array_size;
     double * y;
     int size;
     double value;
-    DIR *d;
+    // DIR *d;
     struct dirent *dir;
     
     
@@ -272,7 +272,7 @@ int main(int argc, char * argv[])
     return 0;
 }
 
-int main2(int argc, char * argv[])
+int main(int argc, char * argv[])
 {
   (void)argc;
   (void)argv;
@@ -293,7 +293,7 @@ int main2(int argc, char * argv[])
     
     // open a certain file
     FILE * infile;
-    infile = fopen("/Users/carl/PycharmProjects/catch22/C/timeSeries/tsid0002.txt", "r");
+    infile = fopen("C:\\Users\\Carl\\Documents\\catch22-master\\testData\\test.txt", "r");
     int array_size = 15000;
     double * y = malloc(array_size * sizeof(double));
     int size = 0;
@@ -337,8 +337,8 @@ int main2(int argc, char * argv[])
     printf("SB_BinaryStats_diff_longstretch0: %1.5f\n", result);
     result = SB_BinaryStats_mean_longstretch1(y, size);
     printf("SB_BinaryStats_mean_longstretch1: %1.5f\n", result);
-    result = SB_MotifThree_quantile_hh(y, size);
-    printf("SB_MotifThree_quantile_hh: %1.5f\n", result);
+    /*result = SB_MotifThree_quantile_hh(y, size);
+    printf("SB_MotifThree_quantile_hh: %1.5f\n", result);*/
     result = SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1(y, size);
     printf("SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1: %1.5f\n", result);
     result = SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1(y, size);
