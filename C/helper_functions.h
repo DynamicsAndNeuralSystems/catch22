@@ -27,5 +27,8 @@ extern void subset(const int a[], int b[], const int start, const int end);
 extern cplx _Cminuscc(const cplx x, const cplx y);
 extern cplx _Caddcc(const cplx x, const cplx y);
 extern cplx _Cdivcc(const cplx x, const cplx y);
+#if defined(__GNUC__) || defined(__GNUG__)
+extern cplx _Cmulcc(const cplx x, const cplx y);
+#endif
 
 #endif

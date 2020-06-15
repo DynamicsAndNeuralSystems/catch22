@@ -133,3 +133,17 @@ cplx _Cdivcc(const cplx x, const cplx y) {
 
     return result;
 }
+
+#if defined(__GNUC__) || defined(__GNUG__)
+cplx _Cmulcc(const cplx x, const cplx y) {
+    double a = x._Val[0];
+    double b = x._Val[1];
+
+    double c = y._Val[0];
+    double d = y._Val[1];
+
+    cplx result = { (a * c - b * d), (a * d + c * b) };
+
+    return result;
+}
+#endif
