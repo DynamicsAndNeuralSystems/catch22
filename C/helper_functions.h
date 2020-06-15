@@ -10,8 +10,11 @@
 typedef std::complex< double > cplx;
 #else
 #   include <complex.h>
-//typedef double complex cplx;
+#if defined(__GNUC__) || defined(__GNUG__)
+typedef double complex cplx;
+#elif defined(_MSC_VER)
 typedef _Dcomplex cplx;
+#endif
 #endif
 
 extern void linspace(double start, double end, int num_groups, double out[]);
