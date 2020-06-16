@@ -112,38 +112,63 @@ void subset(const int a[], int b[], const int start, const int end)
     return;
 }
 
-cplx _Cminuscc(const cplx x, const cplx y) {
-    cplx result = { x._Val[0] - y._Val[0], x._Val[1] - y._Val[1] };
-    return result;
-}
-
-cplx _Caddcc(const cplx x, const cplx y) {
-    cplx result = { x._Val[0] + y._Val[0], x._Val[1] + y._Val[1] };
-    return result;
-}
-
-cplx _Cdivcc(const cplx x, const cplx y) {
-    double a = x._Val[0];
-    double b = x._Val[1];
-
-    double c = y._Val[0];
-    double d = y._Val[1];
-
-    cplx result = { (a*c + b*d) / (c*c + d*d), (b*c - a*d)/(c*c + d*d)};
-
-    return result;
-}
-
 #if defined(__GNUC__) || defined(__GNUG__)
-cplx _Cmulcc(const cplx x, const cplx y) {
-    double a = x._Val[0];
-    double b = x._Val[1];
+    cplx _Cmulcc(const cplx x, const cplx y) {
+        /*double a = x._Val[0];
+        double b = x._Val[1];
 
-    double c = y._Val[0];
-    double d = y._Val[1];
+        double c = y._Val[0];
+        double d = y._Val[1];
 
-    cplx result = { (a * c - b * d), (a * d + c * b) };
+        cplx result = { (a * c - b * d), (a * d + c * b) };
+         */
+        return x*y;
+    }
 
-    return result;
-}
+    cplx _Cminuscc(const cplx x, const cplx y) {
+        //cplx result = { x._Val[0] - y._Val[0], x._Val[1] - y._Val[1] };
+        return x - y;
+    }
+
+    cplx _Caddcc(const cplx x, const cplx y) {
+        // cplx result = { x._Val[0] + y._Val[0], x._Val[1] + y._Val[1] };
+        return x + y;
+    }
+
+    cplx _Cdivcc(const cplx x, const cplx y) {
+        /*
+        double a = x._Val[0];
+        double b = x._Val[1];
+
+        double c = y._Val[0];
+        double d = y._Val[1];
+
+        cplx result = { (a*c + b*d) / (c*c + d*d), (b*c - a*d)/(c*c + d*d)};
+         */
+         
+        return x / y;
+    }
+
+#elif defined(_MSC_VER)
+    cplx _Cminuscc(const cplx x, const cplx y) {
+        cplx result = { x._Val[0] - y._Val[0], x._Val[1] - y._Val[1] };
+        return result;
+    }
+
+    cplx _Caddcc(const cplx x, const cplx y) {
+        cplx result = { x._Val[0] + y._Val[0], x._Val[1] + y._Val[1] };
+        return result;
+    }
+
+    cplx _Cdivcc(const cplx x, const cplx y) {
+        double a = x._Val[0];
+        double b = x._Val[1];
+
+        double c = y._Val[0];
+        double d = y._Val[1];
+
+        cplx result = { (a*c + b*d) / (c*c + d*d), (b*c - a*d)/(c*c + d*d)};
+
+        return result;
+    }
 #endif

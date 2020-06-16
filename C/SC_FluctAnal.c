@@ -108,7 +108,7 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
             }
             
             if (strcmp(how, "rsrangefit") == 0) {
-                F[i] += pow(max(buffer, tau[i]) - min(buffer, tau[i]), 2);
+                F[i] += pow(max_(buffer, tau[i]) - min_(buffer, tau[i]), 2);
             }
             else if (strcmp(how, "dfa") == 0) {
                 for(int k = 0; k<tau[i]; k++){

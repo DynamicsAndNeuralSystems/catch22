@@ -72,12 +72,23 @@ double * CO_AutoCorr(const double y[], const int size, const int tau[], const in
     cplx * F = malloc(nFFT * sizeof *F);
     cplx * tw = malloc(nFFT * sizeof *tw);
     for (int i = 0; i < size; i++) {
-        cplx tmp = { y[i] - m, 0.0 };
-        F[i] = tmp; //CMPLX(y[i] - m, 0.0);
+        
+        #if defined(__GNUC__) || defined(__GNUG__)
+                F[i] = CMPLX(y[i] - m, 0.0);
+        #elif defined(_MSC_VER)
+                cplx tmp = { y[i] - m, 0.0 };
+                F[i] = tmp;
+        #endif
+        
     }
     for (int i = size; i < nFFT; i++) {
-        cplx tmp = { 0.0, 0.0 };
-        F[i] = tmp; // CMPLX(0.0, 0.0);
+        #if defined(__GNUC__) || defined(__GNUG__)
+                F[i] = CMPLX(0.0, 0.0);
+        #elif defined(_MSC_VER)
+                cplx tmp = { 0.0, 0.0 };
+                F[i] = tmp; // CMPLX(0.0, 0.0);
+        #endif
+        
     }
     // size = nFFT;
 
@@ -109,14 +120,22 @@ double * co_autocorrs(const double y[], const int size)
     cplx * F = malloc(nFFT * 2 * sizeof *F);
     cplx * tw = malloc(nFFT * 2 * sizeof *tw);
     for (int i = 0; i < size; i++) {
-        //F[i] = CMPLX(y[i] - m, 0.0);
-        cplx tmp = { y[i] - m, 0.0 };
-        F[i] = tmp;
+        
+        #if defined(__GNUC__) || defined(__GNUG__)
+                F[i] = CMPLX(y[i] - m, 0.0);
+        #elif defined(_MSC_VER)
+                cplx tmp = { y[i] - m, 0.0 };
+                F[i] = tmp;
+        #endif
     }
     for (int i = size; i < nFFT; i++) {
-        // F[i] = CMPLX(0.0, 0.0);
-        cplx tmp = { 0.0, 0.0 };
-        F[i] = tmp;
+        
+        #if defined(__GNUC__) || defined(__GNUG__)
+            F[i] = CMPLX(0.0, 0.0);
+        #elif defined(_MSC_VER)
+            cplx tmp = { 0.0, 0.0 };
+            F[i] = tmp;
+        #endif
     }
     //size = nFFT;
     

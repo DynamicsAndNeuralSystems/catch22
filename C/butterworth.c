@@ -32,12 +32,20 @@ void poly(cplx x[], int size, cplx out[])
     /* Convert roots x to polynomial coefficients */
     
     // initialise
-    cplx c1 = { 1, 0 };
-    out[0] = c1;//1;
-    for(int i=1; i<size+1; i++){
-        c1._Val[0] = 0;
-        out[i] = c1;
-    }
+    #if defined(__GNUC__) || defined(__GNUG__)
+        out[0] = 1;
+        for(int i=1; i<size+1; i++){
+            out[i] = 0;
+        }
+    #elif defined(_MSC_VER)
+        cplx c1 = { 1, 0 };
+        out[0] = c1;//1;
+        for(int i=1; i<size+1; i++){
+            c1._Val[0] = 0;
+            out[i] = c1;
+        }
+    #endif
+    
     
     cplx * outTemp = malloc((size+1)* sizeof(cplx));
     
