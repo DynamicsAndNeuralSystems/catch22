@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern double max(const double a[], const int size);
-extern double min(const double a[], const int size);
+extern double max_(const double a[], const int size);
+extern double min_(const double a[], const int size);
 extern double mean(const double a[], const int size);
 extern double sum(const double a[], const int size);
 extern void cumsum(const double a[], const int size, double b[]);
@@ -23,6 +23,6 @@ extern void zscore_norm2(const double a[], const int size, double b[]);
 extern double moment(const double a[], const int size, const int start, const int end, const int r);
 extern void diff(const double a[], const int size, double b[]);
 extern int linreg(const int n, const double x[], const double y[], double* m, double* b); //, double* r);
-extern double norm(const double a[], const int size);
+extern double norm_(const double a[], const int size);
 
 #endif

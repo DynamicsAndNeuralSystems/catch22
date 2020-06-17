@@ -4,10 +4,14 @@
 
 #if __cplusplus
 #   include <complex>
-typedef std::complex< double > cplx;
+    typedef std::complex< double > cplx;
 #else
 #   include <complex.h>
+#if defined(__GNUC__) || defined(__GNUG__)
 typedef double complex cplx;
+#elif defined(_MSC_VER)
+typedef _Dcomplex cplx;
+#endif
 #endif
 
 #include <stdlib.h>

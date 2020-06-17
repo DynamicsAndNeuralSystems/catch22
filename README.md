@@ -2,6 +2,9 @@
 This is a collection of 22 time series features contained in the [_hctsa_](https://github.com/benfulcher/hctsa) toolbox coded in C.
 Features were selected by their classification performance across a collection of 93 real-world time-series classification problems (according to the [`op_importance`](https://github.com/chlubba/op_importance) repository).
 
+___NOTE___: The included features only evaluate dynamical properties of time series and do not respond to basic differences in the location (e.g., mean) or spread (e.g., variance).
+If you think features of the raw distribution may be important for your application, we suggest you add them (in the simplest case, the mean and standard deviation) to this feature set.
+
 For information on how this feature set was constructed see our open-access :unlock: paper:
 
 * C.H. Lubba, S.S. Sethi, P. Knaute, S.R. Schultz, B.D. Fulcher, N.S. Jones. [_catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x). *Data Mining and Knowledge Discovery* **33**, 1821 (2019).
@@ -38,11 +41,17 @@ pip install -e wrap_Python
 
 ### Installation Python 3
 
-Only manual installation through `distutils`
+Manual installation through `distutils`
 
 ```
 python3 setup_P3.py build
 python3 setup_P3.py install
+```
+
+Or using pip
+
+```
+pip install catch22
 ```
 
 ### Test Python 2 and 3

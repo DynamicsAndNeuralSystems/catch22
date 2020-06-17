@@ -43,7 +43,7 @@ double DN_OutlierInclude_np_001_mdrmd(const double y[], const int size, const in
     if(constantFlag) return 0; // if constant, return 0
     
     // find maximum (or minimum, depending on sign)
-    double maxVal = max(yWork, size);
+    double maxVal = max_(yWork, size);
     
     // maximum value too small? return 0
     if(maxVal < inc){

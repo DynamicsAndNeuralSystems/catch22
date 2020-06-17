@@ -1,6 +1,18 @@
 #ifndef CO_AUTOCORR_H
 #define CO_AUTOCORR_H
-#include <complex.h>
+
+#if __cplusplus
+#   include <complex>
+typedef std::complex< double > cplx;
+#else
+#   include <complex.h>
+#if defined(__GNUC__) || defined(__GNUG__)
+typedef double complex cplx;
+#elif defined(_MSC_VER)
+typedef _Dcomplex cplx;
+#endif
+#endif
+
 #include <math.h>
 #include <stdio.h>
 #include <string.h>

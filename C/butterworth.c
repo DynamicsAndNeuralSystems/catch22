@@ -7,9 +7,20 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include <complex.h>
-typedef double complex cplx;
 
+#if __cplusplus
+#   include <complex>
+typedef std::complex< double > cplx;
+#else
+#   include <complex.h>
+#if defined(__GNUC__) || defined(__GNUG__)
+    typedef double complex cplx;
+#elif defined(_MSC_VER)
+    typedef _Dcomplex cplx;
+#endif
+#endif
+
+#include "helper_functions.h"
 #include "butterworth.h"
 
 #ifndef CMPLX
@@ -21,10 +32,20 @@ void poly(cplx x[], int size, cplx out[])
     /* Convert roots x to polynomial coefficients */
     
     // initialise
-    out[0] = 1;
-    for(int i=1; i<size+1; i++){
-        out[i] = 0;
-    }
+    #if defined(__GNUC__) || defined(__GNUG__)
+        out[0] = 1;
+        for(int i=1; i<size+1; i++){
+            out[i] = 0;
+        }
+    #elif defined(_MSC_VER)
+        cplx c1 = { 1, 0 };
+        out[0] = c1;//1;
+        for(int i=1; i<size+1; i++){
+            c1._Val[0] = 0;
+            out[i] = c1;
+        }
+    #endif
+    
     
     cplx * outTemp = malloc((size+1)* sizeof(cplx));
     
@@ -38,7 +59,9 @@ void poly(cplx x[], int size, cplx out[])
         
         for(int j=1; j<i+1; j++){
             
-            out[j] -= x[i-1]*outTemp[j-1];
+            cplx temp1 = _Cmulcc(x[i - 1], outTemp[j - 1]);//x[i - 1] * outTemp[j - 1];
+            cplx temp2 = out[j];
+            out[j] = _Cminuscc(temp2, temp1);//x[i - 1] * outTemp[j - 1];
             
         }
         
@@ -140,13 +163,18 @@ void filt_reverse(double y[], int size, double a[], double b[], int nCoeffs, dou
     
 }
 
+/*
 void butterworthFilter(const double y[], int size, const int nPoles, const double W, double out[]){
     
-    double V = tan(W * M_PI/2);
+    double PI = 3.14159265359;
+
+    double V = tan(W * PI/2);
     cplx * Q = malloc(nPoles * sizeof(cplx));
     
     for(int i = 0; i<nPoles; i++){
-        Q[i] =  conj(cexp((M_PI/2*I / nPoles) * ((2 + nPoles - 1) + 2*i)));
+        cplx tmp1 = { 0, PI / 2 };
+        cplx tmp2 = { nPoles, 0 };
+        Q[i] =  conj(cexp((_Cdivcc(tmp1, tmp2)) * ((2 + nPoles - 1) + 2*i)));
         //printf("Q[%i]= real %1.3f imag %1.3f\n", i, creal(Q[i]), cimag(Q[i]));
         
     }
@@ -173,12 +201,13 @@ void butterworthFilter(const double y[], int size, const int nPoles, const doubl
         // printf("Z[%i]= real %1.3f imag %1.3f\n", i, creal(Z[i]), cimag(Z[i]));
         
         prod1mSp *= (1 - Sp[i]);
-        /*
-        if(i > 0){
-            prod1mSp *= (1 - Sp[i]);
-        }
-         */
+        
+        //if(i > 0){
+        //    prod1mSp *= (1 - Sp[i]);
+        //}
+         
     }
+
     double G = creal(Sg / prod1mSp);
     
     cplx * Zpoly = malloc((nPoles+1) * sizeof(cplx));
@@ -187,19 +216,15 @@ void butterworthFilter(const double y[], int size, const int nPoles, const doubl
     // polynomial coefficients from poles and zeros for filtering
     poly(Z, nPoles, Zpoly);
     
-    /*
-    for(int i = 0; i < nPoles+1; i++){
-        printf("Zpoly[%i]= %1.3f + %1.3f i\n", i, creal(Zpoly[i]), cimag(Zpoly[i]));
-    }
-     */
+    //for(int i = 0; i < nPoles+1; i++){
+    //    printf("Zpoly[%i]= %1.3f + %1.3f i\n", i, creal(Zpoly[i]), cimag(Zpoly[i]));
+    //}
     
     poly(P, nPoles, Ppoly);
     
-    /*
-    for(int i = 0; i < nPoles+1; i++){
-        printf("Ppoly[%i]= %1.3f + %1.3f i\n", i, creal(Ppoly[i]), cimag(Ppoly[i]));
-    }
-     */
+    //for(int i = 0; i < nPoles+1; i++){
+    //    printf("Ppoly[%i]= %1.3f + %1.3f i\n", i, creal(Ppoly[i]), cimag(Ppoly[i]));
+    //}
     
     
     // coeffs for filtering
@@ -236,30 +261,26 @@ void butterworthFilter(const double y[], int size, const int nPoles, const doubl
     double * outPadded = malloc((size + 2*nfact) * sizeof(double));
     filt(yPadded, (size + 2*nfact), a, b, nPoles, outPadded);
     
-    /*
-    for(int i=0; i < (size + 2*nfact); i++){
-        printf("filtPadded[%i]=%1.3f\n", i, outPadded[i]);
-    }
-     */
+    //for(int i=0; i < (size + 2*nfact); i++){
+    //    printf("filtPadded[%i]=%1.3f\n", i, outPadded[i]);
+    //}
      
     filt_reverse(outPadded, (size + 2*nfact), a, b, nPoles, outPadded);
     
-    /*
-     for(int i=0; i < (size + 2*nfact); i++){
-        printf("filtfiltPadded[%i]=%1.3f\n", i, outPadded[i]);
-    }
-     */
+    
+    // for(int i=0; i < (size + 2*nfact); i++){
+    //    printf("filtfiltPadded[%i]=%1.3f\n", i, outPadded[i]);
+    //}
      
      
     for(int i = 0; i < size; i ++){
         out[i] = outPadded[nfact + i];
     }
     
-    /*
-    for(int i=0; i < size; i++){
-        printf("out[%i]=%1.3f\n", i, out[i]);
-    }
-     */
+    
+    //for(int i=0; i < size; i++){
+    //    printf("out[%i]=%1.3f\n", i, out[i]);
+    //}
      
     
     free(Q);
@@ -273,3 +294,5 @@ void butterworthFilter(const double y[], int size, const int nPoles, const doubl
     free(outPadded);
     
 }
+
+*/

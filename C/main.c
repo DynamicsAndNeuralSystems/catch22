@@ -2,7 +2,7 @@
 #include "main.h"
 #include <math.h>
 #include <stdio.h>
-#include <dirent.h>
+//#include <dirent.h>
 
 #include "DN_HistogramMode_5.h"
 #include "DN_HistogramMode_10.h"
@@ -213,14 +213,14 @@ void print_help(char *argv[], char msg[])
     exit(1);
 }
 
-int main(int argc, char * argv[])
+int main2(int argc, char * argv[])
 {
     FILE * infile, * outfile;
     int array_size;
     double * y;
     int size;
     double value;
-    DIR *d;
+    // DIR *d;
     struct dirent *dir;
     
     
@@ -272,7 +272,7 @@ int main(int argc, char * argv[])
     return 0;
 }
 
-int main2(int argc, char * argv[])
+int main(int argc, char * argv[])
 {
   (void)argc;
   (void)argv;
@@ -290,10 +290,10 @@ int main2(int argc, char * argv[])
         y[i] = sin(sinIn);
         printf("%i: sinIn=%1.3f, sin=%1.3f\n", i, sinIn, y[i]);
     }*/
-    
+
     // open a certain file
     FILE * infile;
-    infile = fopen("/Users/carl/PycharmProjects/catch22/C/timeSeries/tsid0002.txt", "r");
+    infile = fopen("C:\\Users\\Carl\\Documents\\catch22-master\\testData\\test.txt", "r");
     int array_size = 15000;
     double * y = malloc(array_size * sizeof(double));
     int size = 0;
@@ -351,7 +351,6 @@ int main2(int argc, char * argv[])
     printf("SB_TransitionMatrix_3ac_sumdiagcov: %1.5f\n", result);
     result = PD_PeriodicityWang_th0_01(y, size);
     printf("PD_PeriodicityWang_th0_01: %1.f\n", result);
-    
     
     
   return 0;

@@ -108,7 +108,7 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
             }
             
             if (strcmp(how, "rsrangefit") == 0) {
-                F[i] += pow(max(buffer, tau[i]) - min(buffer, tau[i]), 2);
+                F[i] += pow(max_(buffer, tau[i]) - min_(buffer, tau[i]), 2);
             }
             else if (strcmp(how, "dfa") == 0) {
                 for(int k = 0; k<tau[i]; k++){
@@ -162,19 +162,19 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
             buffer[j] = logtt[j] * m1 + b1 - logFF[j];
         }
         
-        sserr[i - minPoints] += norm(buffer, i);
+        sserr[i - minPoints] += norm_(buffer, i);
         
         for(int j = 0; j < ntt-i+1; j++)
         {
             buffer[j] = logtt[j+i-1] * m2 + b2 - logFF[j+i-1];
         }
         
-        sserr[i - minPoints] += norm(buffer, ntt-i+1);
+        sserr[i - minPoints] += norm_(buffer, ntt-i+1);
         
     }
     
     double firstMinInd = 0.0;
-    double minimum = min(sserr, nsserr);
+    double minimum = min_(sserr, nsserr);
     for(int i = 0; i < nsserr; i++)
     {
         if(sserr[i] == minimum)

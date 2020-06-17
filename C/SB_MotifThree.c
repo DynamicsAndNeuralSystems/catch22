@@ -52,7 +52,8 @@ double SB_MotifThree_quantile_hh(const double y[], const int size)
     // from yt
     for (int i = 0; i < alphabet_size; i++) {
         if (sizes_r1[i] != 0 && r1[i][sizes_r1[i] - 1] == size - 1) {
-            int * tmp_ar = malloc((sizes_r1[i] - 1) * sizeof(tmp_ar));
+            //int * tmp_ar = malloc((sizes_r1[i] - 1) * sizeof(tmp_ar));
+            int* tmp_ar = malloc(sizes_r1[i] * sizeof(tmp_ar));
             subset(r1[i], tmp_ar, 0, sizes_r1[i]);
             memcpy(r1[i], tmp_ar, (sizes_r1[i] - 1) * sizeof(tmp_ar));
             sizes_r1[i]--;
@@ -60,15 +61,35 @@ double SB_MotifThree_quantile_hh(const double y[], const int size)
         }
     }
     
+    /*
     int *** r2 = malloc(array_size * sizeof(**r2));
     int ** sizes_r2 = malloc(array_size * sizeof(*sizes_r2));
     double ** out2 = malloc(array_size * sizeof(*out2));
+    */
+    int*** r2 = malloc(alphabet_size * sizeof(**r2));
+    int** sizes_r2 = malloc(alphabet_size * sizeof(*sizes_r2));
+    double** out2 = malloc(alphabet_size * sizeof(*out2));
+    
+
+    // allocate separately
     for (int i = 0; i < alphabet_size; i++) {
-        r2[i] = malloc(alphabet_size * sizeof(r2[i]));
-        sizes_r2[i] = malloc(alphabet_size * sizeof(sizes_r2[i]));
-        out2[i] = malloc(alphabet_size * sizeof(out2[i]));
+        r2[i] = malloc(alphabet_size * sizeof(*r2[i]));
+        sizes_r2[i] = malloc(alphabet_size * sizeof(*sizes_r2[i]));
+        //out2[i] = malloc(alphabet_size * sizeof(out2[i]));
+        out2[i] = malloc(alphabet_size * sizeof(**out2));
         for (int j = 0; j < alphabet_size; j++) {
-            r2[i][j] = malloc(size * sizeof(r2[i][j]));
+            r2[i][j] = malloc(size * sizeof(*r2[i][j]));
+        }
+    }
+
+    // fill separately
+    for (int i = 0; i < alphabet_size; i++) {
+    // for (int i = 0; i < array_size; i++) {
+        //r2[i] = malloc(alphabet_size * sizeof(r2[i]));
+        //sizes_r2[i] = malloc(alphabet_size * sizeof(sizes_r2[i]));
+        //out2[i] = malloc(alphabet_size * sizeof(out2[i]));
+        for (int j = 0; j < alphabet_size; j++) {
+            //r2[i][j] = malloc(size * sizeof(r2[i][j]));
             sizes_r2[i][j] = 0;
             dynamic_idx = 0; //workaround as you can't just add elements to array
             // like in python (list.append()) for example, so since for some k there will be no adding,
@@ -78,37 +99,46 @@ double SB_MotifThree_quantile_hh(const double y[], const int size)
                 if (tmp_idx == (j + 1)) {
                     r2[i][j][dynamic_idx++] = r1[i][k];
                     sizes_r2[i][j]++;
+                    // printf("dynamic_idx=%i, size = %i\n", dynamic_idx, size);
                 }
             }
-            
-            out2[i][j] = (double)sizes_r2[i][j] / (size - 1);
+            double tmp = (double)sizes_r2[i][j] / ((double)(size) - (double)(1.0));
+            out2[i][j] =  tmp;
         }
     }
+
     hh = 0.0;
     for (int i = 0; i < alphabet_size; i++) {
         hh += f_entropy(out2[i], alphabet_size);
     }
-    
+
     free(yt);
     free(out);
-    
+
+    free(sizes_r1);
+
     // free nested array
     for (int i = 0; i < alphabet_size; i++) {
         free(r1[i]);
     }
     free(r1);
-    free(sizes_r1);
+    // free(sizes_r1);
     
     for (int i = 0; i < alphabet_size; i++) {
-        for (int j = 0; j < alphabet_size; j++) {
-            free(r2[i][j]);
-        }
-    }
-    for (int i = 0; i < alphabet_size; i++) {
-        free(r2[i]);
+    //for (int i = alphabet_size - 1; i >= 0; i--) {
+
         free(sizes_r2[i]);
         free(out2[i]);
     }
+
+    //for (int i = alphabet_size-1; i >= 0 ; i--) {
+    for(int i = 0; i < alphabet_size; i++) {
+        for (int j = 0; j < alphabet_size; j++) {
+            free(r2[i][j]);
+        }
+        free(r2[i]);
+    }
+    
     free(r2);
     free(sizes_r2);
     free(out2);
