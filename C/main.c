@@ -213,7 +213,7 @@ void print_help(char *argv[], char msg[])
     exit(1);
 }
 
-int main2(int argc, char * argv[])
+int main(int argc, char * argv[])
 {
     FILE * infile, * outfile;
     int array_size;
@@ -272,7 +272,7 @@ int main2(int argc, char * argv[])
     return 0;
 }
 
-int main(int argc, char * argv[])
+int main2(int argc, char * argv[])
 {
   (void)argc;
   (void)argv;
