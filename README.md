@@ -18,26 +18,11 @@ For information on the full set of over 7000 features, see the following (open :
 
 The fast C-coded functions in this repository can be used in Python, Matlab, and R following the instructions below.
 Time series are _z_-scored internally which means e.g., constant time series will lead to NaN outputs.
-The wrappers are only tested on OS X so far and require Clang.
+The wrappers for Matlab and Python run using either GCC or MSVC as compiler. The R wrapper so far only runs using GCC and was only tested on OS X.
 
 ## Python
 
 Installation of the Python wrapper differs slightly between Python 2 and 3.
-
-### Installation Python 2
-
-Go to the directory `wrap_Python` and run the following
-
-```
-python setup.py build
-python setup.py install
-```
-
-or alternatively, using pip, go to main directory and run
-
-```
-pip install -e wrap_Python
-```
 
 ### Installation Python 3
 
@@ -52,6 +37,21 @@ Or using pip
 
 ```
 pip install catch22
+```
+
+### Installation Python 2
+
+Go to the directory `wrap_Python` and run the following
+
+```
+python setup.py build
+python setup.py install
+```
+
+or alternatively, using pip, go to main directory and run
+
+```
+pip install -e wrap_Python
 ```
 
 ### Test Python 2 and 3
