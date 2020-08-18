@@ -201,6 +201,7 @@ int CO_f1ecac(const double y[], const int size)
         
         if ((autocorrs[i] - thresh)*(autocorrs[i+1] - thresh) < 0){
             out = i + 1;
+            free(autocorrs);
             return out;
         }
     }

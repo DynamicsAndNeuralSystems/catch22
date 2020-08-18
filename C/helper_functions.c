@@ -65,9 +65,13 @@ double quantile(const double y[], const int size, const double quant)
     // out of range limit?
     q = 0.5 / size;
     if (quant < q) {
-        return tmp[0]; // min value
+        value = tmp[0]; // min value
+        free(tmp);
+        return value; 
     } else if (quant > (1 - q)) {
-        return tmp[size - 1]; // max value
+        value = tmp[size - 1]; // max value
+        free(tmp);
+        return value; 
     }
     
     quant_idx = size * quant - 0.5;

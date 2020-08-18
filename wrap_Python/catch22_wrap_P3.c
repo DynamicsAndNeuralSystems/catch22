@@ -97,7 +97,8 @@ static PyObject * python_wrapper_double(PyObject * args, double (*f) (const doub
         result = f(copy, n);
     }   
 
-    //free(c_array);
+    free(c_array);
+    free(copy);
 
     // build the resulting string into a Python object.
     ret = Py_BuildValue("d", result);
@@ -173,7 +174,8 @@ static PyObject * python_wrapper_int(PyObject * args, int (*f) (const double*, c
         result = f(copy, n);
     }   
 
-    //free(c_array);
+    free(copy);
+    free(c_array);
 
     // build the resulting string into a Python object.
     ret = Py_BuildValue("n", result);
