@@ -5,11 +5,11 @@ Features were selected by their classification performance across a collection o
 ___NOTE___: The included features only evaluate dynamical properties of time series and do not respond to basic differences in the location (e.g., mean) or spread (e.g., variance).
 If you think features of the raw distribution may be important for your application, we suggest you add them (in the simplest case, the mean and standard deviation) to this feature set.
 
-For information on how this feature set was constructed see our open-access :unlock: paper:
+For information on how this feature set was constructed see our open-acces paper:
 
 * C.H. Lubba, S.S. Sethi, P. Knaute, S.R. Schultz, B.D. Fulcher, N.S. Jones. [_catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x). *Data Mining and Knowledge Discovery* **33**, 1821 (2019).
 
-For information on the full set of over 7000 features, see the following (open :unlock:) publications:
+For information on the full set of over 7000 features, see the following open-access publications:
 
 * B.D. Fulcher and N.S. Jones. [_hctsa_: A computational framework for automated time-series phenotyping using massive feature extraction](http://www.cell.com/cell-systems/fulltext/S2405-4712\(17\)30438-6). *Cell Systems* **5**, 527 (2017).
 * B.D. Fulcher, M.A. Little, N.S. Jones [Highly comparative time-series analysis: the empirical structure of time series and their methods](http://rsif.royalsocietypublishing.org/content/10/83/20130048.full). *J. Roy. Soc. Interface* **10**, 83 (2013).
