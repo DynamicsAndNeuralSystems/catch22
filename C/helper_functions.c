@@ -140,17 +140,18 @@ void subset(const int a[], int b[], const int start, const int end)
     }
 
     cplx _Cdivcc(const cplx x, const cplx y) {
-        /*
-        double a = x._Val[0];
-        double b = x._Val[1];
+        
+        double a = creal(x);
+        double b = cimag(x);
 
-        double c = y._Val[0];
-        double d = y._Val[1];
+        double c = creal(y);
+        double d = cimag(y);
 
-        cplx result = { (a*c + b*d) / (c*c + d*d), (b*c - a*d)/(c*c + d*d)};
-         */
+        cplx result = (a*c + b*d) / (c*c + d*d) + (b*c - a*d)/(c*c + d*d) * I;
+        
+        return result;
          
-        return x / y;
+        // return x / y;
     }
 
 #elif defined(_MSC_VER)

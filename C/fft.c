@@ -26,7 +26,12 @@ void twiddles(cplx a[], int size)
     double PI = 3.14159265359;
 
     for (int i = 0; i < size; i++) {
-        cplx tmp = { 0, -PI * i / size };
+        // cplx tmp = { 0, -PI * i / size };
+        #if defined(__GNUC__) || defined(__GNUG__)
+	    cplx tmp = 0.0  - PI * i / size * I;
+        #elif defined(_MSC_VER)
+	    cplx tmp = {0.0, -PI * i / size };
+        #endif
         a[i] = cexp(tmp);
         //a[i] = cexp(-I * M_PI * i / size);
     }

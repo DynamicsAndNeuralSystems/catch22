@@ -40,12 +40,24 @@ int welch(const double y[], const int size, const int NFFT, const double Fs, con
         
         // initialise F (
         for (int i = 0; i < windowWidth; i++) {
-            cplx tmp = { xw[i] - m, 0.0 };
+            
+	    #if defined(__GNUC__) || defined(__GNUG__)
+		cplx tmp = xw[i] - m + 0.0ss * I;
+	    #elif defined(_MSC_VER)
+		cplx tmp = { xw[i] - m, 0.0 };
+	    #endif
+            
+            
             F[i] = tmp; // CMPLX(xw[i] - m, 0.0);
         }
         for (int i = windowWidth; i < NFFT; i++) {
             // F[i] = CMPLX(0.0, 0.0);
-            cplx tmp = { 0.0, 0.0 };
+            //cplx tmp = { 0.0, 0.0 };
+            #if defined(__GNUC__) || defined(__GNUG__)
+		cplx tmp = 0.0 + 0.0 * I;
+	    #elif defined(_MSC_VER)
+		cplx tmp = { 0.0 , 0.0 };
+	    #endif
             F[i] = tmp;
         }
         
