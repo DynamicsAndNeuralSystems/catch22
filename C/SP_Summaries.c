@@ -42,7 +42,7 @@ int welch(const double y[], const int size, const int NFFT, const double Fs, con
         for (int i = 0; i < windowWidth; i++) {
             
 	    #if defined(__GNUC__) || defined(__GNUG__)
-		cplx tmp = xw[i] - m + 0.0ss * I;
+		cplx tmp = xw[i] - m + 0.0 * I;
 	    #elif defined(_MSC_VER)
 		cplx tmp = { xw[i] - m, 0.0 };
 	    #endif
