@@ -1,4 +1,7 @@
 # _catch22_ - CAnonical Time-series CHaracteristics
+
+[![DOI](https://zenodo.org/badge/146194807.svg)](https://zenodo.org/badge/latestdoi/146194807)
+
 This is a collection of 22 time series features contained in the [_hctsa_](https://github.com/benfulcher/hctsa) toolbox coded in C.
 Features were selected by their classification performance across a collection of 93 real-world time-series classification problems (according to the [`op_importance`](https://github.com/chlubba/op_importance) repository).
 
