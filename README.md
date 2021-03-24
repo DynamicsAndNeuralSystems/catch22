@@ -8,7 +8,7 @@ _catch22_ is a collection of 22 time-series features coded in C.
 The _catch22_ features are a high-performing subset of the over 7000 features in [_hctsa_](https://github.com/benfulcher/hctsa).
 
 Features were selected based on their classification performance across a collection of 93 real-world time-series classification problems, as described in our open-access paper:
-- [&#x1F4D7;Lubba et al. (2019). _catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
+- [&#x1F4D7; Lubba et al. (2019). _catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
 
 The computational pipeline used to generate the _catch22_ feature set is in the [`op_importance`](https://github.com/chlubba/op_importance) repository.
 
