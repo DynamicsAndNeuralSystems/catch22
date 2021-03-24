@@ -14,6 +14,9 @@ The computational pipeline used to generate the _catch22_ feature set is in the 
 
 For _catch22_-related information and resources, including a list of publications using _catch22_, see the [___catch22_ wiki__](https://github.com/chlubba/catch22/wiki).
 
+Summary of the performance of the _catch22_ feature set across 93 classification problems, and a comparison to _hctsa_ (cf. Fig. 4 from [our paper](https://doi.org/10.1007/s10618-019-00647-x)):
+![](img/PerformanceComparisonFig4.png)
+
 ## Installation: Python, R, Matlab, Julia, and compiled C
 
 The fast, C-coded functions in this repository can be used in Python, Matlab, and R following the [detailed installation instructions on the wiki](https://github.com/chlubba/catch22/wiki/Installation-and-Testing).
