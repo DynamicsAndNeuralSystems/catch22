@@ -21,7 +21,9 @@ Summary of the performance of the _catch22_ feature set across 93 classification
 
 The fast, C-coded functions in this repository can be used in Python, Matlab, and R following the [detailed installation instructions on the wiki](https://github.com/chlubba/catch22/wiki/Installation-and-Testing).
 
-Julia users can use [this Julia package](https://github.com/brendanjohnharris/Catch22.jl) to evaluate the _catch22_ feature set.
+There is also a native R version, downloadable from CRAN, [Rcatch22](https://github.com/hendersontrent/Rcatch22).
+
+And Julia users can use [this Julia package](https://github.com/brendanjohnharris/Catch22.jl) to evaluate the _catch22_ feature set.
 
 ## Usage
 
