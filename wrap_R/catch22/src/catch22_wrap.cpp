@@ -5,6 +5,8 @@ extern "C" {
 #include "CO_AutoCorr.h"
 #include "DN_HistogramMode_10.h"
 #include "DN_HistogramMode_5.h"
+#include "DN_Mean.h"
+#include "DN_Spread_Std.h"
 #include "DN_OutlierInclude.h"
 #include "FC_LocalSimple.h"
 #include "IN_AutoMutualInfoStats.h"
@@ -22,19 +24,9 @@ extern "C" {
 #include "histcounts.h"
 #include "splinefit.h"
 #include "stats.h"
-#include "DN_Mean.h"
-#include "DN_Spread_Std.h"
 }
 
 using namespace Rcpp;
-
-// Learn more about Rcpp at:
-//
-//   http://www.rcpp.org/
-//   http://adv-r.had.co.nz/Rcpp.html
-//   http://gallery.rcpp.org/
-//
-
 
 // universal wrapper for a function that takes a double array and its length
 // and outputs a scalar double 
@@ -109,20 +101,6 @@ NumericVector R_wrapper_int(NumericVector x, int (*f) (const double*, const int)
 //-------------------------------------------------------------------------
 //----------------------- Feature functions -------------------------------
 //-------------------------------------------------------------------------
-
-/*
-double CO_Embed2_Basic_tau_incircle_1_C(double * in, int n)
-{
-  return CO_Embed2_Basic_tau_incircle(in, n, 1, -1);
-}
-// [[Rcpp::export]]
-NumericVector CO_Embed2_Basic_tau_incircle_1(NumericVector x) {
-  
-  return R_wrapper(x, &CO_Embed2_Basic_tau_incircle_1_C, 0);
-  
-};
-*/
-
 
 // [[Rcpp::export]]
 NumericVector DN_HistogramMode_5(NumericVector x)

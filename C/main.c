@@ -2,6 +2,7 @@
 #include "main.h"
 #include <math.h>
 #include <stdio.h>
+#include <stdbool.h>
 //#include <dirent.h>
 
 #include "DN_HistogramMode_5.h"
@@ -46,7 +47,7 @@ int quality_check(const double y[], const int size)
     return 0;
 }
 
-void run_features(double y[], int size, FILE * outfile)
+void run_features(double y[], int size, FILE * outfile, bool catch24)
 {
     int quality = quality_check(y, size);
     if(quality != 0)
@@ -199,17 +200,22 @@ void run_features(double y[], int size, FILE * outfile)
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "PD_PeriodicityWang_th0_01", timeTaken);
 
-    // GOOD
-    begin = clock();
-    result = DN_Mean(y_zscored, size);
-    timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
-    fprintf(outfile, "%.14f, %s, %f\n", result, "DN_Mean", timeTaken);
+    if (catch24) {
+        
+        // GOOD
+        begin = clock();
+        result = DN_Mean(y_zscored, size);
+        timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
+        fprintf(outfile, "%.14f, %s, %f\n", result, "DN_Mean", timeTaken);
 
-    // GOOD
-    begin = clock();
-    result = DN_Spread_Std(y_zscored, size);
-    timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
-    fprintf(outfile, "%.14f, %s, %f\n", result, "DN_Spread_Std", timeTaken);
+        // GOOD
+        begin = clock();
+        result = DN_Spread_Std(y_zscored, size);
+        timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
+        fprintf(outfile, "%.14f, %s, %f\n", result, "DN_Spread_Std", timeTaken);
+    } else {
+
+    }
     
     fprintf(outfile, "\n");
     
@@ -227,7 +233,7 @@ void print_help(char *argv[], char msg[])
     exit(1);
 }
 
-int main(int argc, char * argv[])
+int main(int argc, char * argv[], bool catch24)
 {
     FILE * infile, * outfile;
     int array_size;
@@ -279,7 +285,7 @@ int main(int argc, char * argv[])
     fclose(infile);
     y = realloc(y, size * sizeof *y);
     //printf("size=%i\n", size);
-    run_features(y, size, outfile);
+    run_features(y, size, outfile, catch24);
     fclose(outfile);
     free(y);
     
@@ -365,11 +371,6 @@ int main2(int argc, char * argv[])
     printf("SB_TransitionMatrix_3ac_sumdiagcov: %1.5f\n", result);
     result = PD_PeriodicityWang_th0_01(y, size);
     printf("PD_PeriodicityWang_th0_01: %1.f\n", result);
-
-    result = DN_Mean(y, size);
-    printf("DN_Mean: %1.f\n", result);
-    result = DN_Spread_Std(y, size);
-    printf("DN_Spread_Std: %1.f\n", result);
     
   return 0;
 }
