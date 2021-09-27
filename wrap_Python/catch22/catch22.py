@@ -1,6 +1,6 @@
 import catch22_C
 
-def catch22_all(data):
+def catch22_all(data, catch24 = False):
 
 	features = [
 	'DN_HistogramMode_5',
@@ -25,7 +25,11 @@ def catch22_all(data):
 	'SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1',
 	'SP_Summaries_welch_rect_centroid',
 	'FC_LocalSimple_mean3_stderr'
-	]	
+	]
+
+	if catch24 == True:
+    		features24 = ["DN_Mean", "DN_Spread_Std"]
+		features = features.append(features24)
 
 	data = list(data)
 

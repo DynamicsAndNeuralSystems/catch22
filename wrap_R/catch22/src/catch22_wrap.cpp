@@ -22,6 +22,8 @@ extern "C" {
 #include "histcounts.h"
 #include "splinefit.h"
 #include "stats.h"
+#include "DN_Mean.h"
+#include "DN_Spread_Std.h"
 }
 
 using namespace Rcpp;
@@ -254,13 +256,14 @@ NumericVector FC_LocalSimple_mean3_stderr(NumericVector x)
   return R_wrapper_double(x, &FC_LocalSimple_mean3_stderr, 1);
 }
 
+// [[Rcpp::export]]
+NumericVector DN_Mean(NumericVector x)
+{
+  return R_wrapper_double(x, &DN_Mean, 1);
+}
 
-// You can include R code blocks in C++ files processed with sourceCpp
-// (useful for testing and development). The R code will be automatically 
-// run after the compilation.
-//
-
-
-/*** R
-arraysum(c(42, 21));
-*/
+// [[Rcpp::export]]
+NumericVector DN_Spread_Std(NumericVector x)
+{
+  return R_wrapper_double(x, &DN_Spread_Std, 1);
+}
