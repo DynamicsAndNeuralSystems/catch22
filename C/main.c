@@ -6,6 +6,8 @@
 
 #include "DN_HistogramMode_5.h"
 #include "DN_HistogramMode_10.h"
+#include "DN_Mean.h"
+#include "DN_Spread_Std.h"
 #include "CO_AutoCorr.h"
 #include "DN_OutlierInclude.h"
 #include "FC_LocalSimple.h"
@@ -196,6 +198,18 @@ void run_features(double y[], int size, FILE * outfile)
     result = PD_PeriodicityWang_th0_01(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "PD_PeriodicityWang_th0_01", timeTaken);
+
+    // GOOD
+    begin = clock();
+    result = DN_Mean(y_zscored, size);
+    timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
+    fprintf(outfile, "%.14f, %s, %f\n", result, "DN_Mean", timeTaken);
+
+    // GOOD
+    begin = clock();
+    result = DN_Spread_Std(y_zscored, size);
+    timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
+    fprintf(outfile, "%.14f, %s, %f\n", result, "DN_Spread_Std", timeTaken);
     
     fprintf(outfile, "\n");
     
@@ -351,7 +365,11 @@ int main2(int argc, char * argv[])
     printf("SB_TransitionMatrix_3ac_sumdiagcov: %1.5f\n", result);
     result = PD_PeriodicityWang_th0_01(y, size);
     printf("PD_PeriodicityWang_th0_01: %1.f\n", result);
-    
+
+    result = DN_Mean(y, size);
+    printf("DN_Mean: %1.f\n", result);
+    result = DN_Spread_Std(y, size);
+    printf("DN_Spread_Std: %1.f\n", result);
     
   return 0;
 }
