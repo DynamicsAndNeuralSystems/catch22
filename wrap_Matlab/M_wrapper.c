@@ -3,6 +3,8 @@
 #include "CO_AutoCorr.h"
 #include "DN_HistogramMode_10.h"
 #include "DN_HistogramMode_5.h"
+#include "DN_Mean.h"
+#include "DN_Spread_Std.h"
 #include "DN_OutlierInclude.h"
 #include "FC_LocalSimple.h"
 #include "IN_AutoMutualInfoStats.h"
