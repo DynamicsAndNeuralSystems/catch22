@@ -233,7 +233,7 @@ void print_help(char *argv[], char msg[])
     exit(1);
 }
 
-int main(int argc, char * argv[], bool catch24)
+int main(int argc, char * argv[])
 {
     FILE * infile, * outfile;
     int array_size;
@@ -285,7 +285,19 @@ int main(int argc, char * argv[], bool catch24)
     fclose(infile);
     y = realloc(y, size * sizeof *y);
     //printf("size=%i\n", size);
-    run_features(y, size, outfile, catch24);
+
+    // catch24 specification
+
+    int catch24;
+    printf("Do you want to run catch24? Enter 0 for catch22 or 1 for catch24.");
+    scanf("%d", &catch24);
+
+    if (catch24 == 1) {
+        run_features(y, size, outfile, true);
+    } else {
+        run_features(y, size, outfile, false);
+    }
+
     fclose(outfile);
     free(y);
     
