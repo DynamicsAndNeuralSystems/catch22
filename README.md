@@ -29,5 +29,5 @@ And Julia users can use [this Julia package](https://github.com/brendanjohnharri
 
 - See language-specific usage information in the [wiki](https://github.com/chlubba/catch22/wiki/Installation-and-Testing).
 - __Important Note:__ _catch22_ features only evaluate _dynamical_ properties of time series and do not respond to basic differences in the location (e.g., mean) or spread (e.g., variance).
-  - If you think features of the raw distribution may be important for your application, we suggest you add them (in the simplest case, two additional features: the mean and standard deviation) to this feature set.
+  - If you think features of the raw distribution may be important for your application, we suggest you apply the function argument `catch24 = true` (`TRUE` in R, `True` in Python) to your call to the _catch22_ function in the language of your choice.
 - Note that time series are _z_-scored internally which means e.g., constant time series will lead to `NaN` outputs.
