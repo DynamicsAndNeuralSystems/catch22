@@ -200,6 +200,16 @@ static PyObject * DN_HistogramMode_10_wrapper(PyObject * self, PyObject * args)
     return python_wrapper_double(args, &DN_HistogramMode_10, 1);
 }
 
+static PyObject * DN_Mean_wrapper(PyObject * self, PyObject * args)
+{
+    return python_wrapper_double(args, &DN_Mean, 1);
+}
+
+static PyObject * DN_Spread_Std_wrapper(PyObject * self, PyObject * args)
+{
+    return python_wrapper_double(args, &DN_Spread_Std, 1);
+}
+
 static PyObject * CO_f1ecac_wrapper(PyObject * self, PyObject * args)
 {
     return python_wrapper_int(args, &CO_f1ecac, 1);
@@ -308,6 +318,8 @@ static PyObject * FC_LocalSimple_mean3_stderr_wrapper(PyObject * self, PyObject 
 static PyMethodDef catch22Methods[] = {
     { "DN_HistogramMode_5", DN_HistogramMode_5_wrapper, METH_VARARGS, "bla" },
     { "DN_HistogramMode_10", DN_HistogramMode_10_wrapper, METH_VARARGS, "bla" },
+    { "DN_Mean", DN_Mean_wrapper, METH_VARARGS, "bla" },
+    { "DN_Spread_Std", DN_Spread_Std_wrapper, METH_VARARGS, "bla" },
     { "CO_f1ecac", CO_f1ecac_wrapper, METH_VARARGS, "bla" },
     { "CO_FirstMin_ac", CO_FirstMin_ac_wrapper, METH_VARARGS, "bla" },
     { "CO_HistogramAMI_even_2_5", CO_HistogramAMI_even_2_5_wrapper, METH_VARARGS, "bla" },
