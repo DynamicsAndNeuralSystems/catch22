@@ -4,6 +4,8 @@
 #include "../C/CO_AutoCorr.h"
 #include "../C/DN_HistogramMode_10.h"
 #include "../C/DN_HistogramMode_5.h"
+#include "../C/DN_Mean.h"
+#include "../C/DN_Spread_Std.h"
 #include "../C/DN_OutlierInclude.h"
 #include "../C/FC_LocalSimple.h"
 #include "../C/IN_AutoMutualInfoStats.h"
