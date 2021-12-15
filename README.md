@@ -10,11 +10,15 @@ The _catch22_ features are a high-performing subset of the over 7000 features in
 Features were selected based on their classification performance across a collection of 93 real-world time-series classification problems, as described in our open-access paper:
 - [&#x1F4D7; Lubba et al. (2019). _catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
 
+_But what do the features do?_
+You can learn more about what each feature does, with visualizations of how it behaves on real data, [here](https://feature-based-time-series-analys.gitbook.io/catch22-features/).
+
 The computational pipeline used to generate the _catch22_ feature set is in the [`op_importance`](https://github.com/chlubba/op_importance) repository.
 
 For _catch22_-related information and resources, including a list of publications using _catch22_, see the [___catch22_ wiki__](https://github.com/chlubba/catch22/wiki).
 
 Summary of the performance of the _catch22_ feature set across 93 classification problems, and a comparison to the [_hctsa_ feature set](https://github.com/benfulcher/hctsa) (cf. Fig. 4 from [our paper](https://doi.org/10.1007/s10618-019-00647-x)):
+
 ![](img/PerformanceComparisonFig4.png)
 
 ## Installation: Python, R, Matlab, Julia, and compiled C
