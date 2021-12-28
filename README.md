@@ -11,7 +11,7 @@ Features were selected based on their classification performance across a collec
 - [&#x1F4D7; Lubba et al. (2019). _catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
 
 _But what do the features do?_
-You can learn more about what each feature does, with visualizations of how it behaves on real data, [here](https://feature-based-time-series-analys.gitbook.io/catch22-features/).
+You can learn more about what each feature does, with visualizations of how the features behave on real data, [here](https://feature-based-time-series-analys.gitbook.io/catch22-features/).
 
 The computational pipeline used to generate the _catch22_ feature set is in the [`op_importance`](https://github.com/chlubba/op_importance) repository.
 
