@@ -2,6 +2,7 @@
 #include "main.h"
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 //#include <dirent.h>
 
 #include "DN_HistogramMode_5.h"
@@ -213,6 +214,22 @@ void print_help(char *argv[], char msg[])
     exit(1);
 }
 
+// memory leak check; use with valgrind.
+#if 0
+int main(int argc, char * argv[])
+{
+    double * y = malloc(1000 * sizeof(double));
+
+    srand(42);
+    for (int i = 0; i < 1000; ++i) {
+        y[i] = rand() % RAND_MAX;
+    }
+    run_features(y, 1000, stdout);
+    free(y);
+}
+#endif
+
+#if 1
 int main(int argc, char * argv[])
 {
     FILE * infile, * outfile;
@@ -271,8 +288,10 @@ int main(int argc, char * argv[])
     
     return 0;
 }
+#endif
 
-int main2(int argc, char * argv[])
+#if 0
+int main(int argc, char * argv[])
 {
   (void)argc;
   (void)argv;
@@ -355,3 +374,4 @@ int main2(int argc, char * argv[])
     
   return 0;
 }
+#endif
