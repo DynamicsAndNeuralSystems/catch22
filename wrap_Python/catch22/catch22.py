@@ -28,7 +28,8 @@ def catch22_all(data, catch24 = False):
 	]
 			
 	if catch24 is True:
-    	features.append(['DN_Mean', 'DN_Spread_Std'])
+        features.append('DN_Mean')
+    	features.append('DN_Spread_Std')
 		
 	data = list(data)
 	featureOut = []
