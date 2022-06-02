@@ -176,7 +176,7 @@ int co_firstzero(const double y[], const int size, const int maxtau)
     
 }
 
-int CO_f1ecac(const double y[], const int size)
+double CO_f1ecac(const double y[], const int size)
 {
     
     // NaN check
@@ -190,17 +190,19 @@ int CO_f1ecac(const double y[], const int size)
     
     // compute autocorrelations
     double * autocorrs = co_autocorrs(y, size);
-    
+
     // threshold to cross
     double thresh = 1.0/exp(1);
     
-    int out = size;
-    for(int i = 0; i < size-1; i++){
-        
-        // printf("autocorrs_i: %1.3f autocorrs_i+1: %1.3f\n", autocorrs[i], autocorrs[i+1]);
-        
-        if ((autocorrs[i] - thresh)*(autocorrs[i+1] - thresh) < 0){
-            out = i + 1;
+    double out = (double)size;
+    for(int i = 1; i < size-1; i++){
+        // printf("i=%d autocorrs_i=%1.3f\n", i, autocorrs[i]);
+        if ( autocorrs[i] < thresh ){
+            double m = autocorrs[i] - autocorrs[i-1];
+            double dy = thresh - autocorrs[i-1];
+            double dx = dy/m;
+            out = ((double)i) + dx;
+            // printf("thresh=%1.3f AC(i)=%1.3f AC(i-1)=%1.3f m=%1.3f dy=%1.3f dx=%1.3f out=%1.3f\n", thresh, autocorrs[i], autocorrs[i-1], m, dy, dx, out);
             free(autocorrs);
             return out;
         }

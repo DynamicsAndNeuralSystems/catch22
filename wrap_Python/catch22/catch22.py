@@ -1,7 +1,7 @@
 import catch22_C
 
 def catch22_all(data, catch24 = False):
-
+    	
 	features = [
 	'DN_HistogramMode_5',
 	'DN_HistogramMode_10',
@@ -26,16 +26,14 @@ def catch22_all(data, catch24 = False):
 	'SP_Summaries_welch_rect_centroid',
 	'FC_LocalSimple_mean3_stderr'
 	]
-
-	if catch24 == True:
-	   features.append('DN_Mean')
-	   features.append('DN_Spread_Std')
-
+			
+	if catch24 is True:
+    	features.append(['DN_Mean', 'DN_Spread_Std'])
+		
 	data = list(data)
-
 	featureOut = []
 	for f in features:
-		featureFun = getattr(catch22_C, f)
+    	featureFun = getattr(catch22_C, f)
 		featureOut.append(featureFun(data))
-
+					
 	return {'names': features, 'values': featureOut}

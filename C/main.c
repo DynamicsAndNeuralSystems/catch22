@@ -2,6 +2,7 @@
 #include "main.h"
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 //#include <dirent.h>
 
@@ -67,6 +68,18 @@ void run_features(double y[], int size, FILE * outfile, bool catch24)
     
     // z-score first for all.
     zscore_norm2(y, size, y_zscored);
+
+    // GOOD
+    begin = clock();
+    result = DN_OutlierInclude_n_001_mdrmd(y_zscored, size);
+    timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
+    fprintf(outfile, "%.14f, %s, %f\n", result, "DN_OutlierInclude_n_001_mdrmd", timeTaken);
+
+    // GOOD
+    begin = clock();
+    result = DN_OutlierInclude_p_001_mdrmd(y_zscored, size);
+    timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
+    fprintf(outfile, "%.14f, %s, %f\n", result, "DN_OutlierInclude_p_001_mdrmd", timeTaken);
     
     // GOOD
     begin = clock();
@@ -109,18 +122,6 @@ void run_features(double y[], int size, FILE * outfile, bool catch24)
     result = CO_trev_1_num(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "CO_trev_1_num", timeTaken);
-    
-    // GOOD
-    begin = clock();
-    result = DN_OutlierInclude_p_001_mdrmd(y_zscored, size);
-    timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
-    fprintf(outfile, "%.14f, %s, %f\n", result, "DN_OutlierInclude_p_001_mdrmd", timeTaken);
-    
-    // GOOD
-    begin = clock();
-    result = DN_OutlierInclude_n_001_mdrmd(y_zscored, size);
-    timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
-    fprintf(outfile, "%.14f, %s, %f\n", result, "DN_OutlierInclude_n_001_mdrmd", timeTaken);
     
     //GOOD
     begin = clock();
@@ -204,13 +205,13 @@ void run_features(double y[], int size, FILE * outfile, bool catch24)
         
         // GOOD
         begin = clock();
-        result = DN_Mean(y_zscored, size);
+        result = DN_Mean(y, size);
         timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
         fprintf(outfile, "%.14f, %s, %f\n", result, "DN_Mean", timeTaken);
 
         // GOOD
         begin = clock();
-        result = DN_Spread_Std(y_zscored, size);
+        result = DN_Spread_Std(y, size);
         timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
         fprintf(outfile, "%.14f, %s, %f\n", result, "DN_Spread_Std", timeTaken);
     } else {
@@ -233,6 +234,22 @@ void print_help(char *argv[], char msg[])
     exit(1);
 }
 
+// memory leak check; use with valgrind.
+#if 0
+int main(int argc, char * argv[])
+{
+    double * y = malloc(1000 * sizeof(double));
+
+    srand(42);
+    for (int i = 0; i < 1000; ++i) {
+        y[i] = rand() % RAND_MAX;
+    }
+    run_features(y, 1000, stdout);
+    free(y);
+}
+#endif
+
+#if 1
 int main(int argc, char * argv[])
 {
     FILE * infile, * outfile;
@@ -303,8 +320,10 @@ int main(int argc, char * argv[])
     
     return 0;
 }
+#endif
 
-int main2(int argc, char * argv[])
+#if 0
+int main(int argc, char * argv[])
 {
   (void)argc;
   (void)argv;
@@ -339,10 +358,10 @@ int main2(int argc, char * argv[])
     
     double result;
     
-    result = DN_OutlierInclude_p_001_mdrmd(y, size);
-    printf("DN_OutlierInclude_p_001_mdrmd: %1.5f\n", result);
     result = DN_OutlierInclude_n_001_mdrmd(y, size);
     printf("DN_OutlierInclude_n_001_mdrmd: %1.5f\n", result);
+    result = DN_OutlierInclude_p_001_mdrmd(y, size);
+    printf("DN_OutlierInclude_p_001_mdrmd: %1.5f\n", result);
     result = DN_HistogramMode_5(y, size);
     printf("DN_HistogramMode_5: %1.3f\n", result);
     result = DN_HistogramMode_10(y, size);
@@ -383,6 +402,19 @@ int main2(int argc, char * argv[])
     printf("SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1: %1.5f\n", result);
     result = CO_trev_1_num(y, size);
     printf("CO_trev_1_num: %1.5f\n", result);
+
+    int catch24;
+    printf("Do you want to run catch24? Enter 0 for catch22 or 1 for catch24.");
+    scanf("%d", &catch24);
+
+    if (catch24 == 1) {
+        result = DN_Mean(y, size);
+        printf("DN_Mean: %1.5f\n", result);
+        result = DN_Spread_Std(y, size);
+        printf("DN_Spread_Std: %1.5f\n", result);
+    } else {
+    }
     
   return 0;
 }
+#endif
