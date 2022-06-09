@@ -42,7 +42,7 @@ fi
 
 if [ -z "$catch24" ]
 then
-   catch24=0
+   catch24=1
 fi
 
 indir=$(basename "$indir")
@@ -59,9 +59,9 @@ do
     then
         yes $catch24 | "${srcdir}/run_features" $entry $fullfile
 
-        if [ -s $fullfile ]
+        if [ -s $fullfile ] # Remove file if catch22 errors
         then
-            echo $fullfile
+            echo ": ${fullfile}"
         else
             rm $fullfile
         fi
