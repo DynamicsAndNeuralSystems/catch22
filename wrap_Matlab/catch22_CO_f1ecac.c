@@ -30,14 +30,14 @@
 #include "splinefit.h"
 #include "stats.h"
 
-void mexFunction( int nlhs, mxArray *plhs[], 
+void mexFunction( int nlhs, mxArray *plhs[],
       int nrhs, const mxArray*prhs[] )
-     
-{ 
-    
+
+{
+
     // check inputs and call feature C-function
-M_wrapper_int( nlhs, plhs, nrhs, prhs, &CO_f1ecac, 1);
-    
+M_wrapper_double( nlhs, plhs, nrhs, prhs, &CO_f1ecac, 1);
+
     return;
-    
+
 }

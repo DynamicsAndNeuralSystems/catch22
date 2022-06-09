@@ -32,6 +32,7 @@ And Julia users can use [this Julia package](https://github.com/brendanjohnharri
 ## Usage
 
 - See language-specific usage information in the [wiki](https://github.com/chlubba/catch22/wiki/Installation-and-Testing).
+- When presenting results using _catch22_, you must identify the version used to allow clear reproduction of your results. For example, `CO_f1ecac` was altered from an integer-valued output to a linearly interpolated real-valued output from v0.3.
 - __Important Note:__ _catch22_ features only evaluate _dynamical_ properties of time series and do not respond to basic differences in the location (e.g., mean) or spread (e.g., variance).
-  - If you think features of the raw distribution may be important for your application, we suggest you apply the function argument `catch24 = true` (`TRUE` in R, `True` in Python) to your call to the _catch22_ function in the language of your choice.
+  - From _catch22_ v0.3, If the location and spread of the raw time-series distribution may be important for your application, we suggest applying the function argument `catch24 = true` (`TRUE` in R, `True` in Python) to your call to the _catch22_ function in the language of your choice. This will result in 24 features being calculated: the _catch22_ features in addition to mean and standard deviation.
 - Note that time series are _z_-scored internally which means e.g., constant time series will lead to `NaN` outputs.

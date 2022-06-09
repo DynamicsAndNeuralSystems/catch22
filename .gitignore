@@ -1,10 +1,6 @@
-dev
 *.prj
 *.mexmaci64
 *.mat
 *.m~
-empirical_scatter.m
-compare_C_Matlab.m
-testOneTS.m
-test_catch22.m
-wrap_Python_old
+*.mexmaci64
+.DS_Store
