@@ -4,3 +4,6 @@
 *.m~
 *.mexmaci64
 .DS_Store
+.vscode
+*.code-workspace
+*/run_features
