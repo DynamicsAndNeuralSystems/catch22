@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.rmd": "markdown",
+        "dn_outlierinclude.h": "c"
+    }
+}

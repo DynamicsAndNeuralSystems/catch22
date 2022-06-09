@@ -1,5 +1,7 @@
 DN_HistogramMode_5
 DN_HistogramMode_10
+DN_Mean
+DN_Spread_Std
 CO_f1ecac
 CO_FirstMin_ac
 CO_HistogramAMI_even_2_5

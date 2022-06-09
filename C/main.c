@@ -3,10 +3,13 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 //#include <dirent.h>
 
 #include "DN_HistogramMode_5.h"
 #include "DN_HistogramMode_10.h"
+#include "DN_Mean.h"
+#include "DN_Spread_Std.h"
 #include "CO_AutoCorr.h"
 #include "DN_OutlierInclude.h"
 #include "FC_LocalSimple.h"
@@ -45,7 +48,7 @@ int quality_check(const double y[], const int size)
     return 0;
 }
 
-void run_features(double y[], int size, FILE * outfile)
+void run_features(double y[], int size, FILE * outfile, bool catch24)
 {
     int quality = quality_check(y, size);
     if(quality != 0)
@@ -66,6 +69,18 @@ void run_features(double y[], int size, FILE * outfile)
     // z-score first for all.
     zscore_norm2(y, size, y_zscored);
 
+    // GOOD
+    begin = clock();
+    result = DN_OutlierInclude_n_001_mdrmd(y_zscored, size);
+    timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
+    fprintf(outfile, "%.14f, %s, %f\n", result, "DN_OutlierInclude_n_001_mdrmd", timeTaken);
+
+    // GOOD
+    begin = clock();
+    result = DN_OutlierInclude_p_001_mdrmd(y_zscored, size);
+    timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
+    fprintf(outfile, "%.14f, %s, %f\n", result, "DN_OutlierInclude_p_001_mdrmd", timeTaken);
+  
     // GOOD
     begin = clock();
     result = DN_HistogramMode_5(y_zscored, size);
@@ -107,18 +122,6 @@ void run_features(double y[], int size, FILE * outfile)
     result = CO_trev_1_num(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "CO_trev_1_num", timeTaken);
-
-    // GOOD
-    begin = clock();
-    result = DN_OutlierInclude_p_001_mdrmd(y_zscored, size);
-    timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
-    fprintf(outfile, "%.14f, %s, %f\n", result, "DN_OutlierInclude_p_001_mdrmd", timeTaken);
-
-    // GOOD
-    begin = clock();
-    result = DN_OutlierInclude_n_001_mdrmd(y_zscored, size);
-    timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
-    fprintf(outfile, "%.14f, %s, %f\n", result, "DN_OutlierInclude_n_001_mdrmd", timeTaken);
 
     //GOOD
     begin = clock();
@@ -198,6 +201,23 @@ void run_features(double y[], int size, FILE * outfile)
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "PD_PeriodicityWang_th0_01", timeTaken);
 
+    if (catch24) {
+        
+        // GOOD
+        begin = clock();
+        result = DN_Mean(y, size);
+        timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
+        fprintf(outfile, "%.14f, %s, %f\n", result, "DN_Mean", timeTaken);
+
+        // GOOD
+        begin = clock();
+        result = DN_Spread_Std(y, size);
+        timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
+        fprintf(outfile, "%.14f, %s, %f\n", result, "DN_Spread_Std", timeTaken);
+    } else {
+
+    }
+  
     fprintf(outfile, "\n");
 
     free(y_zscored);
@@ -282,7 +302,19 @@ int main(int argc, char * argv[])
     fclose(infile);
     y = realloc(y, size * sizeof *y);
     //printf("size=%i\n", size);
-    run_features(y, size, outfile);
+
+    // catch24 specification
+
+    int catch24;
+    printf("Do you want to run catch24? Enter 0 for catch22 or 1 for catch24.");
+    scanf("%d", &catch24);
+
+    if (catch24 == 1) {
+        run_features(y, size, outfile, true);
+    } else {
+        run_features(y, size, outfile, false);
+    }
+
     fclose(outfile);
     free(y);
 
@@ -325,52 +357,63 @@ int main(int argc, char * argv[])
     zscore_norm(y, size);
 
     double result;
-
+  
+    result = DN_OutlierInclude_n_001_mdrmd(y, size);
+    printf("DN_OutlierInclude_n_001_mdrmd: %1.5f\n", result);
+    result = DN_OutlierInclude_p_001_mdrmd(y, size);
+    printf("DN_OutlierInclude_p_001_mdrmd: %1.5f\n", result);
     result = DN_HistogramMode_5(y, size);
     printf("DN_HistogramMode_5: %1.3f\n", result);
     result = DN_HistogramMode_10(y, size);
     printf("DN_HistogramMode_10: %1.3f\n", result);
-    result = CO_Embed2_Dist_tau_d_expfit_meandiff(y, size);
-    printf("CO_Embed2_Dist_tau_d_expfit_meandiff: %1.3f\n", result);
-    result = CO_f1ecac(y, size);
-    printf("CO_f1ecac: %1.f\n", result);
-    result = CO_FirstMin_ac(y, size);
-    printf("CO_FirstMin_ac: %1.f\n", result);
-    result = CO_HistogramAMI_even_2_5(y, size);
-    printf("CO_HistogramAMI_even_2_5: %1.3f\n", result);
-    result = CO_trev_1_num(y, size);
-    printf("CO_trev_1_num: %1.5f\n", result);
-    result = DN_OutlierInclude_p_001_mdrmd(y, size);
-    printf("DN_OutlierInclude_p_001_mdrmd: %1.5f\n", result);
-    result = DN_OutlierInclude_n_001_mdrmd(y, size);
-    printf("DN_OutlierInclude_n_001_mdrmd: %1.5f\n", result);
-    result = FC_LocalSimple_mean1_tauresrat(y, size);
-    printf("FC_LocalSimple_mean1_tauresrat: %1.5f\n", result);
-    result = FC_LocalSimple_mean3_stderr(y, size);
-    printf("FC_LocalSimple_mean3_stderr: %1.5f\n", result);
-    result = IN_AutoMutualInfoStats_40_gaussian_fmmi(y, size);
-    printf("IN_AutoMutualInfoStats_40_gaussian_fmmi: %1.5f\n", result);
-    result = MD_hrv_classic_pnn40(y, size);
-    printf("MD_hrv_classic_pnn40: %1.5f\n", result);
-    result = SB_BinaryStats_diff_longstretch0(y, size);
-    printf("SB_BinaryStats_diff_longstretch0: %1.5f\n", result);
-    result = SB_BinaryStats_mean_longstretch1(y, size);
-    printf("SB_BinaryStats_mean_longstretch1: %1.5f\n", result);
-    result = SB_MotifThree_quantile_hh(y, size);
-    printf("SB_MotifThree_quantile_hh: %1.5f\n", result);
-    result = SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1(y, size);
-    printf("SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1: %1.5f\n", result);
     result = SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1(y, size);
     printf("SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1: %1.5f\n", result);
+    result = SB_TransitionMatrix_3ac_sumdiagcov(y, size);
+    printf("SB_TransitionMatrix_3ac_sumdiagcov: %1.5f\n", result);
+    result = FC_LocalSimple_mean1_tauresrat(y, size);
+    printf("FC_LocalSimple_mean1_tauresrat: %1.5f\n", result);
+    result = SB_MotifThree_quantile_hh(y, size);
+    printf("SB_MotifThree_quantile_hh: %1.5f\n", result);
+    result = CO_HistogramAMI_even_2_5(y, size);
+    printf("CO_HistogramAMI_even_2_5: %1.3f\n", result);
+    result = CO_Embed2_Dist_tau_d_expfit_meandiff(y, size);
+    printf("CO_Embed2_Dist_tau_d_expfit_meandiff: %1.3f\n", result);
+    result = SB_BinaryStats_diff_longstretch0(y, size);
+    printf("SB_BinaryStats_diff_longstretch0: %1.5f\n", result);
+    result = MD_hrv_classic_pnn40(y, size);
+    printf("MD_hrv_classic_pnn40: %1.5f\n", result);
+    result = SB_BinaryStats_mean_longstretch1(y, size);
+    printf("SB_BinaryStats_mean_longstretch1: %1.5f\n", result);
+    result = FC_LocalSimple_mean3_stderr(y, size);
+    printf("FC_LocalSimple_mean3_stderr: %1.5f\n", result);
     result = SP_Summaries_welch_rect_area_5_1(y, size);
     printf("SP_Summaries_welch_rect_area_5_1: %1.5f\n", result);
     result = SP_Summaries_welch_rect_centroid(y, size);
     printf("SP_Summaries_welch_rect_centroid: %1.5f\n", result);
-    result = SB_TransitionMatrix_3ac_sumdiagcov(y, size);
-    printf("SB_TransitionMatrix_3ac_sumdiagcov: %1.5f\n", result);
+    result = CO_f1ecac(y, size);
+    printf("CO_f1ecac: %1.f\n", result);
+    result = CO_FirstMin_ac(y, size);
+    printf("CO_FirstMin_ac: %1.f\n", result);
+    result = IN_AutoMutualInfoStats_40_gaussian_fmmi(y, size);
+    printf("IN_AutoMutualInfoStats_40_gaussian_fmmi: %1.5f\n", result);
     result = PD_PeriodicityWang_th0_01(y, size);
     printf("PD_PeriodicityWang_th0_01: %1.f\n", result);
+    result = SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1(y, size);
+    printf("SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1: %1.5f\n", result);
+    result = CO_trev_1_num(y, size);
+    printf("CO_trev_1_num: %1.5f\n", result);
 
+    int catch24;
+    printf("Do you want to run catch24? Enter 0 for catch22 or 1 for catch24.");
+    scanf("%d", &catch24);
+
+    if (catch24 == 1) {
+        result = DN_Mean(y, size);
+        printf("DN_Mean: %1.5f\n", result);
+        result = DN_Spread_Std(y, size);
+        printf("DN_Spread_Std: %1.5f\n", result);
+    } else {
+    }
 
   return 0;
 }

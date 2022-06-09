@@ -29,7 +29,7 @@ extern double CO_Embed2_Basic_tau_incircle(const double y[], const int size, con
 extern double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size);
 extern int CO_FirstMin_ac(const double y[], const int size);
 extern double CO_trev_1_num(const double y[], const int size);
-extern int CO_f1ecac(const double y[], const int size);
+extern double CO_f1ecac(const double y[], const int size);
 extern double CO_HistogramAMI_even_2_5(const double y[], const int size);
 
 #endif
