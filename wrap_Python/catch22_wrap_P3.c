@@ -202,12 +202,12 @@ static PyObject * DN_HistogramMode_10_wrapper(PyObject * self, PyObject * args)
 
 static PyObject * DN_Mean_wrapper(PyObject * self, PyObject * args)
 {
-    return python_wrapper_double(args, &DN_Mean, 1);
+    return python_wrapper_double(args, &DN_Mean, 0);
 }
 
 static PyObject * DN_Spread_Std_wrapper(PyObject * self, PyObject * args)
 {
-    return python_wrapper_double(args, &DN_Spread_Std, 1);
+    return python_wrapper_double(args, &DN_Spread_Std, 0);
 }
 
 static PyObject * CO_f1ecac_wrapper(PyObject * self, PyObject * args)
