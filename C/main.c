@@ -28,7 +28,7 @@
 int quality_check(const double y[], const int size)
 {
     int minSize = 40;
-    
+
     if(size < minSize)
     {
         return 1;
@@ -56,16 +56,16 @@ void run_features(double y[], int size, FILE * outfile, bool catch24)
         fprintf(stdout, "Time series quality test not passed (code %i).\n", quality);
         return;
     }
-    
+
     double * y_zscored = malloc(size * sizeof * y_zscored);
-    
+
     // variables to keep time
     clock_t begin;
     double timeTaken;
-    
+
     // output
     double result;
-    
+
     // z-score first for all.
     zscore_norm2(y, size, y_zscored);
 
@@ -80,121 +80,121 @@ void run_features(double y[], int size, FILE * outfile, bool catch24)
     result = DN_OutlierInclude_p_001_mdrmd(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "DN_OutlierInclude_p_001_mdrmd", timeTaken);
-    
+  
     // GOOD
     begin = clock();
     result = DN_HistogramMode_5(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "DN_HistogramMode_5", timeTaken);
-    
+
     // GOOD
     begin = clock();
     result = DN_HistogramMode_10(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "DN_HistogramMode_10", timeTaken);
-    
+
     //GOOD
     begin = clock();
     result = CO_Embed2_Dist_tau_d_expfit_meandiff(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "CO_Embed2_Dist_tau_d_expfit_meandiff", timeTaken);
-    
+
     //GOOD (memory leak?)
     begin = clock();
     result = CO_f1ecac(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "CO_f1ecac", timeTaken);
-    
+
     //GOOD
     begin = clock();
     result = CO_FirstMin_ac(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "CO_FirstMin_ac", timeTaken);
-    
+
     // GOOD (memory leak?)
     begin = clock();
     result = CO_HistogramAMI_even_2_5(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "CO_HistogramAMI_even_2_5", timeTaken);
-    
+
     // GOOD
     begin = clock();
     result = CO_trev_1_num(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "CO_trev_1_num", timeTaken);
-    
+
     //GOOD
     begin = clock();
     result = FC_LocalSimple_mean1_tauresrat(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "FC_LocalSimple_mean1_tauresrat", timeTaken);
-    
+
     //GOOD
     begin = clock();
     result = FC_LocalSimple_mean3_stderr(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "FC_LocalSimple_mean3_stderr", timeTaken);
-    
+
     //GOOD (memory leak?)
     begin = clock();
     result = IN_AutoMutualInfoStats_40_gaussian_fmmi(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "IN_AutoMutualInfoStats_40_gaussian_fmmi", timeTaken);
-    
+
     //GOOD
     begin = clock();
     result = MD_hrv_classic_pnn40(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "MD_hrv_classic_pnn40", timeTaken);
-    
+
     //GOOD
     begin = clock();
     result = SB_BinaryStats_diff_longstretch0(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "SB_BinaryStats_diff_longstretch0", timeTaken);
-    
+
     //GOOD
     begin = clock();
     result = SB_BinaryStats_mean_longstretch1(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "SB_BinaryStats_mean_longstretch1", timeTaken);
-    
+
     //GOOD (memory leak?)
     begin = clock();
     result = SB_MotifThree_quantile_hh(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "SB_MotifThree_quantile_hh", timeTaken);
-    
+
     //GOOD (memory leak?)
     begin = clock();
     result = SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1", timeTaken);
-    
+
     //GOOD
     begin = clock();
     result = SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1", timeTaken);
-    
+
     //GOOD
     begin = clock();
     result = SP_Summaries_welch_rect_area_5_1(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "SP_Summaries_welch_rect_area_5_1", timeTaken);
-    
+
     //GOOD
     begin = clock();
     result = SP_Summaries_welch_rect_centroid(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "SP_Summaries_welch_rect_centroid", timeTaken);
-    
+
     //OK, BUT filt in Butterworth sometimes diverges, now removed alltogether, let's see results.
     begin = clock();
     result = SB_TransitionMatrix_3ac_sumdiagcov(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
     fprintf(outfile, "%.14f, %s, %f\n", result, "SB_TransitionMatrix_3ac_sumdiagcov", timeTaken);
-    
+
     // GOOD
     begin = clock();
     result = PD_PeriodicityWang_th0_01(y_zscored, size);
@@ -217,9 +217,9 @@ void run_features(double y[], int size, FILE * outfile, bool catch24)
     } else {
 
     }
-    
+  
     fprintf(outfile, "\n");
-    
+
     free(y_zscored);
 }
 
@@ -259,8 +259,8 @@ int main(int argc, char * argv[])
     double value;
     // DIR *d;
     struct dirent *dir;
-    
-    
+
+
     switch (argc) {
         case 1:
             print_help(argv, "");
@@ -280,18 +280,18 @@ int main(int argc, char * argv[])
             }
             break;
     }
-    
+
     /*
     // debug: fix these.
     infile = fopen("/Users/carl/PycharmProjects/catch22/C/timeSeries/tsid0244.txt", "r");
     outfile = stdout;
      */
-    
+
     // fprintf(outfile, "%s", HEADER);
     array_size = 50;
     size = 0;
     y = malloc(array_size * sizeof *y);
-    
+
     while (fscanf(infile, "%lf", &value) != EOF) {
         if (size == array_size) {
             y = realloc(y, 2 * array_size * sizeof *y);
@@ -317,7 +317,7 @@ int main(int argc, char * argv[])
 
     fclose(outfile);
     free(y);
-    
+
     return 0;
 }
 #endif
@@ -331,7 +331,7 @@ int main(int argc, char * argv[])
     /*
     // generate some data
     const int size = 31; // 211;
-    
+
     double y[size];
     int i;
     double sinIn=0;
@@ -352,12 +352,12 @@ int main(int argc, char * argv[])
     while (fscanf(infile, "%lf", &value) != EOF) {
         y[size++] = value;
     }
-    
+
     // first, z-score.
     zscore_norm(y, size);
-    
+
     double result;
-    
+  
     result = DN_OutlierInclude_n_001_mdrmd(y, size);
     printf("DN_OutlierInclude_n_001_mdrmd: %1.5f\n", result);
     result = DN_OutlierInclude_p_001_mdrmd(y, size);
@@ -414,7 +414,7 @@ int main(int argc, char * argv[])
         printf("DN_Spread_Std: %1.5f\n", result);
     } else {
     }
-    
+
   return 0;
 }
 #endif
