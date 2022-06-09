@@ -210,7 +210,7 @@ static PyObject * DN_Spread_Std_wrapper(PyObject * self, PyObject * args)
 
 static PyObject * CO_f1ecac_wrapper(PyObject * self, PyObject * args)
 {
-    return python_wrapper_int(args, &CO_f1ecac, 1);
+    return python_wrapper_double(args, &CO_f1ecac, 1);
 }
 
 static PyObject * CO_FirstMin_ac_wrapper(PyObject * self, PyObject * args)
