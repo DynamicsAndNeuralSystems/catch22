@@ -5,9 +5,9 @@ help()
    echo ""
    echo "Usage: $0 -i indir -o outdir -a append_string -s"
    echo -e "\t-h Show this help message"
-   echo -e "\t-i Path to a directory containing input time series files (.txt with one time series value per line). Default: './'"
-   echo -e "\t-o Path to an existing directory in which to save output feature values. Default: './'"
-   echo -e "\t-a A string appended to the input file names to create the output file names. Default: '_output'"
+   echo -e "\t-i Path to a directory containing input time series files (.txt with one time series value per line). Default: './timeSeries'"
+   echo -e "\t-o Path to an existing directory in which to save output feature values. Default: './featureOutput'"
+   echo -e "\t-a A string (minus ext.) appended to the input file names to create the output file names. Default: 'output'"
    echo -e "\t-s Evaluate catch22 (0) or catch24 (1). Default: 0"
    exit 1
 }
@@ -27,26 +27,27 @@ srcdir=$(dirname "$0}")
 
 if [ -z "$indir" ]
 then
-   indir="./"
+   indir="./timeSeries"
 fi
 
 if [ -z "$outdir" ]
 then
-   outdir=$indir
+   outdir="./featureOutput"
 fi
 
 if [ -z "$append" ]
 then
-   append="_output"
+   append="output"
 fi
 
 if [ -z "$catch24" ]
 then
-   catch24=1
+   catch24=0
 fi
 
 indir="$(dirname $indir)/$(basename $indir)"
 outdir="$(dirname $outdir)/$(basename $outdir)"
+mkdir -p $outdir
 
 # Loop through each file in indir and save the feature outputs
 for entry in "${indir}"/*.txt
