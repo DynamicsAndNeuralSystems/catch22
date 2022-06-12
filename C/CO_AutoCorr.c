@@ -195,11 +195,11 @@ double CO_f1ecac(const double y[], const int size)
     double thresh = 1.0/exp(1);
     
     double out = (double)size;
-    for(int i = 1; i < size-1; i++){
+    for(int i = 0; i < size-2; i++){
         // printf("i=%d autocorrs_i=%1.3f\n", i, autocorrs[i]);
-        if ( autocorrs[i] < thresh ){
-            double m = autocorrs[i] - autocorrs[i-1];
-            double dy = thresh - autocorrs[i-1];
+        if ( autocorrs[i+1] < thresh ){
+            double m = autocorrs[i+1] - autocorrs[i];
+            double dy = thresh - autocorrs[i];
             double dx = dy/m;
             out = ((double)i) + dx;
             // printf("thresh=%1.3f AC(i)=%1.3f AC(i-1)=%1.3f m=%1.3f dy=%1.3f dx=%1.3f out=%1.3f\n", thresh, autocorrs[i], autocorrs[i-1], m, dy, dx, out);
