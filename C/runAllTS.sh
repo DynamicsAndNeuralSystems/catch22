@@ -5,10 +5,10 @@ help()
    echo ""
    echo "Usage: $0 -i indir -o outdir -a append_string -s"
    echo -e "\t-h Show this help message"
-   echo -e "\t-i Path to a directory containing input time series files (.txt with one time series value per line). Default: './timeSeries'"
-   echo -e "\t-o Path to an existing directory in which to save output feature values. Default: './featureOutput'"
-   echo -e "\t-a A string (minus ext.) appended to the input file names to create the output file names. Default: 'output'"
-   echo -e "\t-s Evaluate catch22 (0) or catch24 (1). Default: 0"
+   echo -e "\t-i Path to a directory containing input time-series files (.txt with one time series value per line). Default: './timeSeries'"
+   echo -e "\t-o Path to a directory in which to save output feature values. Default: './featureOutput'"
+   echo -e "\t-a A string (minus extension) appended to the input file names to create the output file names. Default: 'output'"
+   echo -e "\t-s A switch to evaluate catch22 (0) or catch24 (1). Default: 0"
    exit 1
 }
 
