@@ -14,9 +14,9 @@ extension_mod = Extension("catch22_C",
 
 setup(
 name="catch22",
-version="0.1.0",
+version="0.3.1",
 author="Carl H Lubba",
-url="https://github.com/chlubba/catch22",
+url="https://github.com/DynamicsAndNeuralSystems/catch22",
 description="CAnonical Time-series Features, see description and license on GitHub.",
 ext_modules=[extension_mod],
 packages=['catch22'],
