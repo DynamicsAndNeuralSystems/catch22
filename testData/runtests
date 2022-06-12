@@ -1,0 +1,3 @@
+#!/bin/bash
+
+../C/runAllTS -i "$(dirname -- $0)"

@@ -4,6 +4,7 @@ help()
 {
    echo ""
    echo "Usage: $0 -i indir -o outdir -a append_string -s"
+   echo -e "\t-h Show this help message"
    echo -e "\t-i Path to a directory containing input time series files (.txt with one time series value per line). Default: './'"
    echo -e "\t-o Path to an existing directory in which to save output feature values. Default: './'"
    echo -e "\t-a A string appended to the input file names to create the output file names. Default: '_output'"
@@ -11,20 +12,19 @@ help()
    exit 1
 }
 
-while getopts "i:o:a:s:" opt
+while getopts "i:o:a:s:h" opt
 do
    case "$opt" in
       i) indir="$OPTARG" ;;
       o) outdir="$OPTARG" ;;
       a) append="$OPTARG" ;;
       s) catch24="$OPTARG" ;;
-      ?) help ;; # Print help in case parameter is non-existent
+      h) help ;;
    esac
 done
 
 srcdir=$(dirname "$0}")
 
-# Print help in case parameters are empty
 if [ -z "$indir" ]
 then
    indir="./"
@@ -45,11 +45,11 @@ then
    catch24=1
 fi
 
-indir=$(basename "$indir")
-outdir=$(basename "$outdir")
+indir="$(dirname $indir)/$(basename $indir)"
+outdir="$(dirname $outdir)/$(basename $outdir)"
 
 # Loop through each file in indir and save the feature outputs
-for entry in "${indir}"/*
+for entry in "${indir}"/*.txt
 do
     filename=$(basename "$entry")
     extension="${filename##*.}"
@@ -57,11 +57,11 @@ do
     fullfile="${outdir}/${filename}${append}.${extension}"
     if [ "${filename: -${#append}}" != "${append}" ]
     then
-        yes $catch24 | "${srcdir}/run_features" $entry $fullfile
+        yes $catch24 | "${srcdir}/run_features" $entry $fullfile > /dev/null
 
         if [ -s $fullfile ] # Remove file if catch22 errors
         then
-            echo ": ${fullfile}"
+            echo "Output written to ${fullfile}"
         else
             rm $fullfile
         fi
