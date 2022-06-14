@@ -24,10 +24,10 @@
 
 #include "stats.h"
 
-// check if data qualifies to be cought22
+// check if data qualifies to be caught22
 int quality_check(const double y[], const int size)
 {
-    int minSize = 40;
+    int minSize = 10;
 
     if(size < minSize)
     {
