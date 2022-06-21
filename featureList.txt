@@ -1,7 +1,5 @@
 DN_HistogramMode_5
 DN_HistogramMode_10
-DN_Mean
-DN_Spread_Std
 CO_f1ecac
 CO_FirstMin_ac
 CO_HistogramAMI_even_2_5
@@ -22,3 +20,5 @@ SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1
 SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1
 SP_Summaries_welch_rect_centroid
 FC_LocalSimple_mean3_stderr
+DN_Mean
+DN_Spread_Std

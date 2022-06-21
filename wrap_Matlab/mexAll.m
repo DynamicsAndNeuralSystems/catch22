@@ -13,18 +13,7 @@ CFileNames = {CFiles.name};
 includeFiles = cellfun(@(x) fullfile(basePath, x), CFileNames, 'UniformOutput', false);
 
 % Get function names
-fid = fopen('../featureList.txt','r');
-i = 1;
-tline = fgetl(fid);
-featureNames{i} = tline;
-while ischar(tline)
-    i = i + 1;
-    tline = fgetl(fid);
-    if ischar(tline)
-        featureNames{i} = tline;
-    end
-end
-fclose(fid);
+featureNames = GetAllFeatureNames(true);
 
 % mex all feature functions separately
 numFeatures = length(featureNames);
