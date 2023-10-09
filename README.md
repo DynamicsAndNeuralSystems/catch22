@@ -8,7 +8,7 @@ _catch22_ is a collection of 22 time-series features coded in C that can be run 
 The _catch22_ features are a high-performing subset of the over 7000 features in [_hctsa_](https://github.com/benfulcher/hctsa).
 
 Features were selected based on their classification performance across a collection of 93 real-world time-series classification problems, as described in our open-access paper:
-- [&#x1F4D7; Lubba et al. (2019). _catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
+- [&#x1F4D7; Lubba et al. (2019). catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
 
 _But what do the features do?_
 You can learn more about what each feature does, with visualizations of how the features behave on real data, [here](https://feature-based-time-series-analys.gitbook.io/catch22-features/).
@@ -30,6 +30,13 @@ There are native versions of this code for other programming languages:
 - [Catch22.jl](https://github.com/brendanjohnharris/Catch22.jl) (Julia) `Pkg.add("Catch22")`
 
 You can also use the C-compiled features directly or in Matlab, following the [detailed installation instructions on the wiki](https://github.com/DynamicsAndNeuralSystems/catch22/wiki/Installation-and-Testing).
+
+## Acknowledgement :+1:
+
+If you use this software, please read and cite this open-access article:
+
+- &#x1F4D7; Lubba et al. [_catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x), _Data Min Knowl Disc_ __33__, 1821 (2019).
+
 
 ## Important Notes
 
