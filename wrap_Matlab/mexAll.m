@@ -24,4 +24,5 @@ for i = 1:numFeatures
     mex(ipath{:}, ['catch22_', featureName,'.c'], 'M_wrapper.c', includeFiles{:})
     fprintf('\n');
 end
+
 fprintf(1,'All done!\n');
