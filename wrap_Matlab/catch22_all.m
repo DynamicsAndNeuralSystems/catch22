@@ -1,4 +1,4 @@
-function [featureValues, featureNames] = catch22_all(data, doCatch24)
+function [featureValues, featureNamesLong, featureNamesShort] = catch22_all(data, doCatch24)
 % catch22_all   Calculate all catch22 (or catch24) features from an input time series
 %
 % ---INPUTS
@@ -18,16 +18,16 @@ end
 %-------------------------------------------------------------------------------
 % Define the features:
 %-------------------------------------------------------------------------------
-featureNames = GetAllFeatureNames(doCatch24);
+[featureNamesLong,featureNamesShort] = GetAllFeatureNames(doCatch24);
 
 %-------------------------------------------------------------------------------
 % Compute all features from their local compiled implementations
 %-------------------------------------------------------------------------------
-numFeatures = length(featureNames);
+numFeatures = length(featureNamesLong);
 featureValues = zeros(numFeatures,1);
 
 for featureInd = 1:numFeatures
-    featureName = featureNames{featureInd};
+    featureName = featureNamesLong{featureInd};
     fh = str2func(['catch22_', featureName]);
     featureValues(featureInd) = fh(data');
 end

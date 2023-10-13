@@ -1,14 +1,14 @@
 %-------------------------------------------------------------------------------
 % Get the function names
-featureNames = GetAllFeatureNames();
-numFeatures = length(featureNames);
+[featureNamesLong,featureNamesShort] = GetAllFeatureNames();
+numFeatures = length(featureNamesLong);
 
 %-------------------------------------------------------------------------------
 % Get the data
 dataFileNames = {'../testData/test.txt', '../testData/test2.txt'};
 numTestFiles = length(dataFileNames);
 
-fprintf(1,'Testing %u compiled features on %u data files\n',numFeatures,numTestFiles);
+fprintf(1,'Testing %u compiled features on %u data files.\n',numFeatures,numTestFiles);
 
 %-------------------------------------------------------------------------------
 % Test all functions on all the data files
@@ -22,13 +22,12 @@ for j = 1:numTestFiles
 
     for featureInd = 1:numFeatures
 
-        featureName = featureNames{featureInd};
+        featureName = featureNamesLong{featureInd};
         fh = str2func(['catch22_', featureName]);
         out = fh(data');
 
-        fprintf("%s: %1.6f\n", featureName, out);
+        fprintf("%s (%s): %1.6f\n", featureNamesShort{featureInd}, featureName, out);
     end
 
     fclose(fileID);
-
 end
