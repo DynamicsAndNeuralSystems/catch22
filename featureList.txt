@@ -1,3 +1,5 @@
+# Full_feature_name_code                        short_feature_name
+# ---------------------------------------------------------------
 DN_HistogramMode_5                              mode_5
 DN_HistogramMode_10                             mode_10
 DN_OutlierInclude_p_001_mdrmd                   outlier_timing_pos
