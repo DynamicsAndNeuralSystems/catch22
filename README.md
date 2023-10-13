@@ -1,6 +1,6 @@
 # _catch22_ - CAnonical Time-series CHaracteristics
 
-![](img/catch22_logo_square.png)
+<img src="img/catch22_logo_square.png" width="250" height="250"/>
 
 [![DOI](https://zenodo.org/badge/146194807.svg)](https://zenodo.org/badge/latestdoi/146194807)
 
