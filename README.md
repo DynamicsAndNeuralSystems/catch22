@@ -6,7 +6,7 @@
 
 ## About
 
-_catch22_ is a collection of 22 time-series features coded in C that can be run from Python, R, Matlab, and Julia.
+_catch22_ is a collection of 22 time-series features coded in C that can be run from Python, R, Matlab, and Julia, licensed under the [GNU GPL v3 license](http://www.gnu.org/licenses/gpl-3.0.html) (or later).
 The _catch22_ features are a high-performing subset of the over 7000 features in [_hctsa_](https://github.com/benfulcher/hctsa).
 
 Features were selected based on their classification performance across a collection of 93 real-world time-series classification problems, as described in our open-access paper:
