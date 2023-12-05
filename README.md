@@ -13,7 +13,7 @@ The _catch22_ features are a high-performing subset of the over 7000 features in
 
 The features were selected based on their classification performance across a collection of 93 real-world time-series classification problems, as described in our open-access paper:
 
-- [&#x1F4D7; Lubba et al. (2019). catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
+- [&#x1F4D7; Lubba et al. (2019). _catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
 
 _But what do the features do?_
 You can learn more about what each feature does, with visualizations of how the features behave on real data, [here](https://feature-based-time-series-analys.gitbook.io/catch22-features/).
