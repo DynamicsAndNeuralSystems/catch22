@@ -1,15 +1,18 @@
-# _catch22_ - CAnonical Time-series CHaracteristics
+<p align="center"><img src="img/catch22_logo_square.png" alt="catch22 logo" height="220"/></p>
 
-<img src="img/catch22_logo_square.png" width="250" height="250"/>
+<h1 align="center"><em>catch22</em>: CAnonical Time-series CHaracteristics</h1>
 
-[![DOI](https://zenodo.org/badge/146194807.svg)](https://zenodo.org/badge/latestdoi/146194807)
-
-## About
+<p align="center">
+ 	<a href="https://zenodo.org/badge/latestdoi/146194807"><img src="https://zenodo.org/badge/146194807.svg" height="20"/></a>
+    <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" height="20"/></a>
+ 	<a href="https://twitter.com/compTimeSeries"><img src="https://img.shields.io/twitter/url/https/twitter.com/compTimeSeries.svg?style=social&label=Follow%20%40compTimeSeries" height="20"/></a>
+</p>
 
 _catch22_ is a collection of 22 time-series features coded in C that can be run from Python, R, Matlab, and Julia, licensed under the [GNU GPL v3 license](http://www.gnu.org/licenses/gpl-3.0.html) (or later).
 The _catch22_ features are a high-performing subset of the over 7000 features in [_hctsa_](https://github.com/benfulcher/hctsa).
 
-Features were selected based on their classification performance across a collection of 93 real-world time-series classification problems, as described in our open-access paper:
+The features were selected based on their classification performance across a collection of 93 real-world time-series classification problems, as described in our open-access paper:
+
 - [&#x1F4D7; Lubba et al. (2019). catch22_: CAnonical Time-series CHaracteristics](https://doi.org/10.1007/s10618-019-00647-x).
 
 _But what do the features do?_
