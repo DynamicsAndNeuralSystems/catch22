@@ -66,6 +66,8 @@ void poly(cplx x[], int size, cplx out[])
         }
         
     }
+
+    free(outTemp);
     
 }
 
