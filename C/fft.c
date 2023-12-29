@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+#include <pthread.h>
+#include <fftw3.h>
 
 #if __cplusplus
 #   include <complex>
@@ -52,10 +54,30 @@ static void _fft(cplx a[], cplx out[], int size, int step, cplx tw[])
     }
 }
 
-void fft(cplx a[], int size, cplx tw[])
+fftw_plan plans[64] = {};
+
+pthread_mutex_t fft_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+void fft(cplx in[], int size, cplx tw[])
 {
-    cplx * out = malloc(size * sizeof(cplx));
-    memcpy(out, a, size * sizeof(cplx));
-    _fft(a, out, size, 1, tw);
-    free(out);
+    fftw_complex *out;
+    fftw_plan p;
+
+    int log2n = log2(size);
+
+    if (plans[log2n] == NULL) {
+        pthread_mutex_lock(&fft_mutex);
+        plans[log2n] = fftw_plan_dft_1d(size, NULL, NULL, FFTW_FORWARD, FFTW_ESTIMATE);
+        pthread_mutex_unlock(&fft_mutex);
+    }
+
+    out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * size);
+    fftw_execute_dft(plans[log2n], in, out); /* repeat as needed */
+    memcpy(in, out, size * sizeof(cplx));    
+    fftw_free(out);
+
+    // cplx * out = malloc(size * sizeof(cplx));
+    // memcpy(out, a, size * sizeof(cplx));
+    // _fft(a, out, size, 1, tw);
+    // free(out);
 }
