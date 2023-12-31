@@ -3,9 +3,12 @@
 //
 // Based on the work of Jonas Lundgren in his Matlab Central contribution 'SPLINEFIT'.
 //
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
+#include <stdbool.h>
+#include <time.h>
+
 
 #include "splinefit.h"
 #include "stats.h"
@@ -172,16 +175,6 @@ void gauss_elimination(int size, double *A, double *b, double *x){
 void lsqsolve_sub(const int sizeA1, const int sizeA2, const double *A, const int sizeb, const double *b, double *x)
 //void lsqsolve_sub(int sizeA1, int sizeA2, double A[sizeA1][sizeA2], int sizeb, double b[sizeb], double x[sizeA1])
 {
-    // create temp matrix and vector
-    /*
-    double *AT[sizeA1*sizeA2];
-    for (int i = 0; i < sizeA2; i++)
-        AT[i] = (double *)malloc(sizeA1 * sizeof(double));
-    double *ATA[sizeA2];
-    for (int i = 0; i < sizeA2; i++)
-        ATA[i] = (double *)malloc(sizeA2 * sizeof(double));
-    double * ATb = malloc(sizeA1 * sizeof(double));
-     */
     
     double * AT = malloc(sizeA2 * sizeA1 * sizeof(double));
     double * ATA = malloc(sizeA2 * sizeA2 * sizeof(double));
@@ -195,64 +188,12 @@ void lsqsolve_sub(const int sizeA1, const int sizeA2, const double *A, const int
         }
     }
     
-    /*
-    printf("\n b \n");
-    for(int i = 0; i < sizeA1; i++){
-        printf("%i, %1.3f\n", i, b[i]);
-    }
-     */
-    
-    /*
-    printf("\nA\n");
-     for(int i = 0; i < sizeA2; i++){
-         for(int j = 0; j < sizeA1; j++){
-             printf("%1.3f, ", AT[i * sizeA1 + j]);
-         }
-         printf("\n");
-     }
-     */
-     
-    
     matrix_multiply(sizeA2, sizeA1, AT, sizeA1, sizeA2, A, ATA);
-    
-    /*
-    printf("ATA\n");
-    for(int i = 0; i < sizeA2; i++){
-        for(int j = 0; j < sizeA2; j++){
-            printf("%1.3f, ", ATA[i * sizeA2 + j]);
-        }
-        printf("\n");
-    }
-     */
-    
-    
-    
+
     matrix_times_vector(sizeA2, sizeA1, AT, sizeA1, b, ATb);
     
-    /*
-    for(int i = 0; i < sizeA2; i++){
-        ATb[i] = 0;
-        for(int j = 0; j < sizeA1; j++){
-            ATb[i] += AT[i*sizeA1 + j]*b[j];
-            //printf("%i, ATb[%i]=%1.3f, AT[i*sizeA1 + j]=%1.3f, b[j]=%1.3f\n", i, i, ATb[i], AT[i*sizeA1 + j],b[j]);
-        }
-    }
-     */
-    
-    /*
-     for(int i = 0; i < nCoeffs; i++){
-     printf("b[%i] = %1.3f\n", i, b[i]);
-     }
-     */
-    
-    /*
-    for(int i = 0; i < sizeA2; i++){
-        printf("ATb[%i] = %1.3f\n", i, ATb[i]);
-    }
-     */
-    
-    
     gauss_elimination(sizeA2, ATA, ATb, x);
+    
     
     free(AT);
     free(ATA);

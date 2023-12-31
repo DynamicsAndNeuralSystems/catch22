@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "helper_functions.h"
+#include <omp.h>
 
 double min_(const double a[], const int size)
 {
@@ -74,8 +75,7 @@ double isum(const int a[], const int size)
     return m;
 }
 
-double median(const double a[], const int size)
-{
+double median(const double a[], const int size) {
     double m;
     double * b = malloc(size * sizeof *b);
     memcpy(b, a, size * sizeof *b);
@@ -123,7 +123,7 @@ double cov(const double x[], const double y[], const int size){
 double cov_mean(const double x[], const double y[], const int size){
     
     double covariance = 0;
-    
+    #pragma omp simd reduction(+:covariance)
     for(int i = 0; i < size; i++){
         // double xi =x[i];
         // double yi =y[i];

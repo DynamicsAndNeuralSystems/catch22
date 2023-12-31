@@ -8,10 +8,11 @@
 
 #include <stdlib.h>
 #include <math.h>
-
+#include <time.h>
 #include "PD_PeriodicityWang.h"
 #include "splinefit.h"
 #include "stats.h"
+#include <omp.h>
 
 int PD_PeriodicityWang_th0_01(const double * y, const int size){
     
@@ -42,8 +43,11 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
     
     // compute autocorrelations up to 1/3 of the length of the time series
     int acmax = (int)ceil((double)size/3);
-    
+
     double * acf = malloc(acmax*sizeof(double));
+    
+    omp_set_num_threads(8);
+    #pragma omp parallel for
     for(int tau = 1; tau <= acmax; tau++){
         // correlation/ covariance the same, don't care for scaling (cov would be more efficient)
         acf[tau-1] = autocov_lag(ySub, size, tau);
