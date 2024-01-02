@@ -51,10 +51,7 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
     for(int tau = 1; tau <= acmax; tau++){
         // correlation/ covariance the same, don't care for scaling (cov would be more efficient)
         acf[tau-1] = autocov_lag(ySub, size, tau);
-        //printf("acf[%i] = %1.9f\n", tau-1, acf[tau-1]);
     }
-    
-    //printf("ACF computed.\n");
     
     // find troughts and peaks
     double * troughs = malloc(acmax * sizeof(double));
