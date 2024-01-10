@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "helper_functions.h"
+#include "CO_AutoCorr.h"
 #include <omp.h>
 
 double min_(const double a[], const int size)
@@ -123,7 +124,6 @@ double cov(const double x[], const double y[], const int size){
 double cov_mean(const double x[], const double y[], const int size){
     
     double covariance = 0;
-    #pragma omp simd reduction(+:covariance)
     for(int i = 0; i < size; i++){
         // double xi =x[i];
         // double yi =y[i];
@@ -166,6 +166,18 @@ double autocov_lag(const double x[], const int size, const int lag){
     
     return cov_mean(x, &(x[lag]), size-lag);
     
+}
+
+double * autocorr_fft(const double x[], const int size) {
+    double * x_ = calloc(2 * size * sizeof(double), 1);
+    memcpy(x_, x, size * sizeof *x_);
+    double * out = co_autocorrs(x_, size);
+    free(x_);
+    for(int i=0; i<size; i++) {
+        out[i]*=(i);
+        out[i]/=(size+i);
+    }
+    return out;
 }
 
 void zscore_norm(double a[], int size)

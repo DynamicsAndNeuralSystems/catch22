@@ -246,7 +246,7 @@ AVX_CFLAGS =
 AWK = awk
 CC = gcc
 CCDEPMODE = depmode=gcc3
-CFLAGS = -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing
+CFLAGS = -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind
 CHECK_PL_OPTS = 
 CPP = gcc -E
 CPPFLAGS = 
@@ -275,7 +275,7 @@ INSTALL_PROGRAM = ${INSTALL}
 INSTALL_SCRIPT = ${INSTALL}
 INSTALL_STRIP_PROGRAM = $(install_sh) -c -s
 KCVI_CFLAGS = 
-LD = /Library/Developer/CommandLineTools/usr/bin/ld
+LD = /Library/Developer/CommandLineTools/usr/bin/ld-classic
 LDFLAGS = 
 LIBOBJS = 
 LIBQUADMATH = 

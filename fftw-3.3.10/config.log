@@ -30,8 +30,8 @@ Kernel configured for up to 8 processors.
 Processor type: arm64e (ARM64E)
 Processors active: 0 1 2 3 4 5 6 7
 Primary memory available: 16.00 gigabytes
-Default processor set: 661 tasks, 2802 threads, 8 processors
-Load average: 2.25, Mach factor: 5.74
+Default processor set: 658 tasks, 2778 threads, 8 processors
+Load average: 2.42, Mach factor: 5.56
 /bin/machine           = unknown
 /usr/bin/oslevel       = unknown
 /bin/universe          = unknown
@@ -87,28 +87,35 @@ configure:3511: result: arm-apple-darwin23.2.0
 configure:3531: checking host system type
 configure:3544: result: arm-apple-darwin23.2.0
 configure:4178: checking for gcc
-configure:4194: found /usr/bin/gcc
+configure:4194: found /opt/homebrew/bin/gcc
 configure:4205: result: gcc
 configure:4434: checking for C compiler version
 configure:4443: gcc --version >&5
-Apple clang version 15.0.0 (clang-1500.1.0.2.5)
-Target: arm64-apple-darwin23.2.0
-Thread model: posix
-InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+gcc (Homebrew GCC 13.2.0) 13.2.0
+Copyright (C) 2023 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
 configure:4454: $? = 0
 configure:4443: gcc -v >&5
-Apple clang version 15.0.0 (clang-1500.1.0.2.5)
-Target: arm64-apple-darwin23.2.0
+Using built-in specs.
+COLLECT_GCC=gcc
+COLLECT_LTO_WRAPPER=/opt/homebrew/Cellar/gcc/13.2.0/bin/../libexec/gcc/aarch64-apple-darwin23/13/lto-wrapper
+Target: aarch64-apple-darwin23
+Configured with: ../configure --prefix=/opt/homebrew/opt/gcc --libdir=/opt/homebrew/opt/gcc/lib/gcc/current --disable-nls --enable-checking=release --with-gcc-major-version-only --enable-languages=c,c++,objc,obj-c++,fortran --program-suffix=-13 --with-gmp=/opt/homebrew/opt/gmp --with-mpfr=/opt/homebrew/opt/mpfr --with-mpc=/opt/homebrew/opt/libmpc --with-isl=/opt/homebrew/opt/isl --with-zstd=/opt/homebrew/opt/zstd --with-pkgversion='Homebrew GCC 13.2.0' --with-bugurl=https://github.com/Homebrew/homebrew-core/issues --with-system-zlib --build=aarch64-apple-darwin23 --with-sysroot=/Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk --with-ld=/Library/Developer/CommandLineTools/usr/bin/ld-classic
 Thread model: posix
-InstalledDir: /Library/Developer/CommandLineTools/usr/bin
+Supported LTO compression algorithms: zlib zstd
+gcc version 13.2.0 (Homebrew GCC 13.2.0) 
 configure:4454: $? = 0
 configure:4443: gcc -V >&5
-clang: error: argument to '-V' is missing (expected 1 value)
-clang: error: no input files
+gcc: error: unrecognized command-line option '-V'
+gcc: fatal error: no input files
+compilation terminated.
 configure:4454: $? = 1
 configure:4443: gcc -qversion >&5
-clang: error: unknown argument '-qversion'; did you mean '--version'?
-clang: error: no input files
+gcc: error: unrecognized command-line option '-qversion'; did you mean '--version'?
+gcc: fatal error: no input files
+compilation terminated.
 configure:4454: $? = 1
 configure:4474: checking whether the C compiler works
 configure:4496: gcc    conftest.c  >&5
@@ -140,10 +147,6 @@ configure:4765: $? = 0
 configure:4806: result: yes
 configure:4823: checking for gcc option to accept ISO C89
 configure:4886: gcc  -c -g -O2  conftest.c >&5
-conftest.c:18:14: warning: a function definition without a prototype is deprecated in all versions of C and is not supported in C2x [-Wdeprecated-non-prototype]
-static char *e (p, i)
-             ^
-1 warning generated.
 configure:4886: $? = 0
 configure:4899: result: none needed
 configure:4924: checking whether gcc understands -c and -o together
@@ -161,10 +164,11 @@ configure:5043: checking dependency style of gcc
 configure:5154: result: gcc3
 configure:5172: checking for C compiler vendor
 configure:5196: gcc -c -g -O2  conftest.c >&5
-conftest.c:18:7: error: use of undeclared identifier 'thisisanerror'
-      thisisanerror;
-      ^
-1 error generated.
+conftest.c: In function 'main':
+conftest.c:18:7: error: 'thisisanerror' undeclared (first use in this function)
+   18 |       thisisanerror;
+      |       ^~~~~~~~~~~~~
+conftest.c:18:7: note: each undeclared identifier is reported only once for each function it appears in
 configure:5196: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -191,10 +195,11 @@ configure: failed program was:
 |   return 0;
 | }
 configure:5196: gcc -c -g -O2  conftest.c >&5
-conftest.c:18:7: error: use of undeclared identifier 'thisisanerror'
-      thisisanerror;
-      ^
-1 error generated.
+conftest.c: In function 'main':
+conftest.c:18:7: error: 'thisisanerror' undeclared (first use in this function)
+   18 |       thisisanerror;
+      |       ^~~~~~~~~~~~~
+conftest.c:18:7: note: each undeclared identifier is reported only once for each function it appears in
 configure:5196: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -221,10 +226,11 @@ configure: failed program was:
 |   return 0;
 | }
 configure:5196: gcc -c -g -O2  conftest.c >&5
-conftest.c:18:7: error: use of undeclared identifier 'thisisanerror'
-      thisisanerror;
-      ^
-1 error generated.
+conftest.c: In function 'main':
+conftest.c:18:7: error: 'thisisanerror' undeclared (first use in this function)
+   18 |       thisisanerror;
+      |       ^~~~~~~~~~~~~
+conftest.c:18:7: note: each undeclared identifier is reported only once for each function it appears in
 configure:5196: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -251,8 +257,39 @@ configure: failed program was:
 |   return 0;
 | }
 configure:5196: gcc -c -g -O2  conftest.c >&5
+conftest.c: In function 'main':
+conftest.c:18:7: error: 'thisisanerror' undeclared (first use in this function)
+   18 |       thisisanerror;
+      |       ^~~~~~~~~~~~~
+conftest.c:18:7: note: each undeclared identifier is reported only once for each function it appears in
+configure:5196: $? = 1
+configure: failed program was:
+| /* confdefs.h */
+| #define PACKAGE_NAME "fftw"
+| #define PACKAGE_TARNAME "fftw"
+| #define PACKAGE_VERSION "3.3.10"
+| #define PACKAGE_STRING "fftw 3.3.10"
+| #define PACKAGE_BUGREPORT "fftw@fftw.org"
+| #define PACKAGE_URL ""
+| #define PACKAGE "fftw"
+| #define VERSION "3.3.10"
+| #define FFTW_ENABLE_ALLOCA 1
+| /* end confdefs.h.  */
+| 
+| int
+| main ()
+| {
+| 
+| #if !(defined(__clang__))
+|       thisisanerror;
+| #endif
+| 
+|   ;
+|   return 0;
+| }
+configure:5196: gcc -c -g -O2  conftest.c >&5
 configure:5196: $? = 0
-configure:5203: result: clang
+configure:5203: result: gnu
 configure:5210: checking for gcc option to accept ISO C99
 configure:5359: gcc  -c -g -O2  conftest.c >&5
 configure:5359: $? = 0
@@ -274,8 +311,8 @@ configure:6145: result: /usr/bin/grep -E
 configure:6150: checking for fgrep
 configure:6212: result: /usr/bin/grep -F
 configure:6247: checking for ld used by gcc
-configure:6314: result: /Library/Developer/CommandLineTools/usr/bin/ld
-configure:6321: checking if the linker (/Library/Developer/CommandLineTools/usr/bin/ld) is GNU ld
+configure:6314: result: /Library/Developer/CommandLineTools/usr/bin/ld-classic
+configure:6321: checking if the linker (/Library/Developer/CommandLineTools/usr/bin/ld-classic) is GNU ld
 configure:6336: result: no
 configure:6348: checking for BSD- or MS-compatible name lister (nm)
 configure:6402: result: /usr/bin/nm -B
@@ -283,9 +320,12 @@ configure:6532: checking the name lister (/usr/bin/nm -B) interface
 configure:6539: gcc -c -g -O2  conftest.c >&5
 configure:6542: /usr/bin/nm -B "conftest.o"
 configure:6545: output
-0000000000000230 S _some_variable
+0000000000000188 S _some_variable
 0000000000000000 t ltmp0
-0000000000000230 s ltmp1
+0000000000000188 s ltmp1
+00000000000000fc s ltmp2
+0000000000000120 s ltmp3
+000000000000013a s ltmp4
 configure:6552: result: BSD nm
 configure:6556: checking the maximum length of command line arguments
 configure:6687: result: 786432
@@ -293,7 +333,7 @@ configure:6735: checking how to convert arm-apple-darwin23.2.0 file names to arm
 configure:6775: result: func_convert_file_noop
 configure:6782: checking how to convert arm-apple-darwin23.2.0 file names to toolchain format
 configure:6802: result: func_convert_file_noop
-configure:6809: checking for /Library/Developer/CommandLineTools/usr/bin/ld option to reload object files
+configure:6809: checking for /Library/Developer/CommandLineTools/usr/bin/ld-classic option to reload object files
 configure:6816: result: -r
 configure:6890: checking for objdump
 configure:6917: result: objdump
@@ -328,6 +368,7 @@ configure:7921: gcc -c -g -O2  conftest.c >&5
 configure:7924: $? = 0
 configure:7928: /usr/bin/nm -B conftest.o | sed -n -e 's/^.*[	 ]\([ABCDGIRSTW][ABCDGIRSTW]*\)[	 ][	 ]*_\([_A-Za-z][_A-Za-z0-9]*\)$/\1 _\2 \2/p' | sed '/ __gnu_lto/d' > conftest.nm
 configure:7994: gcc -o conftest -g -O2   conftest.c conftstm.o >&5
+warning: (arm64)  could not find object file symbol for symbol _main
 configure:7997: $? = 0
 configure:8035: result: ok
 configure:8082: checking for sysroot
@@ -357,8 +398,7 @@ configure:8993: checking for otool64
 configure:9023: result: no
 configure:9068: checking for -single_module linker flag
 gcc -g -O2  -o libconftest.dylib -dynamiclib -Wl,-single_module conftest.c
-ld: warning: -single_module is obsolete
-configure:9101: result: no
+configure:9101: result: yes
 configure:9104: checking for -exported_symbols_list linker flag
 configure:9124: gcc -o conftest -g -O2   -Wl,-exported_symbols_list,conftest.sym conftest.c  >&5
 configure:9124: $? = 0
@@ -373,10 +413,10 @@ configure:9246: checking how to run the C preprocessor
 configure:9277: gcc -E  conftest.c
 configure:9277: $? = 0
 configure:9291: gcc -E  conftest.c
-conftest.c:12:10: fatal error: 'ac_nonexistent.h' file not found
-#include <ac_nonexistent.h>
-         ^~~~~~~~~~~~~~~~~~
-1 error generated.
+conftest.c:12:10: fatal error: ac_nonexistent.h: No such file or directory
+   12 | #include <ac_nonexistent.h>
+      |          ^~~~~~~~~~~~~~~~~~
+compilation terminated.
 configure:9291: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -395,10 +435,10 @@ configure:9316: result: gcc -E
 configure:9336: gcc -E  conftest.c
 configure:9336: $? = 0
 configure:9350: gcc -E  conftest.c
-conftest.c:12:10: fatal error: 'ac_nonexistent.h' file not found
-#include <ac_nonexistent.h>
-         ^~~~~~~~~~~~~~~~~~
-1 error generated.
+conftest.c:12:10: fatal error: ac_nonexistent.h: No such file or directory
+   12 | #include <ac_nonexistent.h>
+      |          ^~~~~~~~~~~~~~~~~~
+compilation terminated.
 configure:9350: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -465,8 +505,9 @@ configure:9734: checking for objdir
 configure:9749: result: .libs
 configure:10013: checking if gcc supports -fno-rtti -fno-exceptions
 configure:10031: gcc -c -g -O2  -fno-rtti -fno-exceptions conftest.c >&5
+cc1: warning: command-line option '-fno-rtti' is valid for C++/D/ObjC++ but not for C
 configure:10035: $? = 0
-configure:10048: result: yes
+configure:10048: result: no
 configure:10412: checking for gcc option to produce PIC
 configure:10419: result: -fno-common -DPIC
 configure:10427: checking if gcc PIC flag -fno-common -DPIC works
@@ -481,7 +522,7 @@ configure:10559: $? = 0
 configure:10581: result: yes
 configure:10589: checking if gcc supports -c -o file.o
 configure:10636: result: yes
-configure:10669: checking whether the gcc linker (/Library/Developer/CommandLineTools/usr/bin/ld) supports shared libraries
+configure:10669: checking whether the gcc linker (/Library/Developer/CommandLineTools/usr/bin/ld-classic) supports shared libraries
 configure:11932: result: yes
 configure:12172: checking dynamic linker characteristics
 configure:13002: result: darwin23.2.0 dyld
@@ -499,22 +540,71 @@ configure:13854: checking for ranlib
 configure:13881: result: ranlib
 configure:13906: checking for ocamlbuild
 configure:13936: result: no
-configure:14405: checking whether C compiler accepts -mtune=native
-configure:14424: gcc -c -mtune=native  conftest.c >&5
-configure:14424: $? = 0
-configure:14434: result: yes
-configure:14442: checking whether C compiler accepts -fstrict-aliasing
-configure:14461: gcc -c -fstrict-aliasing  conftest.c >&5
-configure:14461: $? = 0
-configure:14471: result: yes
-configure:14814: checking whether C compiler accepts -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing
-configure:14829: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:14487: checking whether C compiler accepts -mtune=native
+configure:14506: gcc -c -mtune=native  conftest.c >&5
+configure:14506: $? = 0
+configure:14516: result: yes
+configure:14526: checking whether C compiler accepts -malign-double
+configure:14545: gcc -c -malign-double  conftest.c >&5
+gcc: error: unrecognized command-line option '-malign-double'
+configure:14545: $? = 1
+configure: failed program was:
+| /* confdefs.h */
+| #define PACKAGE_NAME "fftw"
+| #define PACKAGE_TARNAME "fftw"
+| #define PACKAGE_VERSION "3.3.10"
+| #define PACKAGE_STRING "fftw 3.3.10"
+| #define PACKAGE_BUGREPORT "fftw@fftw.org"
+| #define PACKAGE_URL ""
+| #define PACKAGE "fftw"
+| #define VERSION "3.3.10"
+| #define FFTW_ENABLE_ALLOCA 1
+| #define STDC_HEADERS 1
+| #define HAVE_SYS_TYPES_H 1
+| #define HAVE_SYS_STAT_H 1
+| #define HAVE_STDLIB_H 1
+| #define HAVE_STRING_H 1
+| #define HAVE_MEMORY_H 1
+| #define HAVE_STRINGS_H 1
+| #define HAVE_INTTYPES_H 1
+| #define HAVE_STDINT_H 1
+| #define HAVE_UNISTD_H 1
+| #define HAVE_DLFCN_H 1
+| #define LT_OBJDIR ".libs/"
+| /* end confdefs.h.  */
+| 
+| int
+| main ()
+| {
+| 
+|   ;
+|   return 0;
+| }
+configure:14555: result: no
+configure:14565: checking whether C compiler accepts -fstrict-aliasing
+configure:14584: gcc -c -fstrict-aliasing  conftest.c >&5
+configure:14584: $? = 0
+configure:14594: result: yes
+configure:14611: checking whether C compiler accepts -fno-schedule-insns
+configure:14630: gcc -c -fno-schedule-insns  conftest.c >&5
+configure:14630: $? = 0
+configure:14640: result: yes
+configure:14814: checking whether C compiler accepts -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns
+configure:14829: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns  conftest.c >&5
 configure:14829: $? = 0
 configure:14837: result: yes
+configure:15141: checking whether C compiler accepts -Wa,-q
+configure:15160: gcc -c -Wa,-q  conftest.c >&5
+configure:15160: $? = 0
+configure:15170: result: yes
+configure:15179: checking whether C compiler accepts -Wl,-no_compact_unwind
+configure:15198: gcc -c -Wl,-no_compact_unwind  conftest.c >&5
+configure:15198: $? = 0
+configure:15208: result: yes
 configure:15793: checking for ANSI C header files
 configure:15897: result: yes
 configure:15908: checking fcntl.h usability
-configure:15908: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:15908: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:15908: $? = 0
 configure:15908: result: yes
 configure:15908: checking fcntl.h presence
@@ -524,7 +614,7 @@ configure:15908: result: yes
 configure:15908: checking for fcntl.h
 configure:15908: result: yes
 configure:15908: checking fenv.h usability
-configure:15908: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:15908: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:15908: $? = 0
 configure:15908: result: yes
 configure:15908: checking fenv.h presence
@@ -534,7 +624,7 @@ configure:15908: result: yes
 configure:15908: checking for fenv.h
 configure:15908: result: yes
 configure:15908: checking limits.h usability
-configure:15908: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:15908: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:15908: $? = 0
 configure:15908: result: yes
 configure:15908: checking limits.h presence
@@ -544,11 +634,11 @@ configure:15908: result: yes
 configure:15908: checking for limits.h
 configure:15908: result: yes
 configure:15908: checking malloc.h usability
-configure:15908: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
-conftest.c:61:10: fatal error: 'malloc.h' file not found
-#include <malloc.h>
-         ^~~~~~~~~~
-1 error generated.
+configure:15908: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
+conftest.c:61:10: fatal error: malloc.h: No such file or directory
+   61 | #include <malloc.h>
+      |          ^~~~~~~~~~
+compilation terminated.
 configure:15908: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -615,10 +705,10 @@ configure: failed program was:
 configure:15908: result: no
 configure:15908: checking malloc.h presence
 configure:15908: gcc -E  conftest.c
-conftest.c:28:10: fatal error: 'malloc.h' file not found
-#include <malloc.h>
-         ^~~~~~~~~~
-1 error generated.
+conftest.c:28:10: fatal error: malloc.h: No such file or directory
+   28 | #include <malloc.h>
+      |          ^~~~~~~~~~
+compilation terminated.
 configure:15908: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -653,7 +743,7 @@ configure:15908: result: no
 configure:15908: checking for malloc.h
 configure:15908: result: no
 configure:15908: checking stddef.h usability
-configure:15908: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:15908: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:15908: $? = 0
 configure:15908: result: yes
 configure:15908: checking stddef.h presence
@@ -663,7 +753,7 @@ configure:15908: result: yes
 configure:15908: checking for stddef.h
 configure:15908: result: yes
 configure:15908: checking sys/time.h usability
-configure:15908: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:15908: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:15908: $? = 0
 configure:15908: result: yes
 configure:15908: checking sys/time.h presence
@@ -673,70 +763,11 @@ configure:15908: result: yes
 configure:15908: checking for sys/time.h
 configure:15908: result: yes
 configure:15925: checking altivec.h usability
-configure:15925: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing      conftest.c >&5
-In file included from conftest.c:63:
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:13:2: error: "AltiVec support not enabled"
-#error "AltiVec support not enabled"
- ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:50:19: error: unknown type name 'vector'
-static __inline__ vector signed char __ATTRS_o_ai vec_perm(
-                  ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:51:5: error: unknown type name 'vector'
-    vector signed char __a, vector signed char __b, vector unsigned char __c);
-    ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:51:29: error: unknown type name 'vector'
-    vector signed char __a, vector signed char __b, vector unsigned char __c);
-                            ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:51:53: error: unknown type name 'vector'
-    vector signed char __a, vector signed char __b, vector unsigned char __c);
-                                                    ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:53:19: error: unknown type name 'vector'
-static __inline__ vector unsigned char __ATTRS_o_ai
-                  ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:54:10: error: unknown type name 'vector'
-vec_perm(vector unsigned char __a, vector unsigned char __b,
-         ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:54:36: error: unknown type name 'vector'
-vec_perm(vector unsigned char __a, vector unsigned char __b,
-                                   ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:55:10: error: unknown type name 'vector'
-         vector unsigned char __c);
-         ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:57:19: error: unknown type name 'vector'
-static __inline__ vector bool char __ATTRS_o_ai
-                  ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:57:8: error: 'inline' can only appear on functions
-static __inline__ vector bool char __ATTRS_o_ai
-       ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:57:30: error: expected ';' after top level declarator
-static __inline__ vector bool char __ATTRS_o_ai
-                             ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:58:10: error: unknown type name 'vector'
-vec_perm(vector bool char __a, vector bool char __b, vector unsigned char __c);
-         ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:58:22: error: expected ')'
-vec_perm(vector bool char __a, vector bool char __b, vector unsigned char __c);
-                     ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:58:9: note: to match this '('
-vec_perm(vector bool char __a, vector bool char __b, vector unsigned char __c);
-        ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:60:19: error: unknown type name 'vector'
-static __inline__ vector short __ATTRS_o_ai vec_perm(vector signed short __a,
-                  ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:60:54: error: unknown type name 'vector'
-static __inline__ vector short __ATTRS_o_ai vec_perm(vector signed short __a,
-                                                     ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:61:54: error: unknown type name 'vector'
-                                                     vector signed short __b,
-                                                     ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:62:54: error: unknown type name 'vector'
-                                                     vector unsigned char __c);
-                                                     ^
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:64:19: error: unknown type name 'vector'
-static __inline__ vector unsigned short __ATTRS_o_ai
-                  ^
-fatal error: too many errors emitted, stopping now [-ferror-limit=]
-20 errors generated.
+configure:15925: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind      conftest.c >&5
+conftest.c:63:10: fatal error: altivec.h: No such file or directory
+   63 | #include <altivec.h>
+      |          ^~~~~~~~~~~
+compilation terminated.
 configure:15925: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -805,11 +836,10 @@ configure: failed program was:
 configure:15925: result: no
 configure:15925: checking altivec.h presence
 configure:15925: gcc -E    conftest.c
-In file included from conftest.c:30:
-/Library/Developer/CommandLineTools/usr/lib/clang/15.0.0/include/altivec.h:13:2: error: "AltiVec support not enabled"
-#error "AltiVec support not enabled"
- ^
-1 error generated.
+conftest.c:30:10: fatal error: altivec.h: No such file or directory
+   30 | #include <altivec.h>
+      |          ^~~~~~~~~~~
+compilation terminated.
 configure:15925: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -846,21 +876,21 @@ configure:15925: result: no
 configure:15925: checking for altivec.h
 configure:15925: result: no
 configure:15938: checking for an ANSI C-conforming const
-configure:16004: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:16004: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:16004: $? = 0
 configure:16011: result: yes
 configure:16019: checking for inline
-configure:16035: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:16035: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:16035: $? = 0
 configure:16043: result: inline
 configure:16061: checking for size_t
-configure:16061: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:16061: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:16061: $? = 0
-configure:16061: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
-conftest.c:66:21: error: expected expression
-if (sizeof ((size_t)))
-                    ^
-1 error generated.
+configure:16061: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
+conftest.c: In function 'main':
+conftest.c:66:21: error: expected expression before ')' token
+   66 | if (sizeof ((size_t)))
+      |                     ^
 configure:16061: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -935,25 +965,25 @@ configure: failed program was:
 | }
 configure:16061: result: yes
 configure:16072: checking for uint32_t
-configure:16072: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:16072: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:16072: $? = 0
 configure:16072: result: yes
 configure:16086: checking for uint64_t
-configure:16086: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:16086: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:16086: $? = 0
 configure:16086: result: yes
 configure:16100: checking whether time.h and sys/time.h may both be included
-configure:16120: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:16120: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:16120: $? = 0
 configure:16127: result: yes
 configure:16135: checking for long double
-configure:16135: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:16135: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:16135: $? = 0
-configure:16135: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
-conftest.c:67:26: error: expected expression
-if (sizeof ((long double)))
-                         ^
-1 error generated.
+configure:16135: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
+conftest.c: In function 'main':
+conftest.c:67:26: error: expected expression before ')' token
+   67 | if (sizeof ((long double)))
+      |                          ^
 configure:16135: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -1029,15 +1059,13 @@ configure: failed program was:
 | }
 configure:16135: result: yes
 configure:16148: checking for hrtime_t
-configure:16148: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
-conftest.c:41:13: error: use of undeclared identifier 'hrtime_t'; did you mean 'gmtime_r'?
-if (sizeof (hrtime_t))
-            ^~~~~~~~
-            gmtime_r
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/time.h:127:12: note: 'gmtime_r' declared here
-struct tm *gmtime_r(const time_t * __restrict, struct tm * __restrict);
-           ^
-1 error generated.
+configure:16148: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
+conftest.c: In function 'main':
+conftest.c:41:13: error: 'hrtime_t' undeclared (first use in this function); did you mean 'time_t'?
+   41 | if (sizeof (hrtime_t))
+      |             ^~~~~~~~
+      |             time_t
+conftest.c:41:13: note: each undeclared identifier is reported only once for each function it appears in
 configure:16148: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -1087,61 +1115,61 @@ configure: failed program was:
 | }
 configure:16148: result: no
 configure:16165: checking size of int
-configure:16170: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16170: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16170: $? = 0
 configure:16170: ./conftest
 configure:16170: $? = 0
 configure:16184: result: 4
 configure:16198: checking size of unsigned int
-configure:16203: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16203: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16203: $? = 0
 configure:16203: ./conftest
 configure:16203: $? = 0
 configure:16217: result: 4
 configure:16231: checking size of long
-configure:16236: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16236: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16236: $? = 0
 configure:16236: ./conftest
 configure:16236: $? = 0
 configure:16250: result: 8
 configure:16264: checking size of unsigned long
-configure:16269: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16269: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16269: $? = 0
 configure:16269: ./conftest
 configure:16269: $? = 0
 configure:16283: result: 8
 configure:16297: checking size of long long
-configure:16302: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16302: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16302: $? = 0
 configure:16302: ./conftest
 configure:16302: $? = 0
 configure:16316: result: 8
 configure:16330: checking size of unsigned long long
-configure:16335: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16335: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16335: $? = 0
 configure:16335: ./conftest
 configure:16335: $? = 0
 configure:16349: result: 8
 configure:16363: checking size of size_t
-configure:16368: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16368: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16368: $? = 0
 configure:16368: ./conftest
 configure:16368: $? = 0
 configure:16382: result: 8
 configure:16396: checking size of ptrdiff_t
-configure:16401: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16401: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16401: $? = 0
 configure:16401: ./conftest
 configure:16401: $? = 0
 configure:16415: result: 8
 configure:16426: checking for ptrdiff_t
-configure:16426: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:16426: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:16426: $? = 0
-configure:16426: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
-conftest.c:76:24: error: expected expression
-if (sizeof ((ptrdiff_t)))
-                       ^
-1 error generated.
+configure:16426: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
+conftest.c: In function 'main':
+conftest.c:76:24: error: expected expression before ')' token
+   76 | if (sizeof ((ptrdiff_t)))
+      |                        ^
 configure:16426: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -1226,13 +1254,13 @@ configure: failed program was:
 | }
 configure:16426: result: yes
 configure:16436: checking for uintptr_t
-configure:16436: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:16436: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:16436: $? = 0
-configure:16436: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
-conftest.c:81:24: error: expected expression
-if (sizeof ((uintptr_t)))
-                       ^
-1 error generated.
+configure:16436: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
+conftest.c: In function 'main':
+conftest.c:81:24: error: expected expression before ')' token
+   81 | if (sizeof ((uintptr_t)))
+      |                        ^
 configure:16436: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -1322,56 +1350,54 @@ configure: failed program was:
 | }
 configure:16436: result: yes
 configure:16489: checking size of float
-configure:16494: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16494: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16494: $? = 0
 configure:16494: ./conftest
 configure:16494: $? = 0
 configure:16508: result: 4
 configure:16522: checking size of double
-configure:16527: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16527: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16527: $? = 0
 configure:16527: ./conftest
 configure:16527: $? = 0
 configure:16541: result: 8
 configure:16556: checking size of fftw_r2r_kind
-configure:16561: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16561: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16561: $? = 0
 configure:16561: ./conftest
 configure:16561: $? = 0
 configure:16580: result: 4
 configure:16596: checking for working alloca.h
-configure:16613: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16613: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16613: $? = 0
 configure:16621: result: yes
 configure:16629: checking for alloca
-configure:16666: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
+configure:16666: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16666: $? = 0
 configure:16674: result: yes
 configure:16780: checking for working strtod
-configure:16821: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
-conftest.c:82:8: warning: a function declaration without a prototype is deprecated in all versions of C and is treated as a zero-parameter prototype in C2x, conflicting with a previous declaration [-Wdeprecated-non-prototype]
-double strtod ();
-       ^
-1 warning generated.
+configure:16821: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
 configure:16821: $? = 0
 configure:16821: ./conftest
 configure:16821: $? = 0
 configure:16831: result: yes
 configure:16895: checking for vprintf
-configure:16895: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
-conftest.c:70:6: warning: incompatible redeclaration of library function 'vprintf' [-Wincompatible-library-redeclaration]
-char vprintf ();
-     ^
-conftest.c:70:6: note: 'vprintf' is a builtin with type 'int (const char *, __builtin_va_list)'
-1 warning generated.
+configure:16895: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
+conftest.c:70:6: warning: conflicting types for built-in function 'vprintf'; expected 'int(const char *, char *)' [-Wbuiltin-declaration-mismatch]
+   70 | char vprintf ();
+      |      ^~~~~~~
+conftest.c:58:1: note: 'vprintf' is declared in header '<stdio.h>'
+   57 | # include <limits.h>
+   58 | #else
 configure:16895: $? = 0
 configure:16895: result: yes
 configure:16901: checking for _doprnt
-configure:16901: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c  >&5
-ld: Undefined symbols:
-  __doprnt, referenced from:
-      _main in conftest-f9207d.o
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
+configure:16901: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c  >&5
+Undefined symbols for architecture arm64:
+  "__doprnt", referenced from:
+      _main in ccCtmxYM.o
+ld: symbol(s) not found for architecture arm64
+collect2: error: ld returned 1 exit status
 configure:16901: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -1461,20 +1487,21 @@ configure: failed program was:
 | }
 configure:16901: result: no
 configure:16912: checking for sin in -lm
-configure:16937: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm   >&5
-conftest.c:55:6: warning: incompatible redeclaration of library function 'sin' [-Wincompatible-library-redeclaration]
-char sin ();
-     ^
-conftest.c:55:6: note: 'sin' is a builtin with type 'double (double)'
-1 warning generated.
+configure:16937: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm   >&5
+conftest.c:55:6: warning: conflicting types for built-in function 'sin'; expected 'double(double)' [-Wbuiltin-declaration-mismatch]
+   55 | char sin ();
+      |      ^~~
+conftest.c:1:1: note: 'sin' is declared in header '<math.h>'
+    1 | /* confdefs.h */
 configure:16937: $? = 0
 configure:16946: result: yes
 configure:17051: checking for BSDgettimeofday
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-ld: Undefined symbols:
-  _BSDgettimeofday, referenced from:
-      _main in conftest-fb5fda.o
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+Undefined symbols for architecture arm64:
+  "_BSDgettimeofday", referenced from:
+      _main in ccKmtmUA.o
+ld: symbol(s) not found for architecture arm64
+collect2: error: ld returned 1 exit status
 configure:17051: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -1565,15 +1592,16 @@ configure: failed program was:
 | }
 configure:17051: result: no
 configure:17051: checking for gettimeofday
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for gethrtime
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-ld: Undefined symbols:
-  _gethrtime, referenced from:
-      _main in conftest-f9ca1c.o
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+Undefined symbols for architecture arm64:
+  "_gethrtime", referenced from:
+      _main in ccYerCbw.o
+ld: symbol(s) not found for architecture arm64
+collect2: error: ld returned 1 exit status
 configure:17051: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -1665,11 +1693,12 @@ configure: failed program was:
 | }
 configure:17051: result: no
 configure:17051: checking for read_real_time
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-ld: Undefined symbols:
-  _read_real_time, referenced from:
-      _main in conftest-9aa060.o
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+Undefined symbols for architecture arm64:
+  "_read_real_time", referenced from:
+      _main in ccCoxMzp.o
+ld: symbol(s) not found for architecture arm64
+collect2: error: ld returned 1 exit status
 configure:17051: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -1761,11 +1790,12 @@ configure: failed program was:
 | }
 configure:17051: result: no
 configure:17051: checking for time_base_to_time
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-ld: Undefined symbols:
-  _time_base_to_time, referenced from:
-      _main in conftest-2228e4.o
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+Undefined symbols for architecture arm64:
+  "_time_base_to_time", referenced from:
+      _main in ccEf1UDx.o
+ld: symbol(s) not found for architecture arm64
+collect2: error: ld returned 1 exit status
 configure:17051: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -1857,42 +1887,43 @@ configure: failed program was:
 | }
 configure:17051: result: no
 configure:17051: checking for drand48
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for sqrt
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-conftest.c:74:6: warning: incompatible redeclaration of library function 'sqrt' [-Wincompatible-library-redeclaration]
-char sqrt ();
-     ^
-conftest.c:74:6: note: 'sqrt' is a builtin with type 'double (double)'
-1 warning generated.
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+conftest.c:74:6: warning: conflicting types for built-in function 'sqrt'; expected 'double(double)' [-Wbuiltin-declaration-mismatch]
+   74 | char sqrt ();
+      |      ^~~~
+conftest.c:62:1: note: 'sqrt' is declared in header '<math.h>'
+   61 | # include <limits.h>
+   62 | #else
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for memset
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-conftest.c:75:6: warning: incompatible redeclaration of library function 'memset' [-Wincompatible-library-redeclaration]
-char memset ();
-     ^
-conftest.c:75:6: note: 'memset' is a builtin with type 'void *(void *, int, unsigned long)'
-1 warning generated.
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+conftest.c:75:6: warning: conflicting types for built-in function 'memset'; expected 'void *(void *, int,  long unsigned int)' [-Wbuiltin-declaration-mismatch]
+   75 | char memset ();
+      |      ^~~~~~
+conftest.c:63:1: note: 'memset' is declared in header '<string.h>'
+   62 | # include <limits.h>
+   63 | #else
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for posix_memalign
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+conftest.c:76:6: warning: conflicting types for built-in function 'posix_memalign'; expected 'int(void **, long unsigned int,  long unsigned int)' [-Wbuiltin-declaration-mismatch]
+   76 | char posix_memalign ();
+      |      ^~~~~~~~~~~~~~
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for memalign
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-conftest.c:77:6: warning: incompatible redeclaration of library function 'memalign' [-Wincompatible-library-redeclaration]
-char memalign ();
-     ^
-conftest.c:77:6: note: 'memalign' is a builtin with type 'void *(unsigned long, unsigned long)'
-1 warning generated.
-ld: Undefined symbols:
-  _memalign, referenced from:
-      _main in conftest-967def.o
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+Undefined symbols for architecture arm64:
+  "_memalign", referenced from:
+      _main in ccLp84xf.o
+ld: symbol(s) not found for architecture arm64
+collect2: error: ld returned 1 exit status
 configure:17051: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -1988,11 +2019,12 @@ configure: failed program was:
 | }
 configure:17051: result: no
 configure:17051: checking for _mm_malloc
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-ld: Undefined symbols:
-  __mm_malloc, referenced from:
-      _main in conftest-de545d.o
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+Undefined symbols for architecture arm64:
+  "__mm_malloc", referenced from:
+      _main in ccGzSliH.o
+ld: symbol(s) not found for architecture arm64
+collect2: error: ld returned 1 exit status
 configure:17051: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -2088,11 +2120,12 @@ configure: failed program was:
 | }
 configure:17051: result: no
 configure:17051: checking for _mm_free
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-ld: Undefined symbols:
-  __mm_free, referenced from:
-      _main in conftest-d9105f.o
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+Undefined symbols for architecture arm64:
+  "__mm_free", referenced from:
+      _main in ccFe8aKZ.o
+ld: symbol(s) not found for architecture arm64
+collect2: error: ld returned 1 exit status
 configure:17051: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -2188,91 +2221,97 @@ configure: failed program was:
 | }
 configure:17051: result: no
 configure:17051: checking for clock_gettime
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for mach_absolute_time
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for sysctl
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for abort
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-conftest.c:80:6: warning: incompatible redeclaration of library function 'abort' [-Wincompatible-library-redeclaration]
-char abort ();
-     ^
-conftest.c:80:6: note: 'abort' is a builtin with type 'void (void) __attribute__((noreturn))'
-1 warning generated.
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+conftest.c:80:6: warning: conflicting types for built-in function 'abort'; expected 'void(void)' [-Wbuiltin-declaration-mismatch]
+   80 | char abort ();
+      |      ^~~~~
+conftest.c:68:1: note: 'abort' is declared in header '<stdlib.h>'
+   67 | # include <limits.h>
+   68 | #else
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for sinl
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-conftest.c:81:6: warning: incompatible redeclaration of library function 'sinl' [-Wincompatible-library-redeclaration]
-char sinl ();
-     ^
-conftest.c:81:6: note: 'sinl' is a builtin with type 'long double (long double)'
-1 warning generated.
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+conftest.c:81:6: warning: conflicting types for built-in function 'sinl'; expected 'long double(long double)' [-Wbuiltin-declaration-mismatch]
+   81 | char sinl ();
+      |      ^~~~
+conftest.c:69:1: note: 'sinl' is declared in header '<math.h>'
+   68 | # include <limits.h>
+   69 | #else
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for cosl
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-conftest.c:82:6: warning: incompatible redeclaration of library function 'cosl' [-Wincompatible-library-redeclaration]
-char cosl ();
-     ^
-conftest.c:82:6: note: 'cosl' is a builtin with type 'long double (long double)'
-1 warning generated.
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+conftest.c:82:6: warning: conflicting types for built-in function 'cosl'; expected 'long double(long double)' [-Wbuiltin-declaration-mismatch]
+   82 | char cosl ();
+      |      ^~~~
+conftest.c:70:1: note: 'cosl' is declared in header '<math.h>'
+   69 | # include <limits.h>
+   70 | #else
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for snprintf
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-conftest.c:83:6: warning: incompatible redeclaration of library function 'snprintf' [-Wincompatible-library-redeclaration]
-char snprintf ();
-     ^
-conftest.c:83:6: note: 'snprintf' is a builtin with type 'int (char *, unsigned long, const char *, ...)'
-1 warning generated.
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+conftest.c:83:6: warning: conflicting types for built-in function 'snprintf'; expected 'int(char *, long unsigned int,  const char *, ...)' [-Wbuiltin-declaration-mismatch]
+   83 | char snprintf ();
+      |      ^~~~~~~~
+conftest.c:71:1: note: 'snprintf' is declared in header '<stdio.h>'
+   70 | # include <limits.h>
+   71 | #else
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for memmove
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-conftest.c:84:6: warning: incompatible redeclaration of library function 'memmove' [-Wincompatible-library-redeclaration]
-char memmove ();
-     ^
-conftest.c:84:6: note: 'memmove' is a builtin with type 'void *(void *, const void *, unsigned long)'
-1 warning generated.
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+conftest.c:84:6: warning: conflicting types for built-in function 'memmove'; expected 'void *(void *, const void *, long unsigned int)' [-Wbuiltin-declaration-mismatch]
+   84 | char memmove ();
+      |      ^~~~~~~
+conftest.c:72:1: note: 'memmove' is declared in header '<string.h>'
+   71 | # include <limits.h>
+   72 | #else
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for strchr
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-conftest.c:85:6: warning: incompatible redeclaration of library function 'strchr' [-Wincompatible-library-redeclaration]
-char strchr ();
-     ^
-conftest.c:85:6: note: 'strchr' is a builtin with type 'char *(const char *, int)'
-1 warning generated.
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+conftest.c:85:6: warning: conflicting types for built-in function 'strchr'; expected 'char *(const char *, int)' [-Wbuiltin-declaration-mismatch]
+   85 | char strchr ();
+      |      ^~~~~~
+conftest.c:73:1: note: 'strchr' is declared in header '<string.h>'
+   72 | # include <limits.h>
+   73 | #else
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17051: checking for getpagesize
-configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
+configure:17051: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
 configure:17051: $? = 0
 configure:17051: result: yes
 configure:17060: checking whether sinl is declared
-configure:17060: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:17060: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:17060: $? = 0
 configure:17060: result: yes
 configure:17071: checking whether cosl is declared
-configure:17071: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:17071: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:17071: $? = 0
 configure:17071: result: yes
 configure:17082: checking whether sinq is declared
-configure:17082: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
-conftest.c:75:10: error: use of undeclared identifier 'sinq'; did you mean 'int'?
-  (void) sinq;
-         ^~~~
-         int
-conftest.c:75:10: error: expected expression
-2 errors generated.
+configure:17082: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
+conftest.c: In function 'main':
+conftest.c:75:10: error: 'sinq' undeclared (first use in this function); did you mean 'sinh'?
+   75 |   (void) sinq;
+      |          ^~~~
+      |          sinh
+conftest.c:75:10: note: each undeclared identifier is reported only once for each function it appears in
 configure:17082: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -2358,13 +2397,13 @@ configure: failed program was:
 | }
 configure:17082: result: no
 configure:17093: checking whether cosq is declared
-configure:17093: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
-conftest.c:76:10: error: use of undeclared identifier 'cosq'; did you mean 'const'?
-  (void) cosq;
-         ^~~~
-         const
-conftest.c:76:10: error: expected expression
-2 errors generated.
+configure:17093: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
+conftest.c: In function 'main':
+conftest.c:76:10: error: 'cosq' undeclared (first use in this function); did you mean 'cosh'?
+   76 |   (void) cosq;
+      |          ^~~~
+      |          cosh
+conftest.c:76:10: note: each undeclared identifier is reported only once for each function it appears in
 configure:17093: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -2451,12 +2490,12 @@ configure: failed program was:
 | }
 configure:17093: result: no
 configure:17105: checking whether memalign is declared
-configure:17105: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
-conftest.c:80:10: error: call to undeclared library function 'memalign' with type 'void *(unsigned long, unsigned long)'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-  (void) memalign;
-         ^
-conftest.c:80:10: note: include the header <malloc.h> or explicitly provide a declaration for 'memalign'
-1 error generated.
+configure:17105: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
+conftest.c: In function 'main':
+conftest.c:80:10: error: 'memalign' undeclared (first use in this function)
+   80 |   (void) memalign;
+      |          ^~~~~~~~
+conftest.c:80:10: note: each undeclared identifier is reported only once for each function it appears in
 configure:17105: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -2547,23 +2586,28 @@ configure: failed program was:
 | }
 configure:17105: result: no
 configure:17120: checking whether drand48 is declared
-configure:17120: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:17120: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:17120: $? = 0
 configure:17120: result: yes
 configure:17130: checking whether srand48 is declared
-configure:17130: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:17130: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:17130: $? = 0
 configure:17130: result: yes
 configure:17140: checking whether posix_memalign is declared
-configure:17140: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing  conftest.c >&5
+configure:17140: gcc -c -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind  conftest.c >&5
 configure:17140: $? = 0
 configure:17140: result: yes
 configure:17151: checking for _rtc intrinsic
-configure:17167: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
-conftest.c:78:1: error: call to undeclared function '_rtc'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-_rtc()
-^
-1 error generated.
+configure:17167: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
+conftest.c: In function 'main':
+conftest.c:78:1: warning: implicit declaration of function '_rtc' [-Wimplicit-function-declaration]
+   78 | _rtc()
+      | ^~~~
+Undefined symbols for architecture arm64:
+  "__rtc", referenced from:
+      _main in ccFIanqz.o
+ld: symbol(s) not found for architecture arm64
+collect2: error: ld returned 1 exit status
 configure:17167: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -2649,12 +2693,12 @@ configure: failed program was:
 | }
 configure:17176: result: no
 configure:17196: checking for isnan
-configure:17210: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm  >&5
+configure:17210: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm  >&5
 configure:17210: $? = 0
 configure:17222: result: yes
 configure:17229: checking whether C compiler accepts -mpreferred-stack-boundary=4
 configure:17248: gcc -c -mpreferred-stack-boundary=4  conftest.c >&5
-clang: error: unknown argument: '-mpreferred-stack-boundary=4'
+gcc: error: unrecognized command-line option '-mpreferred-stack-boundary=4'
 configure:17248: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -2825,7 +2869,7 @@ configure:18310: $? = 0
 configure:18332: result: yes
 configure:18337: checking if gfortran supports -c -o file.o
 configure:18384: result: yes
-configure:18414: checking whether the gfortran linker (/Library/Developer/CommandLineTools/usr/bin/ld) supports shared libraries
+configure:18414: checking whether the gfortran linker (/Library/Developer/CommandLineTools/usr/bin/ld-classic) supports shared libraries
 configure:19627: result: yes
 configure:19768: checking dynamic linker characteristics
 configure:20519: result: darwin23.2.0 dyld
@@ -2840,22 +2884,22 @@ Target: aarch64-apple-darwin23
 Thread model: posix
 Supported LTO compression algorithms: zlib zstd
 gcc version 13.2.0 (Homebrew GCC 13.2.0) 
- /opt/homebrew/Cellar/gcc/13.2.0/bin/../libexec/gcc/aarch64-apple-darwin23/13/f951 conftest.f -ffixed-form -fPIC -quiet -dumpbase conftest.f -dumpbase-ext .f -mmacosx-version-min=14.0.0 -mlittle-endian -mabi=lp64 -g -O2 -version -fintrinsic-modules-path /opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/finclude -o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//cchDbhZM.s
+ /opt/homebrew/Cellar/gcc/13.2.0/bin/../libexec/gcc/aarch64-apple-darwin23/13/f951 conftest.f -ffixed-form -fPIC -quiet -dumpbase conftest.f -dumpbase-ext .f -mmacosx-version-min=14.0.0 -mlittle-endian -mabi=lp64 -g -O2 -version -fintrinsic-modules-path /opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/finclude -o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccs5q0Gp.s
 GNU Fortran (Homebrew GCC 13.2.0) version 13.2.0 (aarch64-apple-darwin23)
 	compiled by GNU C version 13.2.0, GMP version 6.2.1, MPFR version 4.2.0-p12, MPC version 1.3.1, isl version isl-0.26-GMP
 
 warning: GMP header version 6.2.1 differs from library version 6.3.0.
 warning: MPFR header version 4.2.0-p12 differs from library version 4.2.1.
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
- as -arch arm64 -v -mmacosx-version-min=14.0 -o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccQi1ayn.o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//cchDbhZM.s
+ as -arch arm64 -v -mmacosx-version-min=14.0 -o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccZLbjJ3.o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccs5q0Gp.s
 Apple clang version 15.0.0 (clang-1500.1.0.2.5)
 Target: arm64-apple-darwin23.2.0
 Thread model: posix
 InstalledDir: /Library/Developer/CommandLineTools/usr/bin
- "/Library/Developer/CommandLineTools/usr/bin/clang" -cc1as -triple arm64-apple-macosx14.0.0 -filetype obj -main-file-name cchDbhZM.s -target-cpu apple-m1 -target-feature +v8.5a -target-feature +crc -target-feature +lse -target-feature +rdm -target-feature +crypto -target-feature +dotprod -target-feature +fp-armv8 -target-feature +neon -target-feature +fp16fml -target-feature +ras -target-feature +rcpc -target-feature +zcm -target-feature +zcz -target-feature +fullfp16 -target-feature +sm4 -target-feature +sha3 -target-feature +sha2 -target-feature +aes -fdebug-compilation-dir=/Users/albertoazzari/projects/catch22/fftw-3.3.10 -dwarf-debug-producer "Apple clang version 15.0.0 (clang-1500.1.0.2.5)" -dwarf-version=4 -mrelocation-model pic --mrelax-relocations -mllvm -disable-aligned-alloc-awareness=1 -o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccQi1ayn.o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//cchDbhZM.s
+ "/Library/Developer/CommandLineTools/usr/bin/clang" -cc1as -triple arm64-apple-macosx14.0.0 -filetype obj -main-file-name ccs5q0Gp.s -target-cpu apple-m1 -target-feature +v8.5a -target-feature +crc -target-feature +lse -target-feature +rdm -target-feature +crypto -target-feature +dotprod -target-feature +fp-armv8 -target-feature +neon -target-feature +fp16fml -target-feature +ras -target-feature +rcpc -target-feature +zcm -target-feature +zcz -target-feature +fullfp16 -target-feature +sm4 -target-feature +sha3 -target-feature +sha2 -target-feature +aes -fdebug-compilation-dir=/Users/albertoazzari/projects/catch22/fftw-3.3.10 -dwarf-debug-producer "Apple clang version 15.0.0 (clang-1500.1.0.2.5)" -dwarf-version=4 -mrelocation-model pic --mrelax-relocations -mllvm -disable-aligned-alloc-awareness=1 -o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccZLbjJ3.o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccs5q0Gp.s
 Reading specs from /opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../../libgfortran.spec
 rename spec lib to liborig
- /opt/homebrew/Cellar/gcc/13.2.0/bin/../libexec/gcc/aarch64-apple-darwin23/13/collect2 -syslibroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/ -dynamic -arch arm64 -platform_version macos 14.0.0 0.0 -o conftest -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccQi1ayn.o -lgfortran -lemutls_w -lgcc -lquadmath -lemutls_w -lgcc -lSystem -lgcc -no_compact_unwind -rpath @loader_path -rpath /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/gcc/aarch64-apple-darwin23/13 -rpath /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/gcc -rpath /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current -idsym -dsym
+ /opt/homebrew/Cellar/gcc/13.2.0/bin/../libexec/gcc/aarch64-apple-darwin23/13/collect2 -syslibroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/ -dynamic -arch arm64 -platform_version macos 14.0.0 0.0 -o conftest -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccZLbjJ3.o -lgfortran -lemutls_w -lgcc -lquadmath -lemutls_w -lgcc -lSystem -lgcc -no_compact_unwind -rpath @loader_path -rpath /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/gcc/aarch64-apple-darwin23/13 -rpath /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/gcc -rpath /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current -idsym -dsym
 configure:20762: result: -v
 configure:20764: checking for Fortran 77 libraries of gfortran
 configure:20787: gfortran -o conftest -g -O2 -v conftest.f -lm
@@ -2864,35 +2908,37 @@ Target: aarch64-apple-darwin23
 Thread model: posix
 Supported LTO compression algorithms: zlib zstd
 gcc version 13.2.0 (Homebrew GCC 13.2.0) 
- /opt/homebrew/Cellar/gcc/13.2.0/bin/../libexec/gcc/aarch64-apple-darwin23/13/f951 conftest.f -ffixed-form -fPIC -quiet -dumpbase conftest.f -dumpbase-ext .f -mmacosx-version-min=14.0.0 -mlittle-endian -mabi=lp64 -g -O2 -version -fintrinsic-modules-path /opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/finclude -o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//cc7ShYgF.s
+ /opt/homebrew/Cellar/gcc/13.2.0/bin/../libexec/gcc/aarch64-apple-darwin23/13/f951 conftest.f -ffixed-form -fPIC -quiet -dumpbase conftest.f -dumpbase-ext .f -mmacosx-version-min=14.0.0 -mlittle-endian -mabi=lp64 -g -O2 -version -fintrinsic-modules-path /opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/finclude -o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccF1ASOr.s
 GNU Fortran (Homebrew GCC 13.2.0) version 13.2.0 (aarch64-apple-darwin23)
 	compiled by GNU C version 13.2.0, GMP version 6.2.1, MPFR version 4.2.0-p12, MPC version 1.3.1, isl version isl-0.26-GMP
 
 warning: GMP header version 6.2.1 differs from library version 6.3.0.
 warning: MPFR header version 4.2.0-p12 differs from library version 4.2.1.
 GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
- as -arch arm64 -v -mmacosx-version-min=14.0 -o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccYzUQDp.o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//cc7ShYgF.s
+ as -arch arm64 -v -mmacosx-version-min=14.0 -o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccbcPgUg.o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccF1ASOr.s
 Apple clang version 15.0.0 (clang-1500.1.0.2.5)
 Target: arm64-apple-darwin23.2.0
 Thread model: posix
 InstalledDir: /Library/Developer/CommandLineTools/usr/bin
- "/Library/Developer/CommandLineTools/usr/bin/clang" -cc1as -triple arm64-apple-macosx14.0.0 -filetype obj -main-file-name cc7ShYgF.s -target-cpu apple-m1 -target-feature +v8.5a -target-feature +crc -target-feature +lse -target-feature +rdm -target-feature +crypto -target-feature +dotprod -target-feature +fp-armv8 -target-feature +neon -target-feature +fp16fml -target-feature +ras -target-feature +rcpc -target-feature +zcm -target-feature +zcz -target-feature +fullfp16 -target-feature +sm4 -target-feature +sha3 -target-feature +sha2 -target-feature +aes -fdebug-compilation-dir=/Users/albertoazzari/projects/catch22/fftw-3.3.10 -dwarf-debug-producer "Apple clang version 15.0.0 (clang-1500.1.0.2.5)" -dwarf-version=4 -mrelocation-model pic --mrelax-relocations -mllvm -disable-aligned-alloc-awareness=1 -o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccYzUQDp.o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//cc7ShYgF.s
+ "/Library/Developer/CommandLineTools/usr/bin/clang" -cc1as -triple arm64-apple-macosx14.0.0 -filetype obj -main-file-name ccF1ASOr.s -target-cpu apple-m1 -target-feature +v8.5a -target-feature +crc -target-feature +lse -target-feature +rdm -target-feature +crypto -target-feature +dotprod -target-feature +fp-armv8 -target-feature +neon -target-feature +fp16fml -target-feature +ras -target-feature +rcpc -target-feature +zcm -target-feature +zcz -target-feature +fullfp16 -target-feature +sm4 -target-feature +sha3 -target-feature +sha2 -target-feature +aes -fdebug-compilation-dir=/Users/albertoazzari/projects/catch22/fftw-3.3.10 -dwarf-debug-producer "Apple clang version 15.0.0 (clang-1500.1.0.2.5)" -dwarf-version=4 -mrelocation-model pic --mrelax-relocations -mllvm -disable-aligned-alloc-awareness=1 -o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccbcPgUg.o /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccF1ASOr.s
 Reading specs from /opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../../libgfortran.spec
 rename spec lib to liborig
- /opt/homebrew/Cellar/gcc/13.2.0/bin/../libexec/gcc/aarch64-apple-darwin23/13/collect2 -syslibroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/ -dynamic -arch arm64 -platform_version macos 14.0.0 0.0 -o conftest -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccYzUQDp.o -lgfortran -lemutls_w -lgcc -lquadmath -lemutls_w -lgcc -lSystem -lgcc -no_compact_unwind -rpath @loader_path -rpath /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/gcc/aarch64-apple-darwin23/13 -rpath /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/gcc -rpath /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current -idsym -dsym
+ /opt/homebrew/Cellar/gcc/13.2.0/bin/../libexec/gcc/aarch64-apple-darwin23/13/collect2 -syslibroot /Library/Developer/CommandLineTools/SDKs/MacOSX14.sdk/ -dynamic -arch arm64 -platform_version macos 14.0.0 0.0 -o conftest -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. /var/folders/ft/7dp27jcj33g0j69dw6m552080000gn/T//ccbcPgUg.o -lgfortran -lemutls_w -lgcc -lquadmath -lemutls_w -lgcc -lSystem -lgcc -no_compact_unwind -rpath @loader_path -rpath /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/gcc/aarch64-apple-darwin23/13 -rpath /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current/gcc -rpath /opt/homebrew/Cellar/gcc/13.2.0/lib/gcc/current -idsym -dsym
 configure:20983: result:  -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. -lgfortran -lemutls_w -lquadmath
 configure:20999: checking for dummy main to link with Fortran 77 libraries
-configure:21033: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c -lm   -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. -lgfortran -lemutls_w -lquadmath >&5
+configure:21033: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c -lm   -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. -lgfortran -lemutls_w -lquadmath >&5
 configure:21033: $? = 0
 configure:21078: result: none
 configure:21118: checking for Fortran 77 name-mangling scheme
 configure:21131: gfortran -c -g -O2 conftest.f >&5
 configure:21131: $? = 0
-configure:21172: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c cfortran_test.o -lm   -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. -lgfortran -lemutls_w -lquadmath >&5
-ld: Undefined symbols:
-  _foobar, referenced from:
-      _main in conftest-e289e4.o
-clang: error: linker command failed with exit code 1 (use -v to see invocation)
+configure:21172: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c cfortran_test.o -lm   -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. -lgfortran -lemutls_w -lquadmath >&5
+Undefined symbols for architecture arm64:
+  "_foobar", referenced from:
+      _main in cc3oZwZq.o
+     (maybe you meant: _foobar_)
+ld: symbol(s) not found for architecture arm64
+collect2: error: ld returned 1 exit status
 configure:21172: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -2990,17 +3036,16 @@ configure: failed program was:
 |   ;
 |   return 0;
 | }
-configure:21172: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c cfortran_test.o -lm   -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. -lgfortran -lemutls_w -lquadmath >&5
+configure:21172: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c cfortran_test.o -lm   -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. -lgfortran -lemutls_w -lquadmath >&5
 configure:21172: $? = 0
-configure:21230: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing   conftest.c cfortran_test.o -lm   -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. -lgfortran -lemutls_w -lquadmath >&5
+configure:21230: gcc -o conftest -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind   conftest.c cfortran_test.o -lm   -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13 -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc -L/opt/homebrew/Cellar/gcc/13.2.0/bin/../lib/gcc/current/gcc/aarch64-apple-darwin23/13/../../.. -lgfortran -lemutls_w -lquadmath >&5
 configure:21230: $? = 0
 configure:21272: result: lower case, underscore, no extra underscore
 configure:21977: checking whether a cycle counter is available
 configure:21988: gcc -E  -I./kernel conftest.c
-conftest.c:79:4: error: No cycle counter
-#  error No cycle counter
-   ^
-1 error generated.
+conftest.c:79:4: error: #error No cycle counter
+   79 | #  error No cycle counter
+      |    ^~~~~
 configure:21988: $? = 1
 configure: failed program was:
 | /* confdefs.h */
@@ -3160,86 +3205,127 @@ config.status:1315: creating fftw.pc
 config.status:1315: creating config.h
 config.status:1544: executing depfiles commands
 config.status:1621: cd kernel       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd simd-support       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/scalar       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/scalar/codelets       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/simd/sse2       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/simd/avx       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/simd/avx-128-fma       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/simd/avx2       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/simd/avx2-128       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/simd/avx512       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/simd/kcvi       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/simd/altivec       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/simd/vsx       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/simd/neon       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/simd/generic-simd128       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd dft/simd/generic-simd256       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/scalar       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/scalar/r2cf       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/scalar/r2cb       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/scalar/r2r       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/simd/sse2       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/simd/avx       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/simd/avx-128-fma       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/simd/avx2       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/simd/avx2-128       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/simd/avx512       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/simd/kcvi       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/simd/altivec       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/simd/vsx       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/simd/neon       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/simd/generic-simd128       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd rdft/simd/generic-simd256       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd reodft       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd threads       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd api       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd mpi       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd libbench2       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd tests       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1621: cd tools       && sed -e '/# am--include-marker/d' Makefile         | make -f - am--depfiles
+make: Nothing to be done for `am--depfiles'.
 config.status:1626: $? = 0
 config.status:1544: executing libtool commands
 
@@ -3386,12 +3472,16 @@ ac_cv_working_alloca_h=yes
 am_cv_CC_dependencies_compiler_type=gcc3
 am_cv_make_support_nested_variables=yes
 am_cv_prog_cc_c_o=yes
-ax_cv_c_compiler_vendor=clang
-ax_cv_c_flags__O3__fomit_frame_pointer__mtune_native__fstrict_aliasing=yes
+ax_cv_c_compiler_vendor=gnu
+ax_cv_c_flags__O3__fomit_frame_pointer__mtune_native__fstrict_aliasing__fno_schedule_insns=yes
+ax_cv_c_flags__Wa=yes
+ax_cv_c_flags__Wl=yes
+ax_cv_c_flags__fno_schedule_insns=yes
 ax_cv_c_flags__fstrict_aliasing=yes
+ax_cv_c_flags__malign_double=no
 ax_cv_c_flags__mpreferred_stack_boundary_4=no
 ax_cv_c_flags__mtune_native=yes
-lt_cv_apple_cc_single_mod=no
+lt_cv_apple_cc_single_mod=yes
 lt_cv_ar_at_file=no
 lt_cv_deplibs_check_method=pass_all
 lt_cv_file_magic_cmd='$MAGIC_CMD'
@@ -3401,7 +3491,7 @@ lt_cv_ld_force_load=yes
 lt_cv_ld_reload_flag=-r
 lt_cv_nm_interface='BSD nm'
 lt_cv_objdir=.libs
-lt_cv_path_LD=/Library/Developer/CommandLineTools/usr/bin/ld
+lt_cv_path_LD=/Library/Developer/CommandLineTools/usr/bin/ld-classic
 lt_cv_path_NM='/usr/bin/nm -B'
 lt_cv_path_mainfest_tool=no
 lt_cv_prog_compiler_c_o=yes
@@ -3410,7 +3500,7 @@ lt_cv_prog_compiler_pic='-fno-common -DPIC'
 lt_cv_prog_compiler_pic_F77=-fno-common
 lt_cv_prog_compiler_pic_works=yes
 lt_cv_prog_compiler_pic_works_F77=yes
-lt_cv_prog_compiler_rtti_exceptions=yes
+lt_cv_prog_compiler_rtti_exceptions=no
 lt_cv_prog_compiler_static_works=no
 lt_cv_prog_compiler_static_works_F77=no
 lt_cv_prog_gnu_ld=no
@@ -3454,7 +3544,7 @@ BUILD_DOC_FALSE='#'
 BUILD_DOC_TRUE=''
 CC='gcc'
 CCDEPMODE='depmode=gcc3'
-CFLAGS='-O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing'
+CFLAGS='-O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind'
 CHECK_PL_OPTS=''
 COMBINED_THREADS_FALSE=''
 COMBINED_THREADS_TRUE='#'
@@ -3506,7 +3596,7 @@ INSTALL_PROGRAM='${INSTALL}'
 INSTALL_SCRIPT='${INSTALL}'
 INSTALL_STRIP_PROGRAM='$(install_sh) -c -s'
 KCVI_CFLAGS=''
-LD='/Library/Developer/CommandLineTools/usr/bin/ld'
+LD='/Library/Developer/CommandLineTools/usr/bin/ld-classic'
 LDFLAGS=''
 LDOUBLE_FALSE=''
 LDOUBLE_TRUE='#'
@@ -3705,6 +3795,6 @@ target_alias=''
 #define F77_FUNC_(name,NAME) name ## _
 #define F77_FUNC_EQUIV 1
 #define WITH_G77_WRAPPERS 1
-#define FFTW_CC "gcc -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing"
+#define FFTW_CC "gcc -O3 -fomit-frame-pointer -mtune=native -fstrict-aliasing -fno-schedule-insns -Wa,-q -Wl,-no_compact_unwind"
 
 configure: exit 0

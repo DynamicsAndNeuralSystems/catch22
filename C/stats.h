@@ -18,6 +18,7 @@ extern double cov(const double x[], const double y[], const int size);
 extern double cov_mean(const double x[], const double y[], const int size);
 extern double autocorr_lag(const double x[], const int size, const int lag);
 extern double autocov_lag(const double x[], const int size, const int lag);
+extern double * autocorr_fft(const double x[], const int size);
 extern void zscore_norm(double a[], int size);
 extern void zscore_norm2(const double a[], const int size, double b[]);
 extern double moment(const double a[], const int size, const int start, const int end, const int r);

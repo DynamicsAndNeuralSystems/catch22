@@ -44,14 +44,13 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
     // compute autocorrelations up to 1/3 of the length of the time series
     int acmax = (int)ceil((double)size/3);
 
-    double * acf = malloc(acmax*sizeof(double));
-    
-    omp_set_num_threads(8);
-    #pragma omp parallel for
-    for(int tau = 1; tau <= acmax; tau++){
-        // correlation/ covariance the same, don't care for scaling (cov would be more efficient)
-        acf[tau-1] = autocov_lag(ySub, size, tau);
-    }
+    double * acf = autocorr_fft(ySub, size);
+    // double * acf = malloc(acmax*sizeof(double));
+
+    // for(int tau = 1; tau <= acmax; tau++){
+    //     // correlation/ covariance the same, don't care for scaling (cov would be more efficient)
+    //     acf[tau-1] = autocorr_lag(ySub, size, tau);
+    // }
     
     // find troughts and peaks
     double * troughs = malloc(acmax * sizeof(double));
@@ -62,6 +61,7 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
     double slopeOut = 0;
     for(int i = 1; i < acmax-1; i ++){
         slopeIn = acf[i] - acf[i-1];
+        printf("i=%i, acf=%1.3f\n", i, acf[i]);
         slopeOut = acf[i+1] - acf[i];
         
         if(slopeIn < 0 & slopeOut > 0)

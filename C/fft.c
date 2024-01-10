@@ -2,7 +2,7 @@
 #include <string.h>
 #include <math.h>
 #include <pthread.h>
-#include <fftw3.h>
+#include "../fftw-3.3.10/api/fftw3.h"
 
 #if __cplusplus
 #   include <complex>

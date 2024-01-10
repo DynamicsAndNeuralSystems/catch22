@@ -14,7 +14,7 @@ typedef _Dcomplex cplx;
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
+#include <time.h>
 #include "stats.h"
 #include "fft.h"
 #include "histcounts.h"
@@ -24,6 +24,7 @@ typedef _Dcomplex cplx;
 #ifndef CMPLX
 #define CMPLX(x, y) ((cplx)((double)(x) + _Imaginary_I * (double)(y)))
 #endif
+
 #define pow2(x) (1 << x)
 
 int nextpow2(int n)
@@ -65,7 +66,8 @@ void dot_multiply(cplx a[], cplx b[], int size)
 
 double * CO_AutoCorr(const double y[], const int size, const int tau[], const int tau_size)
 {
-    double m, nFFT;
+    double m;
+    int nFFT;
     m = mean(y, size);
     nFFT = nextpow2(size) << 1;
 
@@ -113,7 +115,8 @@ double * CO_AutoCorr(const double y[], const int size, const int tau[], const in
 
 double * co_autocorrs(const double y[], const int size)
 {
-    double m, nFFT;
+    double m;
+    int nFFT;
     m = mean(y, size);
     nFFT = nextpow2(size) << 1;
     
@@ -138,7 +141,6 @@ double * co_autocorrs(const double y[], const int size)
         #endif
     }
     //size = nFFT;
-    
     twiddles(tw, nFFT);
     fft(F, nFFT, tw);
     dot_multiply(F, F, nFFT);

@@ -339,7 +339,9 @@ int main(int argc, char * argv[])
 
     if (catch24 == 1) {
         run_features(y, size, outfile, true);
+        run_features(y, size, outfile, true);
     } else {
+        run_features(y, size, fopen("/dev/null", "w"), false);
         run_features(y, size, outfile, false);
     }
 

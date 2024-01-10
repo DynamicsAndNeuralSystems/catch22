@@ -1,0 +1,9 @@
+/Users/albertoazzari/projects/catch22/fftw-3.3.10/build/CMakeFiles/fftw3.dir
+/Users/albertoazzari/projects/catch22/fftw-3.3.10/build/CMakeFiles/bench.dir
+/Users/albertoazzari/projects/catch22/fftw-3.3.10/build/CMakeFiles/test.dir
+/Users/albertoazzari/projects/catch22/fftw-3.3.10/build/CMakeFiles/edit_cache.dir
+/Users/albertoazzari/projects/catch22/fftw-3.3.10/build/CMakeFiles/rebuild_cache.dir
+/Users/albertoazzari/projects/catch22/fftw-3.3.10/build/CMakeFiles/list_install_components.dir
+/Users/albertoazzari/projects/catch22/fftw-3.3.10/build/CMakeFiles/install.dir
+/Users/albertoazzari/projects/catch22/fftw-3.3.10/build/CMakeFiles/install/local.dir
+/Users/albertoazzari/projects/catch22/fftw-3.3.10/build/CMakeFiles/install/strip.dir
