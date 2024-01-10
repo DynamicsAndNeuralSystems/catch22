@@ -67,7 +67,8 @@ void fft(cplx in[], int size, cplx tw[])
 
     if (plans[log2n] == NULL) {
         pthread_mutex_lock(&fft_mutex);
-        plans[log2n] = fftw_plan_dft_1d(size, NULL, NULL, FFTW_FORWARD, FFTW_ESTIMATE);
+        plans[log2n] = fftw_plan_dft_r2c_1d(size, NULL, NULL, FFTW_MEASURE);
+        //plans[log2n] = fftw_plan_dft_1d(size, NULL, NULL, FFTW_FORWARD, FFTW_ESTIMATE);
         pthread_mutex_unlock(&fft_mutex);
     }
 

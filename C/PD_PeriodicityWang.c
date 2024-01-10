@@ -61,7 +61,6 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
     double slopeOut = 0;
     for(int i = 1; i < acmax-1; i ++){
         slopeIn = acf[i] - acf[i-1];
-        printf("i=%i, acf=%1.3f\n", i, acf[i]);
         slopeOut = acf[i+1] - acf[i];
         
         if(slopeIn < 0 & slopeOut > 0)

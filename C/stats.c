@@ -174,8 +174,7 @@ double * autocorr_fft(const double x[], const int size) {
     double * out = co_autocorrs(x_, size);
     free(x_);
     for(int i=0; i<size; i++) {
-        out[i]*=(i);
-        out[i]/=(size+i);
+        out[i]/=out[0];
     }
     return out;
 }
