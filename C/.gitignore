@@ -7,3 +7,4 @@ generated
 header
 timeSeries*
 featureOutputs
+*.la
