@@ -12,7 +12,6 @@
 #include "PD_PeriodicityWang.h"
 #include "splinefit.h"
 #include "stats.h"
-#include <omp.h>
 
 int PD_PeriodicityWang_th0_01(const double * y, const int size){
     

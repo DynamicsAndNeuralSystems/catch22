@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include "helper_functions.h"
 #include "CO_AutoCorr.h"
-#include <omp.h>
 
 double min_(const double a[], const int size)
 {
