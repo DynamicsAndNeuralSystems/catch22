@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/DynamicsAndNeuralSystems/catch22,207,149
+/DynamicsAndNeuralSystems/catch22/tree/main/C,56,13
+/DynamicsAndNeuralSystems/catch22/blob/main/featureList.txt,16,4
+/DynamicsAndNeuralSystems/catch22/blob/main/C/SC_FluctAnal.c,14,3
+/DynamicsAndNeuralSystems/catch22/blob/main/C/CO_AutoCorr.c,12,4
+/DynamicsAndNeuralSystems/catch22/blob/main/C/FC_LocalSimple.c,12,3
+/DynamicsAndNeuralSystems/catch22/blob/main/C/IN_AutoMutualInfoStats.c,12,3
+/DynamicsAndNeuralSystems/catch22/blob/main/C/stats.c,10,2
+/DynamicsAndNeuralSystems/catch22/blob/main/catch22.m,8,4
+/DynamicsAndNeuralSystems/catch22/blob/main/C/SB_BinaryStats.c,5,2
