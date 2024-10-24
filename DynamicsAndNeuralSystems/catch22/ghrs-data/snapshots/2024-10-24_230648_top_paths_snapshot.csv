@@ -1,0 +1,11 @@
+url_path,views_total,views_unique
+/DynamicsAndNeuralSystems/catch22,263,165
+/DynamicsAndNeuralSystems/catch22/blob/main/C/stats.c,55,4
+/DynamicsAndNeuralSystems/catch22/tree/main/C,34,7
+/DynamicsAndNeuralSystems/catch22/blob/main/C/CO_AutoCorr.c,33,2
+/DynamicsAndNeuralSystems/catch22/blob/main/C/helper_functions.c,23,2
+/DynamicsAndNeuralSystems/catch22/blob/main/C/splinefit.c,22,1
+/DynamicsAndNeuralSystems/catch22/blob/main/C/fft.c,17,1
+/DynamicsAndNeuralSystems/catch22/blob/main/C/histcounts.c,15,1
+/DynamicsAndNeuralSystems/catch22/blob/main/C/SB_BinaryStats.c,11,2
+/DynamicsAndNeuralSystems/catch22/blob/main/C/SP_Summaries.c,10,1
