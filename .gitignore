@@ -1,8 +1,8 @@
 *.prj
 *.mexmaci64
+*.mexmaca64
 *.mat
 *.m~
-*.mexmaci64
 .DS_Store
 *.vscode
 *.code-workspace
