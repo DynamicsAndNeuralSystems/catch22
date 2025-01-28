@@ -30,7 +30,7 @@ There are also native versions of this code for other programming languages:
 - [pycatch22](https://github.com/DynamicsAndNeuralSystems/pycatch22) (python) `pip install pycatch22`
 - [Catch22.jl](https://github.com/brendanjohnharris/Catch22.jl) (Julia) `Pkg.add("Catch22")`
 
-You can also use the C-compiled features directly, or in Matlab, following the [detailed installation instructions on the wiki](https://time-series-features.gitbook.io/catch22/matlab#installation).
+You can also use the C-compiled features directly, or in Matlab, following the [detailed installation instructions in the documentation](https://time-series-features.gitbook.io/catch22/).
 
 ## Acknowledgement :+1:
 
@@ -51,5 +51,5 @@ Summary of the performance of the _catch22_ feature set across 93 classification
 - If the location and spread of the raw time-series distribution may be important for your application, you should apply the function argument `catch24 = true` (`TRUE` in R, `True` in Python) to your call to the _catch22_ function in the language of your choice. This will result in 24 features being calculated: the _catch22_ features in addition to mean and standard deviation.
 - Time series are _z_-scored internally (for features other than mean and standard deviation), which means that, e.g., constant time series will lead to `NaN` outputs.
 - Time-series data are taken as an ordered sequence of values (without time stamps). We assume an evenly sampled time series.
-- See language-specific usage information in the [wiki](https://time-series-features.gitbook.io/catch22/matlab#getting-started-basic-usage).
+- See language-specific usage information in the [docs](https://time-series-features.gitbook.io/catch22/).
 - The computational pipeline used to generate the _catch22_ feature set is in the [`op_importance`](https://github.com/chlubba/op_importance) repository.
