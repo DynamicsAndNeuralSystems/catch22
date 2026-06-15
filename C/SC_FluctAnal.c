@@ -16,7 +16,13 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
             return NAN;
         }
     }
-    
+
+    // size == 1 gives log(size/2) == log(0) == -inf, which propagates into
+    // the tau vector and produces an out-of-range (int) cast below
+    if(size <= 1){
+        return 0;
+    }
+
     // generate log spaced tau vector
     double linLow = log(5);
     double linHigh = log(size/2);
