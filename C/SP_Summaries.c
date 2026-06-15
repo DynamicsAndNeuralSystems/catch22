@@ -149,6 +149,10 @@ double SP_Summaries_welch_rect(const double y[], const int size, const char what
         Sw[i] = S[i]/(2*PI);
         //printf("w[%i]=%1.3f, Sw[%i]=%1.3f\n", i, w[i], i, Sw[i]);
         if(isinf(Sw[i]) | isinf(-Sw[i])){
+            free(w);
+            free(Sw);
+            free(f);
+            free(S);
             return 0;
         }
     }
