@@ -153,8 +153,17 @@ double SP_Summaries_welch_rect(const double y[], const int size, const char what
         }
     }
     
+    // need at least two frequency bins to compute the spacing dw = w[1] - w[0]
+    if(nWelch < 2){
+        free(w);
+        free(Sw);
+        free(f);
+        free(S);
+        return NAN;
+    }
+
     double dw = w[1] - w[0];
-    
+
     double * csS = malloc(nWelch * sizeof(double));
     cumsum(Sw, nWelch, csS);
     /*
