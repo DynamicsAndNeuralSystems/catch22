@@ -124,7 +124,9 @@ int histcounts(const double y[], const int size, int nBins, int ** binCounts, do
     for(i = 0; i < size; i++)
     {
         
-        int binInd = (y[i]-minVal)/binStep;
+        // a constant series gives binStep == 0; avoid the 0/0 -> NaN cast,
+        // everything falls into the first bin
+        int binInd = binStep > 0 ? (y[i]-minVal)/binStep : 0;
         if(binInd < 0)
             binInd = 0;
         if(binInd >= nBins)
