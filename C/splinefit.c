@@ -603,7 +603,7 @@ int splinefit(const double *y, const int size, double *yOut)
     
     int breakInd = 1;
     for(int i = 0; i < size; i++){
-        if(i >= breaks[breakInd] & breakInd<nBreaks-1)
+        if(i >= breaks[breakInd] && breakInd<nBreaks-1)
             breakInd += 1;
         for(int j = 0; j < nSpline; j++){
             xsB[i*nSpline+j] = i - breaks[breakInd-1];
