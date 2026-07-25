@@ -139,7 +139,7 @@ double SP_Summaries_welch_rect(const double y[], const int size, const char what
     int nWelch = welch(y, size, N, Fs, window, size, &S, &f);
     free(window);
     
-    // angualr frequency and spectrum on that
+    // angular frequency and spectrum on that
     double * w = malloc(nWelch * sizeof(double));
     double * Sw = malloc(nWelch * sizeof(double));
     
