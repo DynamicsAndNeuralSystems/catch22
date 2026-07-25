@@ -63,13 +63,13 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
         slopeIn = acf[i] - acf[i-1];
         slopeOut = acf[i+1] - acf[i];
         
-        if(slopeIn < 0 & slopeOut > 0)
+        if(slopeIn < 0 && slopeOut > 0)
         {
             // printf("trough at %i\n", i);
             troughs[nTroughs] = i;
             nTroughs += 1;
         }
-        else if(slopeIn > 0 & slopeOut < 0)
+        else if(slopeIn > 0 && slopeOut < 0)
         {
             // printf("peak at %i\n", i);
             peaks[nPeaks] = i;

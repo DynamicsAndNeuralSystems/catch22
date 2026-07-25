@@ -37,7 +37,7 @@ double SB_BinaryStats_diff_longstretch0(const double y[], const int size){
     int maxstretch0 = 0;
     int last1 = 0;
     for(int i = 0; i < size-1; i++){
-        if(yBin[i] == 1 | i == size-2){
+        if(yBin[i] == 1 || i == size-2){
             double stretch0 = i - last1;
             if(stretch0 > maxstretch0){
                 maxstretch0 = stretch0;
@@ -75,7 +75,7 @@ double SB_BinaryStats_mean_longstretch1(const double y[], const int size){
     int maxstretch1 = 0;
     int last1 = 0;
     for(int i = 0; i < size-1; i++){
-        if(yBin[i] == 0 | i == size-2){
+        if(yBin[i] == 0 || i == size-2){
             double stretch1 = i - last1;
             if(stretch1 > maxstretch1){
                 maxstretch1 = stretch1;
