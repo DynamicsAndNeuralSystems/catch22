@@ -1,0 +1,77 @@
+name: ci
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Compile C code
+        run: gcc -Wall -Wextra -O2 C/*.c -o C/run_features -lm
+
+      - name: Run tests
+        run: |
+          bash testData/runtests.sh
+
+          compare() {
+            local input="$1"
+            local expected="$2"
+            local actual="${input%.txt}_output.txt"
+            if [ ! -f "$actual" ]; then
+              echo "FAIL: $actual was not produced"
+              exit 1
+            fi
+            # Compare feature values and names only (ignore timing column)
+            if diff <(cut -d',' -f1,2 "$expected") <(cut -d',' -f1,2 "$actual") > /dev/null; then
+              echo "PASS: $actual matches expected output (bit identical)"
+            else
+              echo "FAIL: $actual differs from expected output"
+              diff <(cut -d',' -f1,2 "$expected") <(cut -d',' -f1,2 "$actual")
+              exit 1
+            fi
+          }
+
+          compare testData/test.txt       testData/test_output.txt
+          compare testData/test2.txt      testData/test2_output.txt
+          compare testData/testShort.txt  testData/testShort_output.txt
+          compare testData/testSinusoid.txt testData/testSinusoid_output.txt
+          compare testData/teste1000ts1.txt testData/teste1000ts1_output.txt
+
+      - name: Profile feature timing
+        run: |
+          for f in testData/test_output.txt testData/teste1000ts1_output.txt testData/test2_output.txt testData/testShort_output.txt testData/testSinusoid_output.txt; do
+            echo "=== $f ==="
+            awk -F', ' '{
+              t=$3+0
+              if (t>0 && (min_feat=="" || t<min)) { min=t; min_feat=$2 }
+              if (NR==1 || t>max) { max=t; max_feat=$2 }
+              total+=t
+            }
+            END {
+              printf "  total:   %.6f ms\n", total
+              printf "  mean:    %.6f ms\n", total/NR
+              printf "  slowest: %.6f ms  (%s)\n", max, max_feat
+              if (min_feat != "") printf "  fastest: %.6f ms  (%s)\n", min, min_feat
+              else printf "  fastest: < 1 us   (below clock() resolution)\n"
+            }' "$f"
+          done
+
+      - name: Verify edge case handling
+        run: |
+          for f in testData/testInf.txt testData/testInfMinus.txt testData/testNaN.txt; do
+            echo "0" | C/run_features "$f" /tmp/edge_out.txt
+            status=$?
+            if [ $status -ge 128 ]; then
+              echo "FAIL: $f caused a crash (exit code $status)"
+              exit 1
+            fi
+            echo "PASS: $f handled without crash (exit $status)"
+          done
