@@ -116,6 +116,10 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
                 }
             }
             else{
+                free(buffer);
+                free(F);
+                free(xReg);
+                free(yCS);
                 return 0.0;
             }
         }
