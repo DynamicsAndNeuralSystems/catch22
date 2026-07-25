@@ -5,6 +5,7 @@
 //  Created by Carl Henning Lubba on 22/09/2018.
 //  Copyright © 2018 Carl Henning Lubba. All rights reserved.
 //
+
 #include <math.h>
 
 #include "IN_AutoMutualInfoStats.h"
@@ -14,41 +15,48 @@
 double IN_AutoMutualInfoStats_40_gaussian_fmmi(const double y[], const int size)
 {
     // NaN check
-    for(int i = 0; i < size; i++)
-    {
-        if(isnan(y[i]))
-        {
+    for (int i = 0; i < size; i++) {
+        if (isnan(y[i])) {
             return NAN;
         }
     }
-    
-    // maximum time delay
+
+    // Maximum time delay
     int tau = 40;
-    
-    // don't go above half the signal length
-    if(tau > ceil((double)size/2)){
-        tau = ceil((double)size/2);
+
+    // Don't go above half the signal length
+    int max_tau = (size + 1) / 2;
+    if (tau > max_tau) {
+        tau = max_tau;
     }
-    
-    // compute autocorrelations and compute automutual information
-    double * ami = malloc(size * sizeof(double));
-    for(int i = 0; i < tau; i++){
-        double ac = autocorr_lag(y,size, i+1);
-        ami[i] = -0.5 * log(1 - ac*ac);
-        // printf("ami[%i]=%1.7f\n", i, ami[i]);
+
+    // If there are fewer than 3 lags, no local minimum can exist
+    if (tau < 3) {
+        return tau;
     }
-    
-    // find first minimum of automutual information
+
+    // Compute first two AMI values
+    double ac = autocorr_lag(y, size, 1);
+    double ami_prev = -0.5 * log(1.0 - ac * ac);
+
+    ac = autocorr_lag(y, size, 2);
+    double ami_curr = -0.5 * log(1.0 - ac * ac);
+
     double fmmi = tau;
-    for(int i = 1; i < tau-1; i++){
-        if(ami[i] < ami[i-1] && ami[i] < ami[i+1]){
+
+    // Stream through remaining AMI values
+    for (int i = 1; i < tau - 1; i++) {
+        ac = autocorr_lag(y, size, i + 2);
+        double ami_next = -0.5 * log(1.0 - ac * ac);
+
+        if (ami_curr < ami_prev && ami_curr < ami_next) {
             fmmi = i;
-            // printf("found minimum at %i\n", i);
             break;
         }
+
+        ami_prev = ami_curr;
+        ami_curr = ami_next;
     }
-    
-    free(ami);
-    
+
     return fmmi;
 }

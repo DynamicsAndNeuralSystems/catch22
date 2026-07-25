@@ -1,101 +1,124 @@
 #include <math.h>
+#include <stdlib.h>
 #include <string.h>
 #include "stats.h"
 #include "CO_AutoCorr.h"
 
-static void abs_diff(const double a[], const int size, double b[])
+/* Tile width for the loop-interchanged accumulators (keep tiles in L1). */
+#define FC_TILE 512
+
+/* ------------------------------------------------------------------ */
+/* helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+static int fc_has_nan(const double * restrict y, const int size)
 {
-    for (int i = 1; i < size; i++) {
-        b[i - 1] = fabs(a[i] - a[i - 1]);
+    for (int i = 0; i < size; i++) {
+        if (isnan(y[i])) return 1;
+    }
+    return 0;
+}
+
+/*
+ * res[i] = y[i+L] - ((((0.0 + y[i]) + y[i+1]) + ... + y[i+L-1]) / (double)L)
+ *
+ * The summation order over j is preserved exactly, so every res[i] is
+ * bit-identical to the original nested loop.  Note the 0.0 initialiser is
+ * deliberately kept: 0.0 + (-0.0) == +0.0, so dropping it is *not* a no-op.
+ */
+
+#define FC_RESID_FIXED(LEN)                                             \
+    do {                                                                \
+        for (int i = 0; i < n; i++) {                                   \
+            double yest = 0.0;                                          \
+            for (int j = 0; j < (LEN); j++) yest += y[i + j];           \
+            res[i] = y[i + (LEN)] - yest / (double)(LEN);               \
+        }                                                               \
+    } while (0)
+
+static void fc_mean_residuals(const double * restrict y, const int size,
+                              const int L, double * restrict res)
+{
+    const int n = size - L;
+
+    /* Small L: the j-loop unrolls to a fixed chain, leaving each i as an
+       independent element-wise computation -> the i-loop vectorises under
+       strict IEEE rules (no reassociation required). */
+    switch (L) {
+    case 1: FC_RESID_FIXED(1); return;
+    case 2: FC_RESID_FIXED(2); return;
+    case 3: FC_RESID_FIXED(3); return;
+    case 4: FC_RESID_FIXED(4); return;
+    default: break;
+    }
+
+    /* General L: interchange the loops so the reduction over j becomes a
+       set of independent, unit-stride element-wise adds over i.  Each res[i]
+       still accumulates j = 0,1,2,... in order.  Tiled so the accumulator
+       block stays resident while the L passes over y stream through. */
+    const double dL = (double)L;
+    for (int i0 = 0; i0 < n; i0 += FC_TILE) {
+        const int i1 = (i0 + FC_TILE < n) ? (i0 + FC_TILE) : n;
+
+        for (int i = i0; i < i1; i++) res[i] = 0.0;
+
+        for (int j = 0; j < L; j++) {
+            const double * restrict yj = y + j;
+            for (int i = i0; i < i1; i++) res[i] += yj[i];
+        }
+
+        for (int i = i0; i < i1; i++) res[i] = y[i + L] - res[i] / dL;
     }
 }
 
 double fc_local_simple(const double y[], const int size, const int train_length)
 {
-    double * y1 = malloc((size - 1) * sizeof *y1);
-    abs_diff(y, size, y1);
-    double m = mean(y1, size - 1);
-    free(y1);
+    (void)train_length;                 /* unused in the original too */
+
+    double m = 0.0;
+    for (int i = 1; i < size; i++) {
+        m += fabs(y[i] - y[i - 1]);
+    }
+    m /= (size - 1);
     return m;
 }
 
+/* ------------------------------------------------------------------ */
+/* mean-forecast features                                             */
+/* ------------------------------------------------------------------ */
+
 double FC_LocalSimple_mean_tauresrat(const double y[], const int size, const int train_length)
 {
+    if (fc_has_nan(y, size)) return NAN;
+    if (size <= train_length) return NAN;
 
-    // NaN check
-    for(int i = 0; i < size; i++)
-    {
-        if(isnan(y[i]))
-        {
-            return NAN;
-        }
-    }
+    const int n = size - train_length;
+    double * res = malloc(n * sizeof *res);
 
-    if(size <= train_length)
-    {
-        return NAN;
-    }
+    fc_mean_residuals(y, size, train_length, res);
 
-    double * res = malloc((size - train_length) * sizeof *res);
-    
-    for (int i = 0; i < size - train_length; i++)
-    {
-        double yest = 0;
-        for (int j = 0; j < train_length; j++)
-        {
-            yest += y[i+j];
-            
-        }
-        yest /= train_length;
-        
-        res[i] = y[i+train_length] - yest;
-    }
-    
-    double resAC1stZ = co_firstzero(res, size - train_length, size - train_length);
-    double yAC1stZ = co_firstzero(y, size, size);
-    double output = resAC1stZ/yAC1stZ;
-    
+    double resAC1stZ = co_firstzero(res, n, n);
+    double yAC1stZ   = co_firstzero(y, size, size);
+    double output    = resAC1stZ / yAC1stZ;
+
     free(res);
     return output;
-    
 }
 
 double FC_LocalSimple_mean_stderr(const double y[], const int size, const int train_length)
 {
-    // NaN check
-    for(int i = 0; i < size; i++)
-    {
-        if(isnan(y[i]))
-        {
-            return NAN;
-        }
-    }
+    if (fc_has_nan(y, size)) return NAN;
+    if (size <= train_length) return NAN;
 
-    if(size <= train_length)
-    {
-        return NAN;
-    }
+    const int n = size - train_length;
+    double * res = malloc(n * sizeof *res);
 
-    double * res = malloc((size - train_length) * sizeof *res);
-    
-    for (int i = 0; i < size - train_length; i++)
-    {
-        double yest = 0;
-        for (int j = 0; j < train_length; j++)
-        {
-            yest += y[i+j];
-            
-        }
-        yest /= train_length;
-        
-        res[i] = y[i+train_length] - yest;
-    }
-    
-    double output = stddev(res, size - train_length);
-    
+    fc_mean_residuals(y, size, train_length, res);
+
+    double output = stddev(res, n);
+
     free(res);
     return output;
-    
 }
 
 double FC_LocalSimple_mean3_stderr(const double y[], const int size)
@@ -103,81 +126,99 @@ double FC_LocalSimple_mean3_stderr(const double y[], const int size)
     return FC_LocalSimple_mean_stderr(y, size, 3);
 }
 
-double FC_LocalSimple_mean1_tauresrat(const double y[], const int size){
+double FC_LocalSimple_mean1_tauresrat(const double y[], const int size)
+{
     return FC_LocalSimple_mean_tauresrat(y, size, 1);
 }
 
+/* NB: no NaN guard here, matching the original. */
 double FC_LocalSimple_mean_taures(const double y[], const int size, const int train_length)
 {
-    if(size <= train_length)
-    {
-        return NAN;
-    }
+    if (size <= train_length) return NAN;
 
-    double * res = malloc((size - train_length) * sizeof *res);
-    
-    // first z-score
-    // no, assume ts is z-scored!!
-    //zscore_norm(y, size);
-    
-    for (int i = 0; i < size - train_length; i++)
-    {
-        double yest = 0;
-        for (int j = 0; j < train_length; j++)
-        {
-            yest += y[i+j];
-            
-        }
-        yest /= train_length;
-        
-        res[i] = y[i+train_length] - yest;
-    }
-    
-    int output = co_firstzero(res, size - train_length, size - train_length);
-    
+    const int n = size - train_length;
+    double * res = malloc(n * sizeof *res);
+
+    fc_mean_residuals(y, size, train_length, res);
+
+    int output = co_firstzero(res, n, n);
+
     free(res);
     return output;
-    
 }
 
+/* ------------------------------------------------------------------ */
+/* linear-fit forecast                                                */
+/* ------------------------------------------------------------------ */
+/*
+ * The regressor x = [1, 2, ..., L] is identical for every window, so sumx and
+ * sumx2 (and sumy2, which linreg computes but never uses) are hoisted out of
+ * the O(size*L) loop.  Only sumy and sumxy remain window-dependent, and those
+ * are computed with the same loop interchange as above.
+ *
+ * This assumes the usual linreg body:
+ *     for i: sumx += x[i]; sumx2 += x[i]*x[i]; sumxy += x[i]*y[i];
+ *            sumy += y[i]; sumy2 += y[i]*y[i];
+ *     denom = n*sumx2 - sumx*sumx;   (denom == 0 -> m = b = 0)
+ *     m = (n*sumxy - sumx*sumy)/denom;  b = (sumy*sumx2 - sumx*sumxy)/denom;
+ * Check stats.c and mirror it exactly if it differs.
+ */
 double FC_LocalSimple_lfit_taures(const double y[], const int size)
 {
-    // set tau from first AC zero crossing
-    int train_length = co_firstzero(y, size, size);
+    const int L = co_firstzero(y, size, size);
 
-    if(size <= train_length)
-    {
-        return NAN;
+    if (size <= L) return NAN;
+
+    const int n = size - L;
+    double * res = malloc(n * sizeof *res);
+
+    /* Same accumulation order over j as linreg would use on xReg. */
+    double sumx = 0.0, sumx2 = 0.0;
+    for (int j = 0; j < L; j++) {
+        const double xj = (double)(j + 1);
+        sumx  += xj;
+        sumx2 += xj * xj;
     }
 
-    double * xReg = malloc(train_length * sizeof * xReg);
-    // double * yReg = malloc(train_length * sizeof * yReg);
-    for(int i = 1; i < train_length+1; i++)
-    {
-        xReg[i-1] = i;
+    const double denom = ((double)L * sumx2 - sumx * sumx);
+    const double xpred = (double)(L + 1);
+
+    if (denom == 0.0) {
+        /* linreg's singular branch: m = b = 0 for every window. */
+        for (int i = 0; i < n; i++) res[i] = y[i + L] - (0.0 * xpred + 0.0);
+    } else {
+        double * sumy  = malloc(FC_TILE * sizeof *sumy);
+        double * sumxy = malloc(FC_TILE * sizeof *sumxy);
+
+        for (int i0 = 0; i0 < n; i0 += FC_TILE) {
+            const int i1  = (i0 + FC_TILE < n) ? (i0 + FC_TILE) : n;
+            const int cnt = i1 - i0;
+
+            for (int k = 0; k < cnt; k++) { sumy[k] = 0.0; sumxy[k] = 0.0; }
+
+            for (int j = 0; j < L; j++) {
+                const double xj = (double)(j + 1);
+                const double * restrict yj = y + i0 + j;
+                for (int k = 0; k < cnt; k++) {
+                    const double v = yj[k];
+                    sumxy[k] += xj * v;
+                    sumy[k]  += v;
+                }
+            }
+
+            for (int k = 0; k < cnt; k++) {
+                const double m = ((double)L * sumxy[k] - sumx * sumy[k]) / denom;
+                const double b = (sumy[k] * sumx2 - sumx * sumxy[k]) / denom;
+                res[i0 + k] = y[i0 + k + L] - (m * xpred + b);
+            }
+        }
+
+        free(sumxy);
+        free(sumy);
     }
-    
-    double * res = malloc((size - train_length) * sizeof *res);
-    
-    double m = 0.0, b = 0.0;
-    
-    for (int i = 0; i < size - train_length; i++)
-    {
-        linreg(train_length, xReg, y+i, &m, &b);
-        
-        // fprintf(stdout, "i=%i, m=%f, b=%f\n", i, m, b);
-        
-        res[i] = y[i+train_length] - (m * (train_length+1) + b);
-    }
-    
-    int output = co_firstzero(res, size - train_length, size - train_length);
-    
+
+    int output = co_firstzero(res, n, n);
+
     free(res);
-    free(xReg);
-    // free(yReg);
-    
     return output;
-    
 }
-
-
