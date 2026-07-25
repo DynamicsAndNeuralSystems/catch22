@@ -83,7 +83,7 @@ int welch(const double y[], const int size, const int NFFT, const double Fs, con
     *Pxx = malloc(Nout * sizeof(double));
     for(int i = 0; i < Nout; i++){
         (*Pxx)[i] = P[i]/KMU*dt;
-        if(i>0 & i < Nout-1){
+        if(i>0 && i < Nout-1){
             (*Pxx)[i] *= 2;
         }
     }
@@ -148,7 +148,7 @@ double SP_Summaries_welch_rect(const double y[], const int size, const char what
         w[i] = 2*PI*f[i];
         Sw[i] = S[i]/(2*PI);
         //printf("w[%i]=%1.3f, Sw[%i]=%1.3f\n", i, w[i], i, Sw[i]);
-        if(isinf(Sw[i]) | isinf(-Sw[i])){
+        if(isinf(Sw[i]) || isinf(-Sw[i])){
             free(w);
             free(Sw);
             free(f);
