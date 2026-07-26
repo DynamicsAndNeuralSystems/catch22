@@ -211,6 +211,7 @@ double DN_OutlierInclude_abs_001(const double y[], const int size)
 
     free(highInds);
     free(yAbs);
+    free(msDti3);
     free(msDti4);
     
     return outputScalar;
