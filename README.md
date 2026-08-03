@@ -1,3 +1,8 @@
+> [!WARNING]
+> This repository contains an **experimental fork** of the package.
+> It is under active development and may contain unstable features, breaking changes, or incomplete implementations.
+> Use at your own risk.
+
 <p align="center"><img src="img/catch22_logo_square.png" alt="catch22 logo" height="220"/></p>
 
 <h1 align="center"><em>catch22</em>: CAnonical Time-series CHaracteristics</h1>
