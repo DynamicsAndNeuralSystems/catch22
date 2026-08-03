@@ -19,14 +19,6 @@ static int fc_has_nan(const double * restrict y, const int size)
     return 0;
 }
 
-/*
- * res[i] = y[i+L] - ((((0.0 + y[i]) + y[i+1]) + ... + y[i+L-1]) / (double)L)
- *
- * The summation order over j is preserved exactly, so every res[i] is
- * bit-identical to the original nested loop.  Note the 0.0 initialiser is
- * deliberately kept: 0.0 + (-0.0) == +0.0, so dropping it is *not* a no-op.
- */
-
 #define FC_RESID_FIXED(LEN)                                             \
     do {                                                                \
         for (int i = 0; i < n; i++) {                                   \
@@ -41,9 +33,6 @@ static void fc_mean_residuals(const double * restrict y, const int size,
 {
     const int n = size - L;
 
-    /* Small L: the j-loop unrolls to a fixed chain, leaving each i as an
-       independent element-wise computation -> the i-loop vectorises under
-       strict IEEE rules (no reassociation required). */
     switch (L) {
     case 1: FC_RESID_FIXED(1); return;
     case 2: FC_RESID_FIXED(2); return;
@@ -52,10 +41,6 @@ static void fc_mean_residuals(const double * restrict y, const int size,
     default: break;
     }
 
-    /* General L: interchange the loops so the reduction over j becomes a
-       set of independent, unit-stride element-wise adds over i.  Each res[i]
-       still accumulates j = 0,1,2,... in order.  Tiled so the accumulator
-       block stays resident while the L passes over y stream through. */
     const double dL = (double)L;
     for (int i0 = 0; i0 < n; i0 += FC_TILE) {
         const int i1 = (i0 + FC_TILE < n) ? (i0 + FC_TILE) : n;
@@ -147,22 +132,6 @@ double FC_LocalSimple_mean_taures(const double y[], const int size, const int tr
     return output;
 }
 
-/* ------------------------------------------------------------------ */
-/* linear-fit forecast                                                */
-/* ------------------------------------------------------------------ */
-/*
- * The regressor x = [1, 2, ..., L] is identical for every window, so sumx and
- * sumx2 (and sumy2, which linreg computes but never uses) are hoisted out of
- * the O(size*L) loop.  Only sumy and sumxy remain window-dependent, and those
- * are computed with the same loop interchange as above.
- *
- * This assumes the usual linreg body:
- *     for i: sumx += x[i]; sumx2 += x[i]*x[i]; sumxy += x[i]*y[i];
- *            sumy += y[i]; sumy2 += y[i]*y[i];
- *     denom = n*sumx2 - sumx*sumx;   (denom == 0 -> m = b = 0)
- *     m = (n*sumxy - sumx*sumy)/denom;  b = (sumy*sumx2 - sumx*sumxy)/denom;
- * Check stats.c and mirror it exactly if it differs.
- */
 double FC_LocalSimple_lfit_taures(const double y[], const int size)
 {
     const int L = co_firstzero(y, size, size);

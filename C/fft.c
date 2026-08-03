@@ -1,22 +1,3 @@
-/* ------------------------------------------------------------------------
- * Bit-exact, faster drop-in replacement for the recursive radix-2 FFT.
- *
- * Same signature, same twiddle table, same butterfly operands, same order
- * of operations inside every butterfly  ->  bit-identical output.
- *
- * MUST be compiled with contraction disabled, e.g.
- *     gcc -O3 -march=native -ffp-contract=off  (never -ffast-math)
- * otherwise a*c - b*d is fused into an FMA and the rounding changes.
- * (Verified: with gcc's default -ffp-contract=fast the outputs differ.)
- *
- * Anything the fast path cannot reproduce exactly is handed to a verbatim
- * copy of the original recursion:
- *   - size not a power of two (the original reads out of bounds there anyway)
- *   - any non-finite value in the input, where the inlined complex product
- *     could differ from the Annex-G product (__muldc3 / _Cmulcc) that the
- *     original calls.  Define FFT_ASSUME_FINITE to drop that O(n) screen.
- * ---------------------------------------------------------------------- */
-
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -48,8 +29,6 @@ typedef _Dcomplex cplx;
 #  define RST __restrict
 #endif
 
-/* ===================== twiddle table (unchanged) ======================== */
-
 void twiddles(cplx a[], int size)
 {
 
@@ -66,8 +45,6 @@ void twiddles(cplx a[], int size)
         //a[i] = cexp(-I * M_PI * i / size);
     }
 }
-
-/* ===================== exact fallback: original code ===================== */
 
 static void _fft_rec(cplx a[], cplx out[], int size, int step, cplx tw[])
 {
@@ -93,18 +70,6 @@ static void fft_fallback(cplx a[], int size, cplx tw[])
 }
 
 /* ============================== fast path =============================== */
-
-/* One decimation level, loop-interchanged so that the twiddle is loop
- * invariant and every stream is unit stride.
- *
- *   s  = 2^level,  nk = n/(2s) twiddle groups,  half = n/2
- *   dst[k*s + o]        = src[2ks + o] + tw[2ks]*src[2ks + s + o]
- *   dst[k*s + half + o] = src[2ks + o] - tw[2ks]*src[2ks + s + o]
- *
- * Exactly the butterflies the recursion performs (o was the recursion's
- * offset argument, k its loop index i/(2s)); only the visiting order of
- * independent butterflies differs, which cannot change any value.
- */
 static void fft_pass(double *RST dst, const double *RST src,
                      const double *RST tw, size_t n, size_t s)
 {
@@ -132,8 +97,6 @@ static void fft_pass(double *RST dst, const double *RST src,
     }
 }
 
-/* Top level (s = n/2, single twiddle group): source and destination indices
- * coincide, so it can run in place and save the memcpy of the original. */
 static void fft_pass_top_inplace(double *RST a, const double *RST tw, size_t n)
 {
     const double wr = tw[0], wi = tw[1];
@@ -149,10 +112,6 @@ static void fft_pass_top_inplace(double *RST a, const double *RST tw, size_t n)
     }
 }
 
-/* The inlined complex product is bit-identical to the Annex-G product
- * (__muldc3 / _Cmulcc) unless both components come out NaN, which needs an
- * infinity in the operands.  Screen for that once, up front, and hand those
- * cases to the original code. */
 static int all_finite(const double *p, size_t count)
 {
     uint64_t bad = 0;
@@ -179,15 +138,12 @@ void fft(cplx a[], int size, cplx tw[])
 #endif
 
     unsigned L = 0;
-    while ((n >> L) > 1) ++L;                   /* n == 1u << L */
+    while ((n >> L) > 1) ++L;                  
 
-    /* Levels run L-1 .. 0 and ping-pong between the two buffers; level 0 must
-     * land in A.  If L is odd, run level L-1 in place so the parity works out
-     * and the scratch buffer never needs to be initialised. */
-    if (L == 1) { fft_pass_top_inplace(A, T, n); return; }   /* n == 2 */
+    if (L == 1) { fft_pass_top_inplace(A, T, n); return; }  
 
     double *B = (double *)malloc(2 * n * sizeof(double));
-    if (!B) { fft_fallback(a, size, tw); return; }            /* A untouched */
+    if (!B) { fft_fallback(a, size, tw); return; }          
 
     size_t s     = n >> 1;
     unsigned rem = L;
@@ -198,7 +154,6 @@ void fft(cplx a[], int size, cplx tw[])
         fft_pass(dst, src, T, n, s);
         double *t = src; src = dst; dst = t;
     }
-    /* rem was even, so the final write went to A */
 
     free(B);
 }

@@ -7,37 +7,6 @@
 #include "stats.h"
 #include "CO_AutoCorr.h"
 
-/*
- * Bit-for-bit identical to the original SC_FluctAnal_2_50_1_logi_prop_r1.
- *
- * Changes (all order-of-operations preserving):
- *   1. strcmp(how, ...) hoisted out of the window loop (was 2 calls per window).
- *   2. linreg() inlined and specialised. The regressor x = 1..tau is the same
- *      for every window at a given tau, so sumx / sumx2 / denom are computed
- *      once per tau, with the identical sequential accumulation order.
- *      sumy2 is dropped entirely -- linreg accumulates it but never uses it.
- *      Per element this goes from 5 accumulations + 3 multiplies + 2 loads
- *      down to 2 accumulations + 1 multiply + 1 load.
- *   3. The detrend scratch buffer is gone: residuals are consumed as they are
- *      produced (squared-and-summed for dfa, running max/min for rsrangefit).
- *      Same k-ascending accumulation order into F[i], same first-wins tie
- *      behaviour as max_/min_, so the results are unchanged. Removes one
- *      store + two loads per element and 50 malloc/free pairs.
- *   4. pow(x, 2) -> x*x (exact, and what GCC already emits).
- *   5. F[i] accumulated in a local, xReg allocation removed, yCS leak on the
- *      unrecognised-`how` path removed.
- *
- * The second stage (O(nTau^2) over <= 50 points) is untouched -- it is noise.
- *
- * NOTE: the inlined regression assumes catch22's stats.c linreg, i.e.
- *   denom = n*sumx2 - sumx*sumx;  m = (n*sumxy - sumx*sumy)/denom;
- *   b = (sumy*sumx2 - sumx*sumxy)/denom;  with m = b = 0 when denom == 0.
- * If your linreg differs, mirror its exact expression forms below.
- *
- * Build with the same flags as before; -O2 -ffp-contract=off is a good choice.
- * Do NOT use -ffast-math / -Ofast, which breaks bit-identity for both versions.
- */
-
 double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const int lag, const char how[])
 {
     // NaN check
@@ -99,11 +68,6 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
         yCS[i+1] = yCS[i] + y[(i+1)*lag];
     }
 
-    // iterate over taus, cut signal, detrend and save amplitude of remaining signal
-    /* Each F[i] is independent and computed in an unchanged internal order, so
-     * this loop is safe to parallelise without perturbing any result:
-     * #pragma omp parallel for schedule(dynamic, 1)
-     */
     for (int i = 0; i < nTau; i++)
     {
         const int t       = tau[i];

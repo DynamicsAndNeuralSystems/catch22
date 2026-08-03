@@ -39,15 +39,14 @@ jobs:
             fi
           }
 
-          compare testData/test.txt       testData/test_output.txt
-          compare testData/test2.txt      testData/test2_output.txt
-          compare testData/testShort.txt  testData/testShort_output.txt
-          compare testData/testSinusoid.txt testData/testSinusoid_output.txt
-          compare testData/teste1000ts1.txt testData/teste1000ts1_output.txt
+          for input in $(find testData -name '*.txt' ! -name '*_output.txt' | sort); do
+            expected="${input%.txt}_output.txt"
+            [ -f "$expected" ] && compare "$input" "$expected"
+          done
 
       - name: Profile feature timing
         run: |
-          for f in testData/test_output.txt testData/teste1000ts1_output.txt testData/test2_output.txt testData/testShort_output.txt testData/testSinusoid_output.txt; do
+          for f in testData/simulated/*.txt; do
             echo "=== $f ==="
             awk -F', ' '{
               t=$3+0
@@ -66,7 +65,7 @@ jobs:
 
       - name: Verify edge case handling
         run: |
-          for f in testData/testInf.txt testData/testInfMinus.txt testData/testNaN.txt; do
+          for f in testData/pathological/*.txt; do
             echo "0" | C/run_features "$f" /tmp/edge_out.txt
             status=$?
             if [ $status -ge 128 ]; then

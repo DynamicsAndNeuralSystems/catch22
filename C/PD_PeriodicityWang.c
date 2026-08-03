@@ -1,5 +1,5 @@
 //
-//  PD_Periodicity.c  -- optimised, bit-for-bit identical output
+//  PD_Periodicity.c
 //
 //  Original by Carl Henning Lubba, 28/09/2018.
 //
@@ -10,47 +10,6 @@
 #include "PD_PeriodicityWang.h"
 #include "splinefit.h"
 #include "stats.h"
-
-/*
- * The cost of this feature is the autocovariance sweep:
- *   acf[tau-1] = cov_mean(ySub, ySub+tau, size-tau)
- *              = (sum_{i} ySub[i]*ySub[i+tau]) / (size-tau)
- * for tau = 1 .. ceil(size/3), i.e. ~0.28*size^2 multiply-accumulates, plus
- * one full pass over the series per tau. splinefit is only O(size).
- *
- * Two changes, both output-preserving:
- *
- * 1. BLOCKING OVER TAU. Each tau owns a separate accumulator, so the chains
- *    are mutually independent even though each one is order-locked. ACF_B of
- *    them are advanced in a single pass over ySub. Every accumulator still
- *    starts at 0.0 and still absorbs its terms in ascending i, so each result
- *    is bit-identical. Two effects: the ~4-cycle FP-add latency is hidden by
- *    having ACF_B chains in flight, and the number of passes over ySub drops
- *    by a factor of ACF_B (the ACF_B loads y[i+t .. i+t+ACF_B-1] are
- *    contiguous, so a block costs no more memory traffic than a single tau).
- *
- * 2. EARLY EXIT. The result is the first peak, in ascending order, that has a
- *    trough before it and clears the threshold. Deciding that for a peak at
- *    index p requires acf[0..p+1] and nothing beyond, so the ACF is built in
- *    chunks and the peak/trough scan runs incrementally; once a peak
- *    qualifies, the remaining lags are never computed. The same values are
- *    computed the same way, just fewer of them, and peaks are still tested in
- *    ascending order -- so the same peak is selected. When no peak qualifies
- *    (the answer is 0) the full ACF is computed and change 1 carries the win.
- *
- * Also: the trough pointer is now monotone across peaks rather than rescanning
- * from the start for every peak (troughs are ascending and so are the peaks
- * being tested, so it lands on the same trough), and the `peaks` array is gone
- * since peaks are tested as they are found. Testing `j+1 < nTroughs` before
- * `troughs[j+1] < iPeak` also removes an out-of-bounds read of troughs[] that
- * the original performed (harmlessly, thanks to && short-circuiting) on the
- * last iteration of its inner while loop.
- *
- * ACF_B = 4 measured fastest at -O2 on a Xeon; 4-8 are all reasonable, worth a
- * quick sweep on your target. Build with the same flags as before. Both this
- * and the original rely on `acc += x[i]*y[i]` being compiled the same way, so
- * keep -ffp-contract consistent and stay away from -ffast-math / -Ofast.
- */
 
 #ifndef ACF_B
 #define ACF_B 4
