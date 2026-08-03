@@ -67,6 +67,8 @@ void poly(cplx x[], int size, cplx out[])
         
     }
     
+    free(outTemp);
+    
 }
 
 void filt(double y[], int size, double a[], double b[], int nCoeffs, double out[]){
