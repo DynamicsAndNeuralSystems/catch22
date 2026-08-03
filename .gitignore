@@ -1,6 +1,5 @@
 *.prj
-*.mexmaci64
-*.mexmaca64
+*.mexmac*
 *.mat
 *.m~
 .DS_Store
