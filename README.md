@@ -1,8 +1,3 @@
-> [!WARNING]
-> This repository contains an **experimental fork** of the package.
-> It is under active development and may contain unstable features, breaking changes, or incomplete implementations.
-> Use at your own risk.
-
 <p align="center"><img src="img/catch22_logo_square.png" alt="catch22 logo" height="220"/></p>
 
 <h1 align="center"><em>catch22</em>: CAnonical Time-series CHaracteristics</h1>
@@ -51,7 +46,7 @@ Summary of the performance of the _catch22_ feature set across 93 classification
 
 ## Notes
 
-- When presenting results using _catch22_, you must identify the version used to allow clear reproduction of your results. For example, `CO_f1ecac` was altered from an integer-valued output to a linearly interpolated real-valued output from v0.3.
+- When presenting results using _catch22_, you must identify the __version used__ to allow clear reproduction of your results. For example, `CO_f1ecac` was altered from an integer-valued output to a linearly interpolated real-valued output from v0.3.
 - _catch22_ features only evaluate _dynamical_ properties of time series and do not respond to basic differences in the location (e.g., mean) or spread (e.g., variance).
 - If the location and spread of the raw time-series distribution may be important for your application, you should apply the function argument `catch24 = true` (`TRUE` in R, `True` in Python) to your call to the _catch22_ function in the language of your choice. This will result in 24 features being calculated: the _catch22_ features in addition to mean and standard deviation.
 - Time series are _z_-scored internally (for features other than mean and standard deviation), which means that, e.g., constant time series will lead to `NaN` outputs.
