@@ -115,7 +115,7 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
             }
             else if(slopeIn > 0 && slopeOut < 0)
             {
-                // a peak: test it now, in ascending order, as the original does
+                // a peak: test it now, in ascending order
                 const int iPeak = i;
                 const double thePeak = acf[iPeak];
 

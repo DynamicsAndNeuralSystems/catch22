@@ -125,7 +125,7 @@ static int all_finite(const double *p, size_t count)
 
 void fft(cplx a[], int size, cplx tw[])
 {
-    if (size < 2) return;                       /* original is a no-op here */
+    if (size < 2) return;                       /* no-op for trivial input */
 
     const size_t n = (size_t)size;
     if (n & (n - 1)) { fft_fallback(a, size, tw); return; }   /* not 2^L */

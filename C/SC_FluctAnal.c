@@ -51,10 +51,9 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
         return 0;
     }
 
-    // method dispatch resolved once instead of twice per window
     const int isDFA = (strcmp(how, "dfa") == 0);
     if (!isDFA && strcmp(how, "rsrangefit") != 0) {
-        return 0.0;   // original returned 0.0 from inside the window loop
+        return 0.0;
     }
 
     const int sizeCS = size/lag;
@@ -74,7 +73,7 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
         const int nBuffer = sizeCS/t;
 
         // x-moments of the regression depend only on tau -> hoisted out of the
-        // window loop, same sequential summation order as linreg's inner loop
+        // window loop
         double sumx = 0.0, sumx2 = 0.0;
         for (int k = 0; k < t; k++)
         {

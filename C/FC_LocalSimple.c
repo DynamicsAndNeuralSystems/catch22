@@ -58,7 +58,7 @@ static void fc_mean_residuals(const double * restrict y, const int size,
 
 double fc_local_simple(const double y[], const int size, const int train_length)
 {
-    (void)train_length;                 /* unused in the original too */
+    (void)train_length;
 
     double m = 0.0;
     for (int i = 1; i < size; i++) {
@@ -116,7 +116,7 @@ double FC_LocalSimple_mean1_tauresrat(const double y[], const int size)
     return FC_LocalSimple_mean_tauresrat(y, size, 1);
 }
 
-/* NB: no NaN guard here, matching the original. */
+/* NB: no NaN guard here. */
 double FC_LocalSimple_mean_taures(const double y[], const int size, const int train_length)
 {
     if (size <= train_length) return NAN;
@@ -141,7 +141,6 @@ double FC_LocalSimple_lfit_taures(const double y[], const int size)
     const int n = size - L;
     double * res = malloc(n * sizeof *res);
 
-    /* Same accumulation order over j as linreg would use on xReg. */
     double sumx = 0.0, sumx2 = 0.0;
     for (int j = 0; j < L; j++) {
         const double xj = (double)(j + 1);

@@ -1,5 +1,5 @@
-#ifndef DN_OUTLIERINCLUDE_ABS_001
-#define DN_OUTLIERINCLUDE_ABS_001
+#ifndef DN_OUTLIERINCLUDE_H
+#define DN_OUTLIERINCLUDE_H
 #include <math.h>
 #include <string.h>
 #include <time.h>
