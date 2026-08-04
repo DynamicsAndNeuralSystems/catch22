@@ -1,0 +1,25 @@
+-0.00070000000000, DN_OutlierInclude_n_001_mdrmd, 5.938000
+-0.00200000000000, DN_OutlierInclude_p_001_mdrmd, 5.252000
+0.00030353052658, DN_HistogramMode_5, 0.034000
+0.24402399611256, DN_HistogramMode_10, 0.035000
+0.41237485017439, CO_Embed2_Dist_tau_d_expfit_meandiff, 8.935000
+2.28188865740258, CO_f1ecac, 8.709000
+8.00000000000000, CO_FirstMin_ac, 8.414000
+0.38366175554383, CO_HistogramAMI_even_2_5, 0.260000
+-0.00012131346259, CO_trev_1_num, 0.081000
+0.50000000000000, FC_LocalSimple_mean1_tauresrat, 17.561000
+0.92693545171538, FC_LocalSimple_mean3_stderr, 0.104000
+2.00000000000000, IN_AutoMutualInfoStats_40_gaussian_fmmi, 1.697000
+0.93049304930493, MD_hrv_classic_pnn40, 0.035000
+10.00000000000000, SB_BinaryStats_diff_longstretch0, 0.031000
+11.00000000000000, SB_BinaryStats_mean_longstretch1, 0.033000
+1.75813364491832, SB_MotifThree_quantile_hh, 2.921000
+0.18000000000000, SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1, 3.086000
+0.12000000000000, SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1, 1.332000
+0.83819888383243, SP_Summaries_welch_rect_area_5_1, 2.280000
+0.43104860139589, SP_Summaries_welch_rect_centroid, 2.104000
+0.01458361122227, SB_TransitionMatrix_3ac_sumdiagcov, 8.894000
+13.00000000000000, PD_PeriodicityWang_th0_01, 24.588000
+0.00011010126200, DN_Mean, 0.007000
+1.28454538787820, DN_Spread_Std, 0.065000
+

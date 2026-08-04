@@ -3,9 +3,9 @@
 <h1 align="center"><em>catch22</em>: CAnonical Time-series CHaracteristics</h1>
 
 <p align="center">
- 	<a href="https://zenodo.org/badge/latestdoi/146194807"><img src="https://zenodo.org/badge/146194807.svg" height="20"/></a>
+ 	<a href="https://doi.org/10.5281/zenodo.4431165"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.4431165.svg" height="20"/></a>
     <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" height="20"/></a>
- 	<a href="https://twitter.com/compTimeSeries"><img src="https://img.shields.io/twitter/url/https/twitter.com/compTimeSeries.svg?style=social&label=Follow%20%40compTimeSeries" height="20"/></a>
+ 	<a href="https://x.com/compTimeSeries"><img src="https://img.shields.io/twitter/url/https/twitter.com/compTimeSeries.svg?style=social&label=Follow%20%40compTimeSeries" height="20"/></a>
 </p>
 
 _catch22_ is a collection of 22 time-series features coded in C that can be run from Python, R, Matlab, and Julia, licensed under the [GNU GPL v3 license](http://www.gnu.org/licenses/gpl-3.0.html) (or later).
@@ -46,7 +46,7 @@ Summary of the performance of the _catch22_ feature set across 93 classification
 
 ## Notes
 
-- When presenting results using _catch22_, you must identify the version used to allow clear reproduction of your results. For example, `CO_f1ecac` was altered from an integer-valued output to a linearly interpolated real-valued output from v0.3.
+- When presenting results using _catch22_, you must identify the __version used__ to allow clear reproduction of your results. For example, `CO_f1ecac` was altered from an integer-valued output to a linearly interpolated real-valued output from v0.3.
 - _catch22_ features only evaluate _dynamical_ properties of time series and do not respond to basic differences in the location (e.g., mean) or spread (e.g., variance).
 - If the location and spread of the raw time-series distribution may be important for your application, you should apply the function argument `catch24 = true` (`TRUE` in R, `True` in Python) to your call to the _catch22_ function in the language of your choice. This will result in 24 features being calculated: the _catch22_ features in addition to mean and standard deviation.
 - Time series are _z_-scored internally (for features other than mean and standard deviation), which means that, e.g., constant time series will lead to `NaN` outputs.

@@ -5,7 +5,7 @@ numFeatures = length(featureNamesLong);
 
 %-------------------------------------------------------------------------------
 % Get the data
-dataFileNames = {'../testData/test.txt', '../testData/test2.txt'};
+dataFileNames = {'../testData/basic/test.txt', '../testData/basic/test2.txt'};
 numTestFiles = length(dataFileNames);
 
 fprintf(1,'Testing %u compiled features on %u data files.\n',numFeatures,numTestFiles);

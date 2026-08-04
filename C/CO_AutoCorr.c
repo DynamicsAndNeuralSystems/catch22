@@ -488,7 +488,7 @@ double CO_HistogramAMI_even_2_5(const double y[], const int size)
     }
     */
     
-    // transfer to 2D histogram (no last bin, as in original implementation)
+    // transfer to 2D histogram (no last bin)
     double pij[numBins][numBins];
     int sumBins = 0;
     for(int i = 0; i < numBins; i++){
