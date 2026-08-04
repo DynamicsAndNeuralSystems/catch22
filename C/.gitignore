@@ -1,6 +1,6 @@
 codegen
 *.prj
-*.mexmaci64
+*.mexmac*
 *.o
 C_polished
 generated
