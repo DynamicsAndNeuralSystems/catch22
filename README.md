@@ -3,7 +3,7 @@
 <h1 align="center"><em>catch22</em>: CAnonical Time-series CHaracteristics</h1>
 
 <p align="center">
- 	<a href="https://zenodo.org/badge/latestdoi/146194807"><img src="https://zenodo.org/badge/146194807.svg" height="20"/></a>
+ 	<a href="https://doi.org/10.5281/zenodo.4431165"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.4431165.svg" height="20"/></a>
     <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" height="20"/></a>
  	<a href="https://x.com/compTimeSeries"><img src="https://img.shields.io/twitter/url/https/twitter.com/compTimeSeries.svg?style=social&label=Follow%20%40compTimeSeries" height="20"/></a>
 </p>
