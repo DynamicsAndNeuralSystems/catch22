@@ -17,7 +17,7 @@
 0.32000000000000, SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1, 3.472000
 0.16000000000000, SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1, 1.399000
 0.48347010461789, SP_Summaries_welch_rect_area_5_1, 2.207000
-0.64043697894230, SP_Summaries_welch_rect_centroid, 2.251000
+0.64043697894230, SP_Summaries_welch_rect_median, 2.251000
 0.01401460278041, SB_TransitionMatrix_3ac_sumdiagcov, 9.158000
 10.00000000000000, PD_PeriodicityWang_th0_01, 24.279000
 -6.75760000000000, DN_Mean, 0.007000

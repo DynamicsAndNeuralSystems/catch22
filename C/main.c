@@ -185,9 +185,9 @@ void run_features(double y[], int size, FILE * outfile, bool catch24)
 
     //GOOD
     begin = clock();
-    result = SP_Summaries_welch_rect_centroid(y_zscored, size);
+    result = SP_Summaries_welch_rect_median(y_zscored, size);
     timeTaken = (double)(clock()-begin)*1000/CLOCKS_PER_SEC;
-    fprintf(outfile, "%.14f, %s, %f\n", result, "SP_Summaries_welch_rect_centroid", timeTaken);
+    fprintf(outfile, "%.14f, %s, %f\n", result, "SP_Summaries_welch_rect_median", timeTaken);
 
     //OK, BUT filt in Butterworth sometimes diverges, now removed alltogether, let's see results.
     begin = clock();
@@ -388,8 +388,8 @@ int main(int argc, char * argv[])
     printf("FC_LocalSimple_mean3_stderr: %1.5f\n", result);
     result = SP_Summaries_welch_rect_area_5_1(y, size);
     printf("SP_Summaries_welch_rect_area_5_1: %1.5f\n", result);
-    result = SP_Summaries_welch_rect_centroid(y, size);
-    printf("SP_Summaries_welch_rect_centroid: %1.5f\n", result);
+    result = SP_Summaries_welch_rect_median(y, size);
+    printf("SP_Summaries_welch_rect_median: %1.5f\n", result);
     result = CO_f1ecac(y, size);
     printf("CO_f1ecac: %1.f\n", result);
     result = CO_FirstMin_ac(y, size);

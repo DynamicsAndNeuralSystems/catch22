@@ -7,7 +7,7 @@ DN_OutlierInclude_n_001_mdrmd                   outlier_timing_neg
 CO_f1ecac                                       acf_timescale
 CO_FirstMin_ac                                  acf_first_min
 SP_Summaries_welch_rect_area_5_1                low_freq_power
-SP_Summaries_welch_rect_centroid                centroid_freq
+SP_Summaries_welch_rect_median                  median_freq
 FC_LocalSimple_mean3_stderr                     forecast_error
 FC_LocalSimple_mean1_tauresrat                  whiten_timescale
 MD_hrv_classic_pnn40                            high_fluctuation

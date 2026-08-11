@@ -32,7 +32,7 @@ function out = SP_Summaries_welch_rect(y)
 %
 %---OUTPUTS:
 % Statistics summarizing various properties of the spectrum,
-% including its maximum, minimum, spread, correlation, centroid, area in certain
+% including its maximum, minimum, spread, correlation, median, area in certain
 % (normalized) frequency bands, moments of the spectrum, Shannon spectral
 % entropy, a spectral flatness measure, power-law fits, and the number of
 % crossings of the spectrum at various amplitude thresholds.
@@ -99,7 +99,7 @@ doPlot = false; % plot outputs
 Ny = length(y); % time-series length
 
 % default output
-out.centroid = NaN;
+out.median = NaN;
 out.area_5_1 = NaN;
 
 %-------------------------------------------------------------------------------
@@ -162,7 +162,7 @@ csS = cumsum(S);
 csSThres = csS(end)*0.5;
 for i = 1:length(csS)
     if csS(i) > csSThres
-        out.centroid = w(i);
+        out.median = w(i);
         break
     end
 end

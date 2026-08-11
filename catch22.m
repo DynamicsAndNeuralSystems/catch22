@@ -29,7 +29,7 @@ out(17) = SB_BinaryStats_diff_longstretch0(y);
 out(18) = SB_MotifThree_quantile_hh(y);
 out(19) = SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1(y);
 out(20) = SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1(y);
-out(21) = SP_Summaries_welch_rect_centroid(y);
+out(21) = SP_Summaries_welch_rect_median(y);
 out(22) = FC_LocalSimple_mean3_stderr(y);
 
 end

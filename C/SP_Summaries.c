@@ -170,18 +170,18 @@ double SP_Summaries_welch_rect(const double y[], const int size, const char what
     
     double output = 0;
     
-    if(strcmp(what, "centroid") == 0){
+    if(strcmp(what, "median") == 0){
         
         double csSThres = csS[nWelch-1]*0.5;
-        double centroid = 0;
+        double median = 0;
         for(int i = 0; i < nWelch; i ++){
             if(csS[i] > csSThres){
-                centroid = w[i];
+                median = w[i];
                 break;
             }
         }
         
-        output = centroid;
+        output = median;
         
     }
     else if(strcmp(what, "area_5_1") == 0){
@@ -210,8 +210,8 @@ double SP_Summaries_welch_rect_area_5_1(const double y[], const int size)
 {
     return SP_Summaries_welch_rect(y, size, "area_5_1");
 }
-double SP_Summaries_welch_rect_centroid(const double y[], const int size)
+double SP_Summaries_welch_rect_median(const double y[], const int size)
 {
-    return SP_Summaries_welch_rect(y, size, "centroid");
+    return SP_Summaries_welch_rect(y, size, "median");
     
 }
