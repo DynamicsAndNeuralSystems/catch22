@@ -6,10 +6,10 @@
  	<a href="https://doi.org/10.5281/zenodo.4431165"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.4431165.svg" height="20"/></a>
     <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" height="20"/></a>
  	<a href="https://x.com/compTimeSeries"><img src="https://img.shields.io/twitter/url/https/twitter.com/compTimeSeries.svg?style=social&label=Follow%20%40compTimeSeries" height="20"/></a><br>
-    <a href="https://pepy.tech/projects/pycatch22"><img src="https://static.pepy.tech/personalized-badge/pycatch22?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=BLUE&left_text=pycatch22%20downloads" alt="pycatch22 downloads" height="20"/></a>
-    <a href="https://pepy.tech/projects/pycatch22"><img src="https://static.pepy.tech/personalized-badge/pycatch22?period=monthly&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=BLUE&left_text=pycatch22%20downloads%2Fmonth" alt="pycatch22 downloads per month" height="20"/></a>
-    <a href="https://cran.r-project.org/package=Rcatch22"><img src="https://cranlogs.r-pkg.org/badges/grand-total/Rcatch22" alt="Rcatch22 CRAN downloads" height="20"/></a>
-    <a href="https://anaconda.org/conda-forge/pycatch22"><img src="https://img.shields.io/conda/dn/conda-forge/pycatch22?label=pycatch22%20conda%20downloads&color=blue" alt="pycatch22 conda downloads" height="20"/></a>
+    <a href="https://pepy.tech/projects/pycatch22"><img src="https://static.pepy.tech/personalized-badge/pycatch22?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=BLUE&left_text=PyPI%20downloads" alt="pycatch22 downloads" height="20"/></a>
+    <a href="https://pepy.tech/projects/pycatch22"><img src="https://static.pepy.tech/personalized-badge/pycatch22?period=monthly&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=BLUE&left_text=PyPI%20downloads%2Fmonth" alt="pycatch22 downloads per month" height="20"/></a>
+    <a href="https://cran.r-project.org/package=Rcatch22"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcranlogs.r-pkg.org%2Fdownloads%2Ftotal%2F2015-01-01%3Alast-day%2FRcatch22&query=%24%5B0%5D.downloads&label=CRAN%20downloads&color=blue&cacheSeconds=86400" alt="Rcatch22 CRAN downloads" height="20"/></a>
+    <a href="https://anaconda.org/conda-forge/pycatch22"><img src="https://img.shields.io/conda/dn/conda-forge/pycatch22?label=conda%20downloads&color=blue" alt="pycatch22 conda downloads" height="20"/></a>
     <a href="https://juliapkgstats.com/pkg/Catch22"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fjuliapkgstats.com%2Fapi%2Fv1%2Fmonthly_downloads%2FCatch22&query=total_requests&suffix=%2Fmonth&label=Julia%20downloads&color=blue&cacheSeconds=86400" alt="Catch22.jl downloads per month" height="20"/></a>
 </p>
 
