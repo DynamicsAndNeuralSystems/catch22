@@ -9,9 +9,9 @@
 -0.00015664186124, CO_trev_1_num, 0.102000
 0.00053333333333, FC_LocalSimple_mean1_tauresrat, 17.606000
 0.07712512007710, FC_LocalSimple_mean3_stderr, 0.117000
-36.00000000000000, IN_AutoMutualInfoStats_40_gaussian_fmmi, 1.648000
+37.00000000000000, IN_AutoMutualInfoStats_40_gaussian_fmmi, 1.648000
 0.07160716071607, MD_hrv_classic_pnn40, 0.039000
-11.00000000000000, SB_BinaryStats_diff_longstretch0, 0.059000
+10.00000000000000, SB_BinaryStats_diff_longstretch0, 0.059000
 1273.00000000000000, SB_BinaryStats_mean_longstretch1, 0.057000
 1.12791296550221, SB_MotifThree_quantile_hh, 2.074000
 0.76000000000000, SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1, 3.251000

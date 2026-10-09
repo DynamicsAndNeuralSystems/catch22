@@ -9,6 +9,25 @@
 #include "SB_BinaryStats.h"
 #include "stats.h"
 
+// Length of the longest run of consecutive entries of yBin equal to val
+static int longest_run(const int yBin[], const int size, const int val)
+{
+    int maxRun = 0;
+    int run = 0;
+    for (int i = 0; i < size; i++) {
+        if (yBin[i] == val) {
+            run++;
+            if (run > maxRun) {
+                maxRun = run;
+            }
+        }
+        else {
+            run = 0;
+        }
+    }
+    return maxRun;
+}
+
 double SB_BinaryStats_diff_longstretch0(const double y[], const int size){
     
     // NaN check
@@ -20,31 +39,14 @@ double SB_BinaryStats_diff_longstretch0(const double y[], const int size){
         }
     }
     
-    // binarize
+    // binarize: 1 for a stepwise increase, 0 otherwise (as in hctsa's BF_Binarize)
     int * yBin = malloc((size-1) * sizeof(int));
     for(int i = 0; i < size-1; i++){
-        
-        double diffTemp = y[i+1] - y[i];
-        yBin[i] = diffTemp < 0 ? 0 : 1;
-        
-        /*
-        if( i < 300)
-            printf("%i, y[i+1]=%1.3f, y[i]=%1.3f, yBin[i]=%i\n", i, y[i+1], y[i], yBin[i]);
-         */
-        
+        yBin[i] = (y[i+1] - y[i] > 0) ? 1 : 0;
     }
     
-    int maxstretch0 = 0;
-    int last1 = 0;
-    for(int i = 0; i < size-1; i++){
-        if(yBin[i] == 1 || i == size-2){
-            double stretch0 = i - last1;
-            if(stretch0 > maxstretch0){
-                maxstretch0 = stretch0;
-            }
-            last1 = i;
-        }
-    }
+    // longest stretch of non-increasing steps
+    int maxstretch0 = longest_run(yBin, size-1, 0);
     
     free(yBin);
     
@@ -62,28 +64,15 @@ double SB_BinaryStats_mean_longstretch1(const double y[], const int size){
         }
     }
     
-    // binarize
-    int * yBin = malloc((size-1) * sizeof(int));
+    // binarize: 1 for values above the mean, 0 otherwise
+    int * yBin = malloc(size * sizeof(int));
     double yMean = mean(y, size);
-    for(int i = 0; i < size-1; i++){
-        
-        yBin[i] = (y[i] - yMean <= 0) ? 0 : 1;
-        //printf("yBin[%i]=%i\n", i, yBin[i]);
-        
+    for(int i = 0; i < size; i++){
+        yBin[i] = (y[i] - yMean > 0) ? 1 : 0;
     }
     
-    int maxstretch1 = 0;
-    int last1 = 0;
-    for(int i = 0; i < size-1; i++){
-        if(yBin[i] == 0 || i == size-2){
-            double stretch1 = i - last1;
-            if(stretch1 > maxstretch1){
-                maxstretch1 = stretch1;
-            }
-            last1 = i;
-        }
-        
-    }
+    // longest stretch of above-mean values
+    int maxstretch1 = longest_run(yBin, size, 1);
     
     free(yBin);
     

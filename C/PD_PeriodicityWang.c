@@ -136,7 +136,8 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
                     continue;
 
                 // use this frequency that first fulfils all conditions.
-                out = iPeak;
+                // acf[iPeak] holds lag iPeak+1
+                out = iPeak + 1;
                 done = 1;
                 break;
             }

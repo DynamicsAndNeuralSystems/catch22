@@ -49,8 +49,9 @@ double IN_AutoMutualInfoStats_40_gaussian_fmmi(const double y[], const int size)
         ac = autocorr_lag(y, size, i + 2);
         double ami_next = -0.5 * log(1.0 - ac * ac);
 
+        // ami_curr is the AMI at lag i+1
         if (ami_curr < ami_prev && ami_curr < ami_next) {
-            fmmi = i;
+            fmmi = i + 1;
             break;
         }
 
