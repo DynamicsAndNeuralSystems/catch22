@@ -11,8 +11,8 @@
 0.05070841167817, FC_LocalSimple_mean3_stderr, 0.000000
 6.00000000000000, IN_AutoMutualInfoStats_40_gaussian_fmmi, 0.002000
 1.00000000000000, MD_hrv_classic_pnn40, 0.000000
-1.00000000000000, SB_BinaryStats_diff_longstretch0, 0.001000
-5.00000000000000, SB_BinaryStats_mean_longstretch1, 0.000000
+0.00000000000000, SB_BinaryStats_diff_longstretch0, 0.001000
+6.00000000000000, SB_BinaryStats_mean_longstretch1, 0.000000
 1.49903067297901, SB_MotifThree_quantile_hh, 0.004000
 0.00000000000000, SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1, 0.007000
 0.00000000000000, SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1, 0.006000

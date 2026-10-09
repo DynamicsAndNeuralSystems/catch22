@@ -80,8 +80,8 @@ if isempty(extremai)
     % fmmi
     out = lami; % actually represents lag, because indexes don't but diff delays by 1
 else
-    % fmmi
-    out = min(extremai);
+    % fmmi: a minimum at dami index i is at ami index (lag) i+1
+    out = min(extremai) + 1;
 end
 
 end
