@@ -7,189 +7,137 @@
 #include "stats.h"
 #include "CO_AutoCorr.h"
 
+// Sum of squared residuals of a least-squares straight-line fit of y on x
+static double line_fit_sse(const double x[], const double y[], const int n)
+{
+    double m = 0.0, b = 0.0;
+    linreg(n, x, y, &m, &b);
+    double sse = 0.0;
+    for (int i = 0; i < n; i++) {
+        const double e = m * x[i] + b - y[i];
+        sse += e * e;
+    }
+    return sse;
+}
+
+static int compare_ints(const void * a, const void * b)
+{
+    return (*(const int *)a > *(const int *)b) - (*(const int *)a < *(const int *)b);
+}
+
+// Fluctuation analysis with a two-regime fit, as hctsa's
+// SC_FluctAnal(x,2,how,50,1,lag,true) output prop_r1: the proportion of the
+// (log-spaced) timescales that fall in the first of two scaling regimes.
+// how is "rsrangefit" (range of linearly detrended windows) or "dfa"
+// (detrended fluctuation analysis, linear detrending).
 double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const int lag, const char how[])
 {
-    // NaN check
-    for (int i = 0; i < size; i++)
-    {
-        if (isnan(y[i]))
-        {
+    for (int i = 0; i < size; i++) {
+        if (!isfinite(y[i])) {
             return NAN;
         }
     }
+    const int tauStep = 50;
 
-    // generate log spaced tau vector
-    double linLow  = log(5);
-    double linHigh = log(size/2);
-
-    int nTauSteps = 50;
-    double tauStep = (linHigh - linLow) / (nTauSteps-1);
-
-    int tau[50];
-    for (int i = 0; i < nTauSteps; i++)
-    {
-        tau[i] = round(exp(linLow + i*tauStep));
+    // integrate every lag-th sample
+    const int Ny = (size + lag - 1) / lag;
+    if (Ny < 10) {
+        return NAN;
     }
-
-    // check for uniqueness, use ascending order
-    int nTau = nTauSteps;
-    for (int i = 0; i < nTauSteps-1; i++)
-    {
-        while (tau[i] == tau[i+1] && i < nTau-1)
-        {
-            for (int j = i+1; j < nTauSteps-1; j++)
-            {
-                tau[j] = tau[j+1];
-            }
-            // lost one
-            nTau -= 1;
-        }
-    }
-
-    // fewer than 12 points -> leave.
-    if (nTau < 12) {
-        return 0;
-    }
-
-    const int isDFA = (strcmp(how, "dfa") == 0);
-    if (!isDFA && strcmp(how, "rsrangefit") != 0) {
-        return 0.0;
-    }
-
-    const int sizeCS = size/lag;
-    double *yCS = malloc(sizeCS * sizeof *yCS);
-    double *F   = malloc(nTau * sizeof *F);
-
-    // transform input vector to cumsum
+    double * yCS = malloc(Ny * sizeof * yCS);
     yCS[0] = y[0];
-    for (int i = 0; i < sizeCS-1; i++)
-    {
-        yCS[i+1] = yCS[i] + y[(i+1)*lag];
+    for (int i = 1; i < Ny; i++) {
+        yCS[i] = yCS[i-1] + y[i * lag];
     }
 
-    for (int i = 0; i < nTau; i++)
-    {
-        const int t       = tau[i];
-        const int nBuffer = sizeCS/t;
-
-        // x-moments of the regression depend only on tau -> hoisted out of the
-        // window loop
-        double sumx = 0.0, sumx2 = 0.0;
-        for (int k = 0; k < t; k++)
-        {
-            const double xv = (double)(k+1);
-            sumx  += xv;
-            sumx2 += xv*xv;
+    // up to tauStep log-spaced timescales from 5 to floor(Ny/2), rounded and de-duplicated
+    const double linLow = log(5.0);
+    const double linHigh = log((double)(Ny / 2));
+    int * tau = malloc(tauStep * sizeof * tau);
+    for (int i = 0; i < tauStep; i++) {
+        tau[i] = (int)round(exp(linLow + i * (linHigh - linLow) / (tauStep - 1)));
+    }
+    tau[tauStep - 1] = Ny / 2; // the endpoint exactly
+    qsort(tau, tauStep, sizeof * tau, compare_ints);
+    int nTau = 0;
+    for (int i = 0; i < tauStep; i++) {
+        if (nTau == 0 || tau[i] != tau[nTau - 1]) {
+            tau[nTau++] = tau[i];
         }
-        const double denom    = ((double)t * sumx2 - sumx*sumx);
-        const int    singular = (denom == 0);
+    }
+    if (nTau < 8) { // too few timescales to analyse
+        free(yCS);
+        free(tau);
+        return NAN;
+    }
 
-        double Fi = 0.0;
-
-        for (int j = 0; j < nBuffer; j++)
-        {
-            const double *w = yCS + (size_t)j*t;
-
-            double sumxy = 0.0, sumy = 0.0;
-            for (int k = 0; k < t; k++)
-            {
-                const double xv = (double)(k+1);
-                sumxy += xv * w[k];
-                sumy  += w[k];
-            }
-
+    // fluctuation at each timescale, over the floor(Ny/tau) full windows
+    double * xReg = malloc(tau[nTau - 1] * sizeof * xReg);
+    for (int i = 0; i < tau[nTau - 1]; i++) {
+        xReg[i] = i + 1;
+    }
+    double * buffer = malloc(tau[nTau - 1] * sizeof * buffer);
+    double * logtt = malloc(nTau * sizeof * logtt);
+    double * logFF = malloc(nTau * sizeof * logFF);
+    const int isDFA = (strcmp(how, "dfa") == 0);
+    for (int i = 0; i < nTau; i++) {
+        const int t = tau[i];
+        const int nWindows = Ny / t;
+        double F = 0.0;
+        for (int j = 0; j < nWindows; j++) {
             double m = 0.0, b = 0.0;
-            if (!singular)
-            {
-                m = ((double)t * sumxy - sumx * sumy) / denom;
-                b = (sumy * sumx2 - sumx * sumxy) / denom;
+            linreg(t, xReg, yCS + j * t, &m, &b);
+            for (int k = 0; k < t; k++) {
+                buffer[k] = yCS[j * t + k] - (m * (k + 1) + b);
             }
-
-            // detrend fused with the reduction: no scratch buffer
-            if (isDFA)
-            {
-                for (int k = 0; k < t; k++)
-                {
-                    const double r = w[k] - (m * (k+1) + b);
-                    Fi += r*r;
+            if (isDFA) {
+                for (int k = 0; k < t; k++) {
+                    F += buffer[k] * buffer[k];
                 }
             }
-            else
-            {
-                double r  = w[0] - (m * (0+1) + b);
-                double mx = r, mn = r;
-                for (int k = 1; k < t; k++)
-                {
-                    r = w[k] - (m * (k+1) + b);
-                    if (r > mx) mx = r;
-                    if (r < mn) mn = r;
-                }
-                const double d = mx - mn;
-                Fi += d*d;
+            else {
+                const double range = max_(buffer, t) - min_(buffer, t);
+                F += range * range;
             }
         }
-
-        F[i] = isDFA ? sqrt(Fi/(nBuffer*t)) : sqrt(Fi/nBuffer);
+        F = isDFA ? sqrt(F / (nWindows * t)) : sqrt(F / nWindows);
+        logtt[i] = log((double)t);
+        logFF[i] = log(F);
     }
 
-    double *logtt = malloc(nTau * sizeof *logtt);
-    double *logFF = malloc(nTau * sizeof *logFF);
-    int ntt = nTau;
-
-    for (int i = 0; i < nTau; i++)
-    {
-        logtt[i] = log(tau[i]);
-        logFF[i] = log(F[i]);
+    // two-regime fit: choose the split minimising the total squared error of the two
+    // line fits (which share the split point), each regime having at least minPoints
+    // points. hctsa's rule needs at least 16 timescales; for shorter series (8-15
+    // timescales), catch22 relaxes it to half the timescales per regime, so that a value
+    // is still returned (define CATCH22_HCTSA_STRICT_LENGTHS to use hctsa's rule only).
+    int minPoints = (int)fmax(8, round(0.25 * nTau));
+#ifndef CATCH22_HCTSA_STRICT_LENGTHS
+    if (nTau < 2 * minPoints) {
+        minPoints = nTau / 2;
     }
-
-    int minPoints = 6;
-    int nsserr = (ntt - 2*minPoints + 1);
-    double *sserr  = malloc(nsserr * sizeof *sserr);
-    double *buffer = malloc((ntt - minPoints + 1) * sizeof *buffer);
-    for (int i = minPoints; i < ntt - minPoints + 1; i++)
-    {
-        double m1 = 0.0, b1 = 0.0;
-        double m2 = 0.0, b2 = 0.0;
-
-        sserr[i - minPoints] = 0.0;
-
-        linreg(i, logtt, logFF, &m1, &b1);
-        linreg(ntt-i+1, logtt+i-1, logFF+i-1, &m2, &b2);
-
-        for (int j = 0; j < i; j++)
-        {
-            buffer[j] = logtt[j] * m1 + b1 - logFF[j];
+#endif
+    double out = NAN;
+    if (nTau >= 2 * minPoints) {
+        double minErr = INFINITY;
+        int breakPt = 0;
+        for (int i = minPoints; i <= nTau - minPoints; i++) { // i: number of points in the first regime
+            const double sse = line_fit_sse(logtt, logFF, i) + line_fit_sse(logtt + i - 1, logFF + i - 1, nTau - i + 1);
+            const double err = sse / nTau;
+            if (err < minErr) {
+                minErr = err;
+                breakPt = i;
+            }
         }
-
-        sserr[i - minPoints] += norm_(buffer, i);
-
-        for (int j = 0; j < ntt-i+1; j++)
-        {
-            buffer[j] = logtt[j+i-1] * m2 + b2 - logFF[j+i-1];
-        }
-
-        sserr[i - minPoints] += norm_(buffer, ntt-i+1);
-    }
-
-    double firstMinInd = 0.0;
-    double minimum = min_(sserr, nsserr);
-    for (int i = 0; i < nsserr; i++)
-    {
-        if (sserr[i] == minimum)
-        {
-            firstMinInd = i + minPoints - 1;
-            break;
-        }
+        out = (double)breakPt / nTau;
     }
 
     free(yCS);
-    free(F);
+    free(tau);
+    free(xReg);
+    free(buffer);
     free(logtt);
     free(logFF);
-    free(sserr);
-    free(buffer);
-
-    return (firstMinInd+1)/ntt;
+    return out;
 }
 
 double SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1(const double y[], const int size){

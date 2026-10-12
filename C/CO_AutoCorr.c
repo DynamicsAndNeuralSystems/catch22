@@ -176,42 +176,41 @@ int co_firstzero(const double y[], const int size, const int maxtau)
     
 }
 
+// First crossing of a threshold by the autocorrelation function, linearly
+// interpolated between the two lags either side of it (as hctsa's
+// CO_FirstCrossing(y,'ac',threshold,'continuous')). Returns size-1 if the ACF
+// never crosses, and NAN if the ACF is undefined.
+double co_firstcrossing_continuous(const double y[], const int size, const double threshold)
+{
+    if (size < 2) {
+        return NAN;
+    }
+    double * autocorrs = co_autocorrs(y, size);
+    if (!isfinite(autocorrs[0])) {
+        free(autocorrs);
+        return NAN;
+    }
+    double out = size - 1;
+    for (int k = 1; k < size; k++) {
+        if (autocorrs[k] < threshold) {
+            out = (k - 1) + (autocorrs[k-1] - threshold) / (autocorrs[k-1] - autocorrs[k]);
+            break;
+        }
+    }
+    free(autocorrs);
+    return out;
+}
+
 double CO_f1ecac(const double y[], const int size)
 {
-    
     // NaN check
-    for(int i = 0; i < size; i++)
-    {
-        if(isnan(y[i]))
-        {
-            return 0;
+    for (int i = 0; i < size; i++) {
+        if (!isfinite(y[i])) {
+            return NAN;
         }
     }
-    
-    // compute autocorrelations
-    double * autocorrs = co_autocorrs(y, size);
-
-    // threshold to cross
-    double thresh = 1.0/exp(1);
-    
-    double out = (double)size;
-    for(int i = 0; i < size-2; i++){
-        // printf("i=%d autocorrs_i=%1.3f\n", i, autocorrs[i]);
-        if ( autocorrs[i+1] < thresh ){
-            double m = autocorrs[i+1] - autocorrs[i];
-            double dy = thresh - autocorrs[i];
-            double dx = dy/m;
-            out = ((double)i) + dx;
-            // printf("thresh=%1.3f AC(i)=%1.3f AC(i-1)=%1.3f m=%1.3f dy=%1.3f dx=%1.3f out=%1.3f\n", thresh, autocorrs[i], autocorrs[i-1], m, dy, dx, out);
-            free(autocorrs);
-            return out;
-        }
-    }
-    
-    free(autocorrs);
-    
-    return out;
-    
+    // first 1/e crossing of the autocorrelation function
+    return co_firstcrossing_continuous(y, size, 1.0/exp(1));
 }
 
 double CO_Embed2_Basic_tau_incircle(const double y[], const int size, const double radius, const int tau)
@@ -290,9 +289,9 @@ double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
      */
     
     int nBins = num_bins_auto(d, size-tau-1);
-    if (nBins == 0){
+    if (nBins == 0){ // distances (almost) constant: no distribution to fit
         free(d);
-        return 0;
+        return NAN;
     }
     int * histCounts = malloc(nBins * sizeof(double));
     double * binEdges = malloc((nBins + 1) * sizeof(double));
@@ -300,11 +299,13 @@ double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
     
     //printf("histcount ran\n");
     
-    // normalise to probability
+    // normalise to a probability density
     double * histCountsNorm = malloc(nBins * sizeof(double));
     for(int i = 0; i < nBins; i++){
         //printf("histCounts %i: %i\n", i, histCounts[i]);
-        histCountsNorm[i] = (double)histCounts[i]/(double)(size-tau-1);
+        // probability density (count / (n * bin width)), so it is comparable with
+        // the exponential density below (as hctsa's 'pdf' normalisation)
+        histCountsNorm[i] = (double)histCounts[i]/(double)(size-tau-1)/(binEdges[i+1] - binEdges[i]);
         //printf("histCounts norm %i: %1.3f\n", i, histCountsNorm[i]);
     }
     
@@ -349,16 +350,19 @@ double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
     
 }
 
-int CO_FirstMin_ac(const double y[], const int size)
+double CO_FirstMin_ac(const double y[], const int size)
 {
     
     // NaN check
     for(int i = 0; i < size; i++)
     {
-        if(isnan(y[i]))
+        if(!isfinite(y[i]))
         {
-            return 0;
+            return NAN;
         }
+    }
+    if (size < 3) {
+        return NAN;
     }
     
     double * autocorrs = co_autocorrs(y, size);
@@ -549,6 +553,19 @@ double CO_HistogramAMI_even_2_5(const double y[], const int size)
             }
         }
     }
+
+    // Panzeri-Treves (Miller-Madow) bias correction, as hctsa's CO_HistogramAMI:
+    // subtract (Mxy - Mx - My + 1)/(2n) for Mxy occupied joint bins, Mx and My
+    // occupied marginal bins, and n pairs
+    int Mxy = 0, Mx = 0, My = 0;
+    for(int i = 0; i < numBins; i++){
+        if(pi[i] > 0) Mx++;
+        if(pj[i] > 0) My++;
+        for(int j = 0; j < numBins; j++){
+            if(pij[i][j] > 0) Mxy++;
+        }
+    }
+    ami -= (Mxy - Mx - My + 1) / (2.0 * (size - tau));
     
     free(bins1);
     free(bins2);

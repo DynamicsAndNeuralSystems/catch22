@@ -54,14 +54,14 @@ static void PD_acf_block(const double * restrict y, const int n, const int tLo,
     }
 }
 
-int PD_PeriodicityWang_th0_01(const double * y, const int size){
+double PD_PeriodicityWang_th0_01(const double * y, const int size){
 
     // NaN check
     for(int i = 0; i < size; i++)
     {
-        if(isnan(y[i]))
+        if(!isfinite(y[i]))
         {
-            return 0;
+            return NAN;
         }
     }
 
@@ -86,7 +86,7 @@ int PD_PeriodicityWang_th0_01(const double * y, const int size){
 
     int nTroughs = 0;
     int jT   = -1;   // last trough before the peak under test; monotone
-    int out  = 0;
+    double out = 0; // no qualifying peak: no periodicity at this threshold
     int have = 0;    // acf[0 .. have-1] computed, i.e. lags 1 .. have
     int nextI = 1;   // next acf index to classify
     int done = 0;
