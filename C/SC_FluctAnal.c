@@ -107,15 +107,8 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
 
     // two-regime fit: choose the split minimising the total squared error of the two
     // line fits (which share the split point), each regime having at least minPoints
-    // points. hctsa's rule needs at least 16 timescales; for shorter series (8-15
-    // timescales), catch22 relaxes it to half the timescales per regime, so that a value
-    // is still returned (define CATCH22_HCTSA_STRICT_LENGTHS to use hctsa's rule only).
-    int minPoints = (int)fmax(8, round(0.25 * nTau));
-#ifndef CATCH22_HCTSA_STRICT_LENGTHS
-    if (nTau < 2 * minPoints) {
-        minPoints = nTau / 2;
-    }
-#endif
+    // points (so at least 16 timescales are needed; otherwise NaN, masked by catch22_compute)
+    const int minPoints = (int)fmax(8, round(0.25 * nTau));
     double out = NAN;
     if (nTau >= 2 * minPoints) {
         double minErr = INFINITY;

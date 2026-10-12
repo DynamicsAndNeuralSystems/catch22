@@ -256,13 +256,16 @@ static void test_catch22_compute(void)
     for (int i = 0; i < CATCH22_N_FEATURES; i++) nNaN += isnan(out[i]);
     check("NaN input: all features NaN even with masking", nNaN, 22, 0);
 
-    // a short series gets 22 real numbers by default (relaxed lengths, then masking)
+    // a short series gets 22 real numbers by default: dfa needs a series of length >= 79
+    // (as in hctsa), so for length 60 it is masked (one scaling regime)
     double * y = gaussian_noise(60);
     catch22_compute(y, 60, 0, 1, out, masked);
     nNaN = 0;
     for (int i = 0; i < CATCH22_N_FEATURES; i++) nNaN += isnan(out[i]);
     check("length-60 series: no NaN", nNaN, 0, 0);
-    check("length-60 series: dfa computed, not masked", masked[21], 0, 0);
+    check("length-60 series: dfa masked", masked[21], 1, 0);
+    check("length-60 series: dfa masked to one regime", out[21], 1.0, 0);
+    check("length-60 series: rs_range computed, not masked", masked[20], 0, 0);
     free(y);
 
     // embedding_dist on real series stays below its mask (the theoretical ceiling)
