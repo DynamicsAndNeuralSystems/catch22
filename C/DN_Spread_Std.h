@@ -7,6 +7,6 @@
 
 #include <stdio.h>
 
-extern double DN_Spread_Std(const double a[], const int size);
+extern double DN_Spread_std(const double a[], const int size);
 
 #endif /* DN_SPREADSTD */

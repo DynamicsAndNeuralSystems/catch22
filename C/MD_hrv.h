@@ -11,6 +11,6 @@
 
 #include <stdio.h>
 
-extern double MD_hrv_classic_pnn40(const double y[], const int size);
+extern double MD_pNN_pnn40(const double y[], const int size);
 
 #endif /* MD_hrv_h */

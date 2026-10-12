@@ -201,7 +201,7 @@ double co_firstcrossing_continuous(const double y[], const int size, const doubl
     return out;
 }
 
-double CO_f1ecac(const double y[], const int size)
+double CO_FirstCrossing_acf_1e_pointOfCrossing(const double y[], const int size)
 {
     // NaN check
     for (int i = 0; i < size; i++) {
@@ -421,7 +421,7 @@ double CO_trev_1_num(const double y[], const int size)
 #define tau 2
 #define numBins 5
 
-double CO_HistogramAMI_even_2_5(const double y[], const int size)
+double CO_HistogramAMI_even_5bin_ami2(const double y[], const int size)
 {
     
     // NaN check

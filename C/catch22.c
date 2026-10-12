@@ -1,0 +1,165 @@
+// Single entry point for computing the catch22 (or catch24) feature set.
+
+#include <math.h>
+#include <stdlib.h>
+#include <time.h>
+
+#include "catch22.h"
+#include "CO_AutoCorr.h"
+#include "DN_HistogramMode_5.h"
+#include "DN_HistogramMode_10.h"
+#include "DN_Mean.h"
+#include "DN_OutlierInclude.h"
+#include "DN_Spread_Std.h"
+#include "FC_LocalSimple.h"
+#include "IN_AutoMutualInfoStats.h"
+#include "MD_hrv.h"
+#include "PD_PeriodicityWang.h"
+#include "SB_BinaryStats.h"
+#include "SB_MotifThree.h"
+#include "SB_TransitionMatrix.h"
+#include "SC_FluctAnal.h"
+#include "SP_Summaries.h"
+#include "stats.h"
+
+// ---------------------------------------------------------------------------
+// Mask values: what a feature reports, with masking on, when it cannot be
+// estimated. A constant series is treated as the limit of an infinitely slow,
+// perfectly predictable series, and a failure as the absence of the structure
+// that the feature looks for, which places it at one end of the feature's range.
+// ---------------------------------------------------------------------------
+
+static double mask_zero(const int n) { (void) n; return 0.0; }
+static double mask_one(const int n) { (void) n; return 1.0; }
+// the autocorrelation never decays (the convention when the ACF never crosses)
+static double mask_acf_timescale(const int n) { return n - 1; }
+// no minimum of the ACF (the convention when no minimum is found)
+static double mask_acf_first_min(const int n) { return n; }
+// no minimum of the AMI within the lags analysed (the feature's own convention)
+static double mask_ami_timescale(const int n) { return fmin(40, (n + 1) / 2); }
+// perfectly predictable transitions: the largest value possible with three
+// equiprobable symbols (the joint transition matrix of a permutation)
+static double mask_transition_variance(const int n) { (void) n; return 1.0 / 9.0; }
+// distances maximally far from exponential: an upper bound that no computable
+// series of length n can reach. The feature is at most 1/range(d) + 1/mean(d),
+// with range(d) >= sqrt(2)*0.001 when it can be computed (SD(d) >= 0.001), and
+// mean(d) >= sqrt(2)*sqrt((n-1)/n)/(n-2) for a z-scored series.
+static double mask_embedding_dist(const int n)
+{
+    const double rangeTerm = 1.0 / (sqrt(2.0) * 0.001);
+    const double meanTerm = (n > 2) ? (n - 2) / (sqrt(2.0) * sqrt((n - 1.0) / n)) : 0.0;
+    return rangeTerm + meanTerm;
+}
+
+typedef struct {
+    const char * name;      // long name (matches hctsa)
+    const char * shortName;
+    double (*compute)(const double y[], const int size);
+    double (*mask)(const int n);
+} catch22_feature;
+
+static const catch22_feature FEATURES[CATCH22_N_FEATURES] = {
+    {"DN_HistogramMode_5", "mode_5", DN_HistogramMode_5, mask_zero},
+    {"DN_HistogramMode_10", "mode_10", DN_HistogramMode_10, mask_zero},
+    {"DN_OutlierInclude_p_001_mdrmd", "outlier_timing_pos", DN_OutlierInclude_p_001_mdrmd, mask_zero},
+    {"DN_OutlierInclude_n_001_mdrmd", "outlier_timing_neg", DN_OutlierInclude_n_001_mdrmd, mask_zero},
+    {"CO_FirstCrossing_acf_1e_pointOfCrossing", "acf_timescale", CO_FirstCrossing_acf_1e_pointOfCrossing, mask_acf_timescale},
+    {"CO_FirstMin_ac", "acf_first_min", CO_FirstMin_ac, mask_acf_first_min},
+    {"SP_Summaries_fft_area_5_1", "low_freq_power", SP_Summaries_fft_area_5_1, mask_one},
+    {"SP_Summaries_fft_wmax_50", "median_freq", SP_Summaries_fft_wmax_50, mask_zero},
+    {"FC_LocalSimple_mean3_stde", "forecast_error", FC_LocalSimple_mean3_stde, mask_zero},
+    {"FC_LocalSimple_mean1_taurat", "whiten_timescale", FC_LocalSimple_mean1_taurat, mask_zero},
+    {"MD_pNN_pnn40", "high_fluctuation", MD_pNN_pnn40, mask_zero},
+    {"SB_BinaryStats_mean_longstretch1", "stretch_high", SB_BinaryStats_mean_longstretch1, mask_zero},
+    {"SB_BinaryStats_diff_longstretch0", "stretch_decreasing", SB_BinaryStats_diff_longstretch0, mask_zero},
+    {"SB_MotifThree_quantile_hh", "entropy_pairs", SB_MotifThree_quantile_hh, mask_zero},
+    {"CO_HistogramAMI_even_5bin_ami2", "ami2", CO_HistogramAMI_even_5bin_ami2, mask_zero},
+    {"CO_trev_1_num", "trev", CO_trev_1_num, mask_zero},
+    {"IN_AutoMutualInfoStats_40_gaussian_fmmi", "ami_timescale", IN_AutoMutualInfoStats_40_gaussian_fmmi, mask_ami_timescale},
+    {"SB_TransitionMatrix_3ac_sumdiagcov", "transition_variance", SB_TransitionMatrix_3ac_sumdiagcov, mask_transition_variance},
+    {"PD_PeriodicityWang_th0_01", "periodicity", PD_PeriodicityWang_th0_01, mask_zero},
+    {"CO_Embed2_Dist_tau_d_expfit_meandiff", "embedding_dist", CO_Embed2_Dist_tau_d_expfit_meandiff, mask_embedding_dist},
+    {"SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1", "rs_range", SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1, mask_one},
+    {"SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1", "dfa", SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1, mask_one},
+};
+
+// catch24 adds the location and spread of the raw (not z-scored) series
+static const char * CATCH24_NAMES[2] = {"DN_mean", "DN_Spread_std"};
+static const char * CATCH24_SHORT_NAMES[2] = {"mean", "std"};
+
+int catch22_n_features(const int catch24)
+{
+    return catch24 ? CATCH24_N_FEATURES : CATCH22_N_FEATURES;
+}
+
+const char * catch22_feature_name(const int i)
+{
+    if (i >= 0 && i < CATCH22_N_FEATURES) return FEATURES[i].name;
+    if (i >= CATCH22_N_FEATURES && i < CATCH24_N_FEATURES) return CATCH24_NAMES[i - CATCH22_N_FEATURES];
+    return NULL;
+}
+
+const char * catch22_short_name(const int i)
+{
+    if (i >= 0 && i < CATCH22_N_FEATURES) return FEATURES[i].shortName;
+    if (i >= CATCH22_N_FEATURES && i < CATCH24_N_FEATURES) return CATCH24_SHORT_NAMES[i - CATCH22_N_FEATURES];
+    return NULL;
+}
+
+int catch22_compute(const double y[], const int n, const int catch24, const int mask_nans,
+                    double out[], int masked[])
+{
+    return catch22_compute_timed(y, n, catch24, mask_nans, out, masked, NULL);
+}
+
+int catch22_compute_timed(const double y[], const int n, const int catch24, const int mask_nans,
+                          double out[], int masked[], double time_ms[])
+{
+    const int nOut = catch22_n_features(catch24);
+    for (int i = 0; i < nOut; i++) {
+        out[i] = NAN;
+        if (masked) masked[i] = 0;
+        if (time_ms) time_ms[i] = 0.0;
+    }
+
+    // NaN/Inf in the input (or no input): a data problem, never masked
+    int isConstant = 1;
+    for (int i = 0; i < n; i++) {
+        if (!isfinite(y[i])) {
+            return CATCH22_BAD_INPUT;
+        }
+        if (y[i] != y[0]) {
+            isConstant = 0;
+        }
+    }
+    if (n < 1) {
+        return CATCH22_BAD_INPUT;
+    }
+
+    if (catch24) {
+        out[CATCH22_N_FEATURES] = DN_mean(y, n);
+        out[CATCH22_N_FEATURES + 1] = (n > 1) ? DN_Spread_std(y, n) : NAN;
+    }
+
+    // features of the z-scored series (left NaN for a constant series, which cannot be z-scored)
+    if (!isConstant) {
+        double * z = malloc(n * sizeof * z);
+        zscore_norm2(y, n, z);
+        for (int i = 0; i < CATCH22_N_FEATURES; i++) {
+            const clock_t begin = clock();
+            out[i] = FEATURES[i].compute(z, n);
+            if (time_ms) time_ms[i] = (double)(clock() - begin) * 1000 / CLOCKS_PER_SEC;
+        }
+        free(z);
+    }
+
+    if (mask_nans) {
+        for (int i = 0; i < CATCH22_N_FEATURES; i++) {
+            if (isnan(out[i])) {
+                out[i] = FEATURES[i].mask(n);
+                if (masked) masked[i] = 1;
+            }
+        }
+    }
+    return CATCH22_OK;
+}

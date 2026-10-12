@@ -19,6 +19,7 @@
 #include "SB_BinaryStats.h"
 #include "SB_MotifThree.h"
 #include "SP_Summaries.h"
+#include "catch22.h"
 
 #define PI 3.14159265358979323846
 
@@ -94,11 +95,11 @@ static void test_sines(void)
         const int k = (int) floor(P * acos(thresh) / (2 * PI));
         const double rk = cos(2 * PI * k / P), rk1 = cos(2 * PI * (k + 1) / P);
         snprintf(what, sizeof what, "acf_timescale of a period-%d sine", P);
-        check(what, CO_f1ecac(z, 2000), k + (rk - thresh) / (rk - rk1), 0.001 * P);
+        check(what, CO_FirstCrossing_acf_1e_pointOfCrossing(z, 2000), k + (rk - thresh) / (rk - rk1), 0.001 * P);
 
         // all power is at angular frequency 2 pi / P (within one frequency bin)
-        snprintf(what, sizeof what, "centroid_freq of a period-%d sine", P);
-        check(what, SP_Summaries_welch_rect_centroid(z, 2000), 2 * PI / P, 2 * PI / 2048);
+        snprintf(what, sizeof what, "median_freq of a period-%d sine", P);
+        check(what, SP_Summaries_fft_wmax_50(z, 2000), 2 * PI / P, 2 * PI / 2048);
 
         free(y);
         free(z);
@@ -124,7 +125,7 @@ static void test_stretches(void)
     double * z = zscored(ramp, 100);
     check("stretch_decreasing of an increasing ramp", SB_BinaryStats_diff_longstretch0(z, 100), 0, 0);
     check("stretch_high of an increasing ramp (final point included)", SB_BinaryStats_mean_longstretch1(z, 100), 50, 0);
-    check("forecast_error of a ramp", FC_LocalSimple_mean3_stderr(z, 100), 0, 1e-12);
+    check("forecast_error of a ramp", FC_LocalSimple_mean3_stde(z, 100), 0, 1e-12);
     free(z);
     z = zscored(rampDown, 100);
     check("stretch_decreasing of a decreasing ramp", SB_BinaryStats_diff_longstretch0(z, 100), 99, 0);
@@ -153,13 +154,16 @@ static void test_stretches(void)
     check("stretch_decreasing with an interior run of 5 decreases", SB_BinaryStats_diff_longstretch0(z, 30), 5, 0);
     free(z);
 
-    // zero differences count as non-increases (as in MATLAB): 4 flat steps
+    // only strict decreases count: flat steps are not decreases, and they break a run
     double flat[25];
     for (int i = 0; i < 10; i++) flat[i] = i;               // 0..9
     for (int i = 10; i < 14; i++) flat[i] = 9;              // 4 flat steps
     for (int i = 14; i < 25; i++) flat[i] = i - 4;          // 10..20
     z = zscored(flat, 25);
-    check("stretch_decreasing with 4 flat steps", SB_BinaryStats_diff_longstretch0(z, 25), 4, 0);
+    check("stretch_decreasing with 4 flat steps", SB_BinaryStats_diff_longstretch0(z, 25), 0, 0);
+    double tied[12] = {0, 5, 4, 3, 3, 2, 1, 0, 1, 2, 3, 4}; // decreases of 2 and 3 steps, separated by a tie
+    z = zscored(tied, 12);
+    check("stretch_decreasing with a tie inside a decrease", SB_BinaryStats_diff_longstretch0(z, 12), 3, 0);
     free(z);
 }
 
@@ -169,7 +173,7 @@ static void test_symbolic_and_increments(void)
     double alt[100];
     for (int i = 0; i < 100; i++) alt[i] = (i % 2 == 0) ? 1 : -1;
     double * z = zscored(alt, 100);
-    check("high_fluctuation of an alternating series", MD_hrv_classic_pnn40(z, 100), 1, 0);
+    check("high_fluctuation of an alternating series", MD_pNN_pnn40(z, 100), 1, 0);
     check("stretch_high of an alternating series", SB_BinaryStats_mean_longstretch1(z, 100), 1, 0);
     free(z);
 
@@ -209,14 +213,68 @@ static void test_white_noise(void)
     // all nine symbol pairs equally likely: entropy log 9
     check("entropy_pairs of white noise", SB_MotifThree_quantile_hh(z, N), log(9), 0.005);
     // flat spectrum: a fifth of the power in the lowest fifth of frequencies
-    check("low_freq_power of white noise", SP_Summaries_welch_rect_area_5_1(z, N), 0.2, 0.02);
+    check("low_freq_power of white noise", SP_Summaries_fft_area_5_1(z, N), 0.2, 0.02);
     // flat spectrum: half the power below pi/2
-    check("centroid_freq of white noise", SP_Summaries_welch_rect_centroid(z, N), PI / 2, 0.05);
+    check("median_freq of white noise", SP_Summaries_fft_wmax_50(z, N), PI / 2, 0.05);
     // ACF drops to ~0 at lag 1, so the 1/e crossing is interpolated to 1 - 1/e
-    check("acf_timescale of white noise", CO_f1ecac(z, N), 1 - 1 / exp(1), 0.02);
+    check("acf_timescale of white noise", CO_FirstCrossing_acf_1e_pointOfCrossing(z, N), 1 - 1 / exp(1), 0.02);
 
     free(y);
     free(z);
+}
+
+static void test_catch22_compute(void)
+{
+    double out[CATCH24_N_FEATURES];
+    int masked[CATCH24_N_FEATURES];
+
+    // a constant series cannot be z-scored: masked by default, NaN without masking
+    double constant[50];
+    for (int i = 0; i < 50; i++) constant[i] = 3.0;
+    check("constant series: return code", catch22_compute(constant, 50, 1, 1, out, masked), CATCH22_OK, 0);
+    int nMasked = 0, nNaN = 0;
+    for (int i = 0; i < CATCH22_N_FEATURES; i++) {
+        nMasked += masked[i];
+        nNaN += isnan(out[i]);
+    }
+    check("constant series: all 22 features masked", nMasked, 22, 0);
+    check("constant series: no NaN when masked", nNaN, 0, 0);
+    check("constant series: mean (catch24)", out[22], 3.0, 1e-12);
+    check("constant series: std (catch24)", out[23], 0.0, 1e-12);
+    check("constant series: rs_range masked to one regime", out[20], 1.0, 0);
+    catch22_compute(constant, 50, 0, 0, out, masked);
+    nNaN = 0;
+    for (int i = 0; i < CATCH22_N_FEATURES; i++) nNaN += isnan(out[i]);
+    check("constant series without masking: all NaN", nNaN, 22, 0);
+
+    // NaN in the input is a data problem: never masked
+    double withNaN[50];
+    for (int i = 0; i < 50; i++) withNaN[i] = i;
+    withNaN[10] = NAN;
+    check("NaN input: return code", catch22_compute(withNaN, 50, 0, 1, out, masked), CATCH22_BAD_INPUT, 0);
+    nNaN = 0;
+    for (int i = 0; i < CATCH22_N_FEATURES; i++) nNaN += isnan(out[i]);
+    check("NaN input: all features NaN even with masking", nNaN, 22, 0);
+
+    // a short series gets 22 real numbers by default (relaxed lengths, then masking)
+    double * y = gaussian_noise(60);
+    catch22_compute(y, 60, 0, 1, out, masked);
+    nNaN = 0;
+    for (int i = 0; i < CATCH22_N_FEATURES; i++) nNaN += isnan(out[i]);
+    check("length-60 series: no NaN", nNaN, 0, 0);
+    check("length-60 series: dfa computed, not masked", masked[21], 0, 0);
+    free(y);
+
+    // embedding_dist on real series stays below its mask (the theoretical ceiling)
+    y = gaussian_noise(1000);
+    for (int i = 1; i < 1000; i++) y[i] += y[i-1]; // a random walk
+    catch22_compute(y, 1000, 0, 1, out, masked);
+    // the ceiling grows with n, so the masked value for a length-50 constant series is a
+    // stricter test than the ceiling at n = 1000
+    double ceiling[CATCH22_N_FEATURES];
+    catch22_compute(constant, 50, 0, 1, ceiling, NULL);
+    check("embedding_dist of a random walk is below the masked ceiling", out[19] < ceiling[19], 1, 0);
+    free(y);
 }
 
 int main(void)
@@ -225,6 +283,7 @@ int main(void)
     test_stretches();
     test_symbolic_and_increments();
     test_white_noise();
+    test_catch22_compute();
 
     printf("%d passed, %d failed\n", nPass, nFail);
     return nFail > 0;

@@ -9,7 +9,7 @@
 #include "MD_hrv.h"
 #include "stats.h"
 
-double MD_hrv_classic_pnn40(const double y[], const int size){
+double MD_pNN_pnn40(const double y[], const int size){
     
     // NaN check
     for(int i = 0; i < size; i++)

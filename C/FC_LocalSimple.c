@@ -72,7 +72,7 @@ double fc_local_simple(const double y[], const int size, const int train_length)
 /* mean-forecast features                                             */
 /* ------------------------------------------------------------------ */
 
-double FC_LocalSimple_mean_tauresrat(const double y[], const int size, const int train_length)
+double FC_LocalSimple_mean_taurat(const double y[], const int size, const int train_length)
 {
     if (fc_has_nan(y, size)) return NAN;
     if (size <= train_length) return NAN;
@@ -108,14 +108,14 @@ double FC_LocalSimple_mean_stderr(const double y[], const int size, const int tr
     return output;
 }
 
-double FC_LocalSimple_mean3_stderr(const double y[], const int size)
+double FC_LocalSimple_mean3_stde(const double y[], const int size)
 {
     return FC_LocalSimple_mean_stderr(y, size, 3);
 }
 
-double FC_LocalSimple_mean1_tauresrat(const double y[], const int size)
+double FC_LocalSimple_mean1_taurat(const double y[], const int size)
 {
-    return FC_LocalSimple_mean_tauresrat(y, size, 1);
+    return FC_LocalSimple_mean_taurat(y, size, 1);
 }
 
 /* NB: no NaN guard here. */
