@@ -154,16 +154,16 @@ static void test_stretches(void)
     check("stretch_decreasing with an interior run of 5 decreases", SB_BinaryStats_diff_longstretch0(z, 30), 5, 0);
     free(z);
 
-    // only strict decreases count: flat steps are not decreases, and they break a run
+    // zero differences count as non-increases (as in hctsa): 4 flat steps
     double flat[25];
     for (int i = 0; i < 10; i++) flat[i] = i;               // 0..9
     for (int i = 10; i < 14; i++) flat[i] = 9;              // 4 flat steps
     for (int i = 14; i < 25; i++) flat[i] = i - 4;          // 10..20
     z = zscored(flat, 25);
-    check("stretch_decreasing with 4 flat steps", SB_BinaryStats_diff_longstretch0(z, 25), 0, 0);
-    double tied[12] = {0, 5, 4, 3, 3, 2, 1, 0, 1, 2, 3, 4}; // decreases of 2 and 3 steps, separated by a tie
+    check("stretch_decreasing with 4 flat steps", SB_BinaryStats_diff_longstretch0(z, 25), 4, 0);
+    double tied[12] = {0, 5, 4, 3, 3, 2, 1, 0, 1, 2, 3, 4}; // 6 non-increasing steps, including a tie
     z = zscored(tied, 12);
-    check("stretch_decreasing with a tie inside a decrease", SB_BinaryStats_diff_longstretch0(z, 12), 3, 0);
+    check("stretch_decreasing with a tie inside a decrease", SB_BinaryStats_diff_longstretch0(z, 12), 6, 0);
     free(z);
 }
 

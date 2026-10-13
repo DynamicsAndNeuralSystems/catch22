@@ -44,14 +44,14 @@ double SB_BinaryStats_diff_longstretch0(const double y[], const int size){
         return NAN;
     }
     
-    // 1 for a strict stepwise decrease, 0 otherwise (a zero difference breaks the run)
+    // binarize: 1 for a stepwise increase, 0 otherwise (as hctsa's SB_BinaryStats 'diff')
     int * yBin = malloc((size-1) * sizeof(int));
     for(int i = 0; i < size-1; i++){
-        yBin[i] = (y[i+1] - y[i] < 0) ? 1 : 0;
+        yBin[i] = (y[i+1] - y[i] > 0) ? 1 : 0;
     }
     
-    // longest stretch of strict decreases
-    int maxstretch0 = longest_run(yBin, size-1, 1);
+    // longest stretch of non-increasing steps
+    int maxstretch0 = longest_run(yBin, size-1, 0);
     
     free(yBin);
     
