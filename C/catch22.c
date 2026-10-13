@@ -66,7 +66,7 @@ static const catch22_feature FEATURES[CATCH22_N_FEATURES] = {
     {"CO_FirstCrossing_acf_1e_pointOfCrossing", "acf_timescale", CO_FirstCrossing_acf_1e_pointOfCrossing, mask_acf_timescale},
     {"CO_FirstMin_ac", "acf_first_min", CO_FirstMin_ac, mask_acf_first_min},
     {"SP_Summaries_fft_area_5_1", "low_freq_power", SP_Summaries_fft_area_5_1, mask_one},
-    {"SP_Summaries_fft_wmax_50", "median_freq", SP_Summaries_fft_wmax_50, mask_zero},
+    {"SP_Summaries_fft_wq_50", "median_freq", SP_Summaries_fft_wq_50, mask_zero},
     {"FC_LocalSimple_mean3_stde", "forecast_error", FC_LocalSimple_mean3_stde, mask_zero},
     {"FC_LocalSimple_mean1_taurat", "whiten_timescale", FC_LocalSimple_mean1_taurat, mask_zero},
     {"MD_pNN_pnn40", "high_fluctuation", MD_pNN_pnn40, mask_zero},

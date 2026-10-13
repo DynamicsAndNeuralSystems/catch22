@@ -67,7 +67,7 @@ static double sp_fft_summary(const double y[], const int size, const char what[]
     const double dw = w[1] - w[0];
 
     double output = NAN;
-    if (strcmp(what, "wmax_50") == 0) {
+    if (strcmp(what, "wq_50") == 0) {
         // the frequency below which half of the power lies (the median frequency)
         double total = 0;
         for (int k = 0; k < nBins; k++) {
@@ -100,7 +100,7 @@ double SP_Summaries_fft_area_5_1(const double y[], const int size)
     return sp_fft_summary(y, size, "area_5_1");
 }
 
-double SP_Summaries_fft_wmax_50(const double y[], const int size)
+double SP_Summaries_fft_wq_50(const double y[], const int size)
 {
-    return sp_fft_summary(y, size, "wmax_50");
+    return sp_fft_summary(y, size, "wq_50");
 }

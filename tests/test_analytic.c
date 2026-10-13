@@ -99,7 +99,7 @@ static void test_sines(void)
 
         // all power is at angular frequency 2 pi / P (within one frequency bin)
         snprintf(what, sizeof what, "median_freq of a period-%d sine", P);
-        check(what, SP_Summaries_fft_wmax_50(z, 2000), 2 * PI / P, 2 * PI / 2048);
+        check(what, SP_Summaries_fft_wq_50(z, 2000), 2 * PI / P, 2 * PI / 2048);
 
         free(y);
         free(z);
@@ -215,7 +215,7 @@ static void test_white_noise(void)
     // flat spectrum: a fifth of the power in the lowest fifth of frequencies
     check("low_freq_power of white noise", SP_Summaries_fft_area_5_1(z, N), 0.2, 0.02);
     // flat spectrum: half the power below pi/2
-    check("median_freq of white noise", SP_Summaries_fft_wmax_50(z, N), PI / 2, 0.05);
+    check("median_freq of white noise", SP_Summaries_fft_wq_50(z, N), PI / 2, 0.05);
     // ACF drops to ~0 at lag 1, so the 1/e crossing is interpolated to 1 - 1/e
     check("acf_timescale of white noise", CO_FirstCrossing_acf_1e_pointOfCrossing(z, N), 1 - 1 / exp(1), 0.02);
 

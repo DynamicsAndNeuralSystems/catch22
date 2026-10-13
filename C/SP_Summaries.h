@@ -11,6 +11,6 @@
 #include <stdio.h>
 
 extern double SP_Summaries_fft_area_5_1(const double y[], const int size);
-extern double SP_Summaries_fft_wmax_50(const double y[], const int size);
+extern double SP_Summaries_fft_wq_50(const double y[], const int size);
 
 #endif /* SP_Summaries_h */
