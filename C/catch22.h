@@ -31,12 +31,19 @@ extern int catch22_compute_timed(const double y[], const int n, const int catch2
                                  double out[], int masked[], double time_ms[]);
 
 // Number of features (22, or 24 with catch24), and their names (long names
-// match hctsa's feature names; short names are for readability).
+// follow hctsa's feature names; short names are for readability).
 extern int catch22_n_features(const int catch24);
 extern const char * catch22_feature_name(const int i);
 extern const char * catch22_short_name(const int i);
 // The feature's long name in catch22 v0.x, for mapping earlier outputs (the
 // definitions have since changed to match hctsa, so values differ).
 extern const char * catch22_legacy_name(const int i);
+// The hctsa call that reproduces the feature exactly, as MATLAB code on x_z (the
+// z-scored series) or x (the raw series), with the output field selected by a
+// trailing .field, e.g. "SP_Summaries(x_z,'fft',[],[],false).wq_50". The long name
+// is hctsa's name for it where hctsa registers it; otherwise the name hctsa's naming
+// convention gives this call (MD_pNN_pnn40, CO_HistogramAMI_even_5bin_ami2,
+// SB_TransitionMatrix_quantile_3_ac_sumdiagcov).
+extern const char * catch22_hctsa_call(const int i);
 
 #endif

@@ -88,7 +88,7 @@ static double * resample_down(const double y[], const int size, const int q, int
     return out;
 }
 
-double SB_TransitionMatrix_3ac_sumdiagcov(const double y[], const int size)
+double SB_TransitionMatrix_quantile_3_ac_sumdiagcov(const double y[], const int size)
 {
 
     // NaN and const check

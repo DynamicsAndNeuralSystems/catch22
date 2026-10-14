@@ -39,6 +39,7 @@ void print_help(char *argv[], char msg[])
     }
     fprintf(stdout, "Usage is %s [--catch22 | --catch24] [--no-mask] <infile> [<outfile>]\n", argv[0]);
     fprintf(stdout, "\n\tSpecifying outfile is optional, by default it is stdout\n");
+    fprintf(stdout, "\n       %s --list\n\n\tList the 24 features (tab-separated: name, short name, v0.x name, hctsa call)\n", argv[0]);
     exit(1);
 }
 
@@ -58,6 +59,14 @@ int main(int argc, char * argv[])
         }
         else if (strcmp(argv[i], "--no-mask") == 0) {
             mask_nans = 0;
+        }
+        else if (strcmp(argv[i], "--list") == 0) {
+            fprintf(stdout, "name\tshort_name\tlegacy_name\thctsa_call\n");
+            for (int k = 0; k < catch22_n_features(1); k++) {
+                fprintf(stdout, "%s\t%s\t%s\t%s\n", catch22_feature_name(k), catch22_short_name(k),
+                        catch22_legacy_name(k), catch22_hctsa_call(k));
+            }
+            return 0;
         }
         else if (inName == NULL) {
             inName = argv[i];
