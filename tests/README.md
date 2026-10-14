@@ -13,7 +13,7 @@ gcc -O2 -IC tests/test_analytic.c $(ls C/*.c | grep -v main.c) -o test_analytic 
 python3 tests/check_regression.py C/run_features
 
 # 3. Reference test: the C matches hctsa (each feature's hctsa call)
-python3 tests/check_matlab_reference.py C/run_features
+python3 tests/check_hctsa_reference.py C/run_features
 ```
 
 The Python scripts use only the standard library.
@@ -22,7 +22,7 @@ The Python scripts use only the standard library.
 
 - **`test_analytic.c`**: feature values on time series whose correct output follows from first principles. For example, a sine wave of period _P_ has `PD_PeriodicityWang_th0_01` = _P_ and `CO_FirstMin_ac` = ⌊_P_/2⌋; a ramp has `SB_BinaryStats_diff_longstretch0` = 0; white noise has `SB_MotifThree_quantile_hh` ≈ log 9.
 - **`check_regression.py`**: catches any unintended change in feature values. Integer-valued features must match exactly; real-valued features to a relative tolerance of 1e-9 (to allow for floating-point differences across platforms and compilers). The committed expected outputs are never modified.
-- **`check_matlab_reference.py`**: checks the C (run with `--catch24 --no-mask`) against `reference/hctsa_reference.csv`. That file holds, for each series in `reference/series/`, the value of each feature's hctsa call. The calls are listed by `run_features --list` (in `reference/features.tsv`; `C/catch22.c` is the source), and `reference/hctsa_reference_version.txt` records the hctsa commit. All 24 features agree to 1e-9.
+- **`check_hctsa_reference.py`**: checks the C (run with `--catch24 --no-mask`) against `reference/hctsa_reference.csv`. That file holds, for each series in `reference/series/`, the value of each feature's hctsa call. The calls are listed by `run_features --list` (in `reference/features.tsv`; `C/catch22.c` is the source), and `reference/hctsa_reference_version.txt` records the hctsa commit. All 24 features agree to 1e-9.
 
 ## Updating expected values after an intentional change
 

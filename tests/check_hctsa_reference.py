@@ -11,7 +11,7 @@ commit is in hctsa_reference_version.txt. The C runs with --no-mask, since hctsa
 returns NaN where catch22 masks. Integer-valued features must match exactly;
 real-valued features to a relative tolerance.
 
-Usage: python3 tests/check_matlab_reference.py [path/to/run_features] [--tol 1e-9]
+Usage: python3 tests/check_hctsa_reference.py [path/to/run_features] [--tol 1e-9]
 Uses only the Python standard library.
 """
 import argparse

@@ -4,7 +4,7 @@ function make_hctsa_reference(hctsaDir)
 % Evaluates each feature's hctsa call, as listed by `run_features --list` in
 % tests/reference/features.tsv, on every series in tests/reference/series/, and
 % writes tests/reference/hctsa_reference.csv (with the hctsa commit in
-% hctsa_reference_version.txt). tests/check_matlab_reference.py compares the C
+% hctsa_reference_version.txt). tests/check_hctsa_reference.py compares the C
 % (run with --no-mask, since hctsa returns NaN where catch22 masks) against it.
 %
 % Run from MATLAB with the path to an hctsa checkout:
