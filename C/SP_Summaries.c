@@ -42,6 +42,19 @@ static int sp_fft_spectrum(const double y[], const int size, double ** S, double
         (*S)[k] = 2 * a * a / size / (2 * PI); // single-sided density, in angular frequency
         (*w)[k] = 2 * PI * (k + 1) / NFFT;
     }
+    // floor at 1e-12 of the maximum (120 dB below the peak), as hctsa: bins at
+    // the rounding level of the estimator are otherwise arbitrary
+    double Smax = (*S)[0];
+    for (int k = 1; k < nBins; k++) {
+        if ((*S)[k] > Smax) {
+            Smax = (*S)[k];
+        }
+    }
+    for (int k = 0; k < nBins; k++) {
+        if ((*S)[k] < 1e-12 * Smax) {
+            (*S)[k] = 1e-12 * Smax;
+        }
+    }
     free(F);
     free(tw);
     return nBins;

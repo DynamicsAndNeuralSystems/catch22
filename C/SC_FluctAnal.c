@@ -111,16 +111,27 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
     const int minPoints = (int)fmax(8, round(0.25 * nTau));
     double out = NAN;
     if (nTau >= 2 * minPoints) {
+        const int nSplits = nTau - 2 * minPoints + 1;
+        double * err = malloc(nSplits * sizeof * err);
         double minErr = INFINITY;
-        int breakPt = 0;
-        for (int i = minPoints; i <= nTau - minPoints; i++) { // i: number of points in the first regime
+        for (int s = 0; s < nSplits; s++) {
+            const int i = minPoints + s; // number of points in the first regime
             const double sse = line_fit_sse(logtt, logFF, i) + line_fit_sse(logtt + i - 1, logFF + i - 1, nTau - i + 1);
-            const double err = sse / nTau;
-            if (err < minErr) {
-                minErr = err;
-                breakPt = i;
+            err[s] = sse / nTau;
+            if (err[s] < minErr) {
+                minErr = err[s];
             }
         }
+        // the first split within a relative 1e-9 of the best, as hctsa, so that
+        // splits tied up to rounding resolve the same way on every platform
+        int breakPt = minPoints;
+        for (int s = 0; s < nSplits; s++) {
+            if (err[s] <= minErr * (1 + 1e-9)) {
+                breakPt = minPoints + s;
+                break;
+            }
+        }
+        free(err);
         out = (double)breakPt / nTau;
     }
 

@@ -37,17 +37,17 @@ double IN_AutoMutualInfoStats_40_gaussian_fmmi(const double y[], const int size)
 
     // Compute first two AMI values
     double ac = autocorr_lag(y, size, 1);
-    double ami_prev = -0.5 * log(1.0 - ac * ac);
+    double ami_prev = -0.5 * log(fmax(1.0 - ac * ac, 1e-12));
 
     ac = autocorr_lag(y, size, 2);
-    double ami_curr = -0.5 * log(1.0 - ac * ac);
+    double ami_curr = -0.5 * log(fmax(1.0 - ac * ac, 1e-12));
 
     double fmmi = tau;
 
     // Stream through remaining AMI values
     for (int i = 1; i < tau - 1; i++) {
         ac = autocorr_lag(y, size, i + 2);
-        double ami_next = -0.5 * log(1.0 - ac * ac);
+        double ami_next = -0.5 * log(fmax(1.0 - ac * ac, 1e-12));
 
         // ami_curr is the AMI at lag i+1
         if (ami_curr < ami_prev && ami_curr < ami_next) {
