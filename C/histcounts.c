@@ -244,10 +244,12 @@ double iqr_matlab(const double y[], const int size)
 int hist_num_bins_auto(const double y[], const int size)
 {
     const double range = max_(y, size) - min_(y, size);
+    const double maxAbs = fmax(fabs(max_(y, size)), fabs(min_(y, size)));
     const double numSturges = ceil(log2((double)size) + 1);
     double fdWidth = 0;
-    if (range > 0) {
-        fdWidth = 2 * iqr_matlab(y, size) * pow((double)size, -1.0 / 3.0);
+    const double q = iqr_matlab(y, size);
+    if (range > 0 && q > 1e-12 * maxAbs) { // (an IQR at the level of rounding counts as 0)
+        fdWidth = 2 * q * pow((double)size, -1.0 / 3.0);
     }
     // (in double: a rounding-level IQR gives a Freedman-Diaconis count far
     // beyond the range of an int, before it is capped at size)
@@ -259,12 +261,13 @@ int hist_num_bins_auto(const double y[], const int size)
 
 // numBins + 1 equal-width bin edges spanning [min(y), max(y)], as hctsa's
 // BF_HistEdges: interior edges lowered, and end edges widened, by 1e-6 of a bin
-// width (so values on an ideal edge fall in the upper bin). A constant series
-// gets one bin of unit width. Returns the number of bins (1 if constant).
+// width (so values on an ideal edge fall in the upper bin). Data constant to
+// within rounding (range at most 1e-12 of the largest magnitude) get one bin of
+// unit width. Returns the number of bins (1 if constant).
 int hist_edges(const double y[], const int size, const int numBins, double edges[])
 {
     const double lo = min_(y, size), hi = max_(y, size);
-    if (hi == lo) {
+    if (hi - lo <= 1e-12 * fmax(fabs(lo), fabs(hi))) {
         edges[0] = lo - 0.5;
         edges[1] = lo + 0.5;
         return 1;

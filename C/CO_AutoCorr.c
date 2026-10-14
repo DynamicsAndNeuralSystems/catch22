@@ -243,7 +243,7 @@ double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
     // tau (first zero of the ACF, at most N/10), the mean absolute difference
     // between the distribution ('pdf') of successive distances, binned by hctsa's
     // 'auto' rule (BF_HistEdges), and an exponential fitted to them, at the bin
-    // centres. NaN if all distances are equal.
+    // centres. NaN if all distances are equal (to within rounding).
     for (int i = 0; i < size; i++) {
         if (isnan(y[i])) {
             return NAN;
@@ -267,7 +267,7 @@ double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
             return NAN;
         }
     }
-    if (max_(d, n) == min_(d, n)) { // all distances equal: no distribution to fit
+    if (max_(d, n) - min_(d, n) <= 1e-12 * max_(d, n)) { // all distances equal (to within rounding): no distribution to fit
         free(d);
         return NAN;
     }
