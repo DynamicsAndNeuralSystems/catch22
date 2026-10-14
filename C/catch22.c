@@ -40,10 +40,12 @@ static double mask_ami_timescale(const int n) { return fmin(40, (n + 1) / 2); }
 // perfectly predictable transitions: the largest value possible with three
 // equiprobable symbols (the joint transition matrix of a permutation)
 static double mask_transition_variance(const int n) { (void) n; return 1.0 / 9.0; }
-// distances maximally far from exponential: an upper bound that no computable
-// series of length n can reach. The feature is at most 1/range(d) + 1/mean(d),
-// with range(d) >= sqrt(2)*0.001 when it can be computed (SD(d) >= 0.001), and
-// mean(d) >= sqrt(2)*sqrt((n-1)/n)/(n-2) for a z-scored series.
+// distances maximally far from exponential (all distances equal): a practical
+// ceiling, far above the values of real series. The feature is at most
+// 1/range(d) + 1/mean(d), with mean(d) >= sqrt(2)*sqrt((n-1)/n)/(n-2) for a
+// z-scored series; the ceiling takes range(d) = sqrt(2)*0.001. (This was a strict
+// bound when distances with SD < 0.001 counted as equal; hctsa now treats only
+// exactly equal distances as such, so values just short of equality can exceed it.)
 static double mask_embedding_dist(const int n)
 {
     const double rangeTerm = 1.0 / (sqrt(2.0) * 0.001);
@@ -54,38 +56,40 @@ static double mask_embedding_dist(const int n)
 typedef struct {
     const char * name;      // long name (matches hctsa)
     const char * shortName;
+    const char * legacyName; // long name in catch22 v0.x (same feature, earlier definition)
     double (*compute)(const double y[], const int size);
     double (*mask)(const int n);
 } catch22_feature;
 
 static const catch22_feature FEATURES[CATCH22_N_FEATURES] = {
-    {"DN_HistogramMode_5", "mode_5", DN_HistogramMode_5, mask_zero},
-    {"DN_HistogramMode_10", "mode_10", DN_HistogramMode_10, mask_zero},
-    {"DN_OutlierInclude_p_001_mdrmd", "outlier_timing_pos", DN_OutlierInclude_p_001_mdrmd, mask_zero},
-    {"DN_OutlierInclude_n_001_mdrmd", "outlier_timing_neg", DN_OutlierInclude_n_001_mdrmd, mask_zero},
-    {"CO_FirstCrossing_acf_1e_pointOfCrossing", "acf_timescale", CO_FirstCrossing_acf_1e_pointOfCrossing, mask_acf_timescale},
-    {"CO_FirstMin_ac", "acf_first_min", CO_FirstMin_ac, mask_acf_first_min},
-    {"SP_Summaries_fft_area_5_1", "low_freq_power", SP_Summaries_fft_area_5_1, mask_one},
-    {"SP_Summaries_fft_wq_50", "median_freq", SP_Summaries_fft_wq_50, mask_zero},
-    {"FC_LocalSimple_mean3_stde", "forecast_error", FC_LocalSimple_mean3_stde, mask_zero},
-    {"FC_LocalSimple_mean1_taurat", "whiten_timescale", FC_LocalSimple_mean1_taurat, mask_zero},
-    {"MD_pNN_pnn40", "high_fluctuation", MD_pNN_pnn40, mask_zero},
-    {"SB_BinaryStats_mean_longstretch1", "stretch_high", SB_BinaryStats_mean_longstretch1, mask_zero},
-    {"SB_BinaryStats_diff_longstretch0", "stretch_decreasing", SB_BinaryStats_diff_longstretch0, mask_zero},
-    {"SB_MotifThree_quantile_hh", "entropy_pairs", SB_MotifThree_quantile_hh, mask_zero},
-    {"CO_HistogramAMI_even_5bin_ami2", "ami2", CO_HistogramAMI_even_5bin_ami2, mask_zero},
-    {"CO_trev_1_num", "trev", CO_trev_1_num, mask_zero},
-    {"IN_AutoMutualInfoStats_40_gaussian_fmmi", "ami_timescale", IN_AutoMutualInfoStats_40_gaussian_fmmi, mask_ami_timescale},
-    {"SB_TransitionMatrix_3ac_sumdiagcov", "transition_variance", SB_TransitionMatrix_3ac_sumdiagcov, mask_transition_variance},
-    {"PD_PeriodicityWang_th0_01", "periodicity", PD_PeriodicityWang_th0_01, mask_zero},
-    {"CO_Embed2_Dist_tau_d_expfit_meandiff", "embedding_dist", CO_Embed2_Dist_tau_d_expfit_meandiff, mask_embedding_dist},
-    {"SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1", "rs_range", SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1, mask_one},
-    {"SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1", "dfa", SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1, mask_one},
+    {"DN_HistogramMode_5", "mode_5", "DN_HistogramMode_5", DN_HistogramMode_5, mask_zero},
+    {"DN_HistogramMode_10", "mode_10", "DN_HistogramMode_10", DN_HistogramMode_10, mask_zero},
+    {"DN_OutlierInclude_p_001_mdrmd", "outlier_timing_pos", "DN_OutlierInclude_p_001_mdrmd", DN_OutlierInclude_p_001_mdrmd, mask_zero},
+    {"DN_OutlierInclude_n_001_mdrmd", "outlier_timing_neg", "DN_OutlierInclude_n_001_mdrmd", DN_OutlierInclude_n_001_mdrmd, mask_zero},
+    {"CO_FirstCrossing_acf_1e_pointOfCrossing", "acf_timescale", "CO_f1ecac", CO_FirstCrossing_acf_1e_pointOfCrossing, mask_acf_timescale},
+    {"CO_FirstMin_ac", "acf_first_min", "CO_FirstMin_ac", CO_FirstMin_ac, mask_acf_first_min},
+    {"SP_Summaries_fft_area_5_1", "low_freq_power", "SP_Summaries_welch_rect_area_5_1", SP_Summaries_fft_area_5_1, mask_one},
+    {"SP_Summaries_fft_wq_50", "median_freq", "SP_Summaries_welch_rect_centroid", SP_Summaries_fft_wq_50, mask_zero},
+    {"FC_LocalSimple_mean3_stde", "forecast_error", "FC_LocalSimple_mean3_stderr", FC_LocalSimple_mean3_stde, mask_zero},
+    {"FC_LocalSimple_mean1_taurat", "whiten_timescale", "FC_LocalSimple_mean1_tauresrat", FC_LocalSimple_mean1_taurat, mask_zero},
+    {"MD_pNN_pnn40", "high_fluctuation", "MD_hrv_classic_pnn40", MD_pNN_pnn40, mask_zero},
+    {"SB_BinaryStats_mean_longstretch1", "stretch_high", "SB_BinaryStats_mean_longstretch1", SB_BinaryStats_mean_longstretch1, mask_zero},
+    {"SB_BinaryStats_diff_longstretch0", "stretch_decreasing", "SB_BinaryStats_diff_longstretch0", SB_BinaryStats_diff_longstretch0, mask_zero},
+    {"SB_MotifThree_quantile_hh", "entropy_pairs", "SB_MotifThree_quantile_hh", SB_MotifThree_quantile_hh, mask_zero},
+    {"CO_HistogramAMI_even_5bin_ami2", "ami2", "CO_HistogramAMI_even_2_5", CO_HistogramAMI_even_5bin_ami2, mask_zero},
+    {"CO_trev_1_num", "trev", "CO_trev_1_num", CO_trev_1_num, mask_zero},
+    {"IN_AutoMutualInfoStats_40_gaussian_fmmi", "ami_timescale", "IN_AutoMutualInfoStats_40_gaussian_fmmi", IN_AutoMutualInfoStats_40_gaussian_fmmi, mask_ami_timescale},
+    {"SB_TransitionMatrix_3ac_sumdiagcov", "transition_variance", "SB_TransitionMatrix_3ac_sumdiagcov", SB_TransitionMatrix_3ac_sumdiagcov, mask_transition_variance},
+    {"PD_PeriodicityWang_th0_01", "periodicity", "PD_PeriodicityWang_th0_01", PD_PeriodicityWang_th0_01, mask_zero},
+    {"CO_Embed2_Dist_tau_d_expfit_meandiff", "embedding_dist", "CO_Embed2_Dist_tau_d_expfit_meandiff", CO_Embed2_Dist_tau_d_expfit_meandiff, mask_embedding_dist},
+    {"SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1", "rs_range", "SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1", SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1, mask_one},
+    {"SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1", "dfa", "SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1", SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1, mask_one},
 };
 
 // catch24 adds the location and spread of the raw (not z-scored) series
 static const char * CATCH24_NAMES[2] = {"DN_mean", "DN_Spread_std"};
 static const char * CATCH24_SHORT_NAMES[2] = {"mean", "std"};
+static const char * CATCH24_LEGACY_NAMES[2] = {"DN_Mean", "DN_Spread_Std"};
 
 int catch22_n_features(const int catch24)
 {
@@ -103,6 +107,13 @@ const char * catch22_short_name(const int i)
 {
     if (i >= 0 && i < CATCH22_N_FEATURES) return FEATURES[i].shortName;
     if (i >= CATCH22_N_FEATURES && i < CATCH24_N_FEATURES) return CATCH24_SHORT_NAMES[i - CATCH22_N_FEATURES];
+    return NULL;
+}
+
+const char * catch22_legacy_name(const int i)
+{
+    if (i >= 0 && i < CATCH22_N_FEATURES) return FEATURES[i].legacyName;
+    if (i >= CATCH22_N_FEATURES && i < CATCH24_N_FEATURES) return CATCH24_LEGACY_NAMES[i - CATCH22_N_FEATURES];
     return NULL;
 }
 

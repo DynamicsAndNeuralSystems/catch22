@@ -35,5 +35,8 @@ extern int catch22_compute_timed(const double y[], const int n, const int catch2
 extern int catch22_n_features(const int catch24);
 extern const char * catch22_feature_name(const int i);
 extern const char * catch22_short_name(const int i);
+// The feature's long name in catch22 v0.x, for mapping earlier outputs (the
+// definitions have since changed to match hctsa, so values differ).
+extern const char * catch22_legacy_name(const int i);
 
 #endif
