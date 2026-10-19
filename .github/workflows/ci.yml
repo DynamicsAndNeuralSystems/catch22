@@ -17,6 +17,9 @@ jobs:
       - name: Compile C code
         run: gcc -Wall -Wextra -Werror -O2 C/*.c -o C/run_features -lm
 
+      - name: Compile as strict C99 (as pycatch22 does)
+        run: gcc -std=c99 -Wall -Wextra -Werror -O2 C/*.c -o run_features_c99 -lm
+
       - name: Analytic unit tests
         run: |
           gcc -Wall -Wextra -Werror -O2 -IC tests/test_analytic.c $(ls C/*.c | grep -v main.c) -o test_analytic -lm
