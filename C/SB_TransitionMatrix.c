@@ -12,6 +12,11 @@
 #include "SB_CoarseGrain.h"
 #include "stats.h"
 
+// M_PI is not in standard C (e.g., with -std=c99 or MSVC)
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
 // Zeroth-order modified Bessel function of the first kind, I0(x), from its
 // power series sum_k ((x/2)^k / k!)^2. Converges quickly for the small
 // arguments used here (|x| <= 5).
