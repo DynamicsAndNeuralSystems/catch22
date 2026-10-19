@@ -134,13 +134,6 @@ If you use _catch22_, please cite the open-access paper:
 
 </details>
 
-## Background
-
-_catch22_ was selected from _hctsa_ by a data-driven pipeline (in the [`op_importance`](https://github.com/chlubba/op_importance) repository).
-Across the 93 classification problems, it retains most of the classification performance of the full _hctsa_ feature set at a small fraction of the computational cost (Fig. 4 of [the paper](https://doi.org/10.1007/s10618-019-00647-x)):
-
-<p align="center"><img src="img/PerformanceComparisonFig4.png" alt="Classification accuracy of catch22 compared with hctsa across 93 problems" width="600"/></p>
-
 ## License
 
 _catch22_ is licensed under the [GNU GPL v3](http://www.gnu.org/licenses/gpl-3.0.html) (or later).
