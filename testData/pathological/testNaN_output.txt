@@ -1,0 +1,25 @@
+nan, DN_HistogramMode_5, 0.000000
+nan, DN_HistogramMode_10, 0.000000
+nan, DN_OutlierInclude_p_001_mdrmd, 0.000000
+nan, DN_OutlierInclude_n_001_mdrmd, 0.000000
+nan, CO_FirstCrossing_acf_1e_pointOfCrossing, 0.000000
+nan, CO_FirstMin_ac, 0.000000
+nan, SP_Summaries_fft_area_5_1, 0.000000
+nan, SP_Summaries_fft_wq_50, 0.000000
+nan, FC_LocalSimple_mean3_stde, 0.000000
+nan, FC_LocalSimple_mean1_taurat, 0.000000
+nan, MD_pNN_pnn40, 0.000000
+nan, SB_BinaryStats_mean_longstretch1, 0.000000
+nan, SB_BinaryStats_diff_longstretch0, 0.000000
+nan, SB_MotifThree_quantile_hh, 0.000000
+nan, CO_HistogramAMI_even_5bin_ami2, 0.000000
+nan, CO_trev_1_num, 0.000000
+nan, IN_AutoMutualInfoStats_40_gaussian_fmmi, 0.000000
+nan, SB_TransitionMatrix_quantile_3_ac_sumdiagcov, 0.000000
+nan, PD_PeriodicityWang_th0_01, 0.000000
+nan, CO_Embed2_Dist_tau_d_expfit_meandiff, 0.000000
+nan, SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1, 0.000000
+nan, SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1, 0.000000
+nan, DN_mean, 0.000000
+nan, DN_Spread_std, 0.000000
+

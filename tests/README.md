@@ -28,7 +28,8 @@ The Python scripts use only the standard library.
 
 If a change is meant to alter feature values:
 
-1. Regenerate the expected outputs: `bash testData/runtests.sh` (this overwrites the `*_output.txt` files in `testData/`). Check with `git diff` that only the intended features changed. Regenerating on a different platform (e.g., macOS rather than the Linux CI) can change the last digits of real-valued features, and adds catch24 lines to the catch22-only files in `testData/basic/`; keep only the intended changes.
+1. Regenerate the expected outputs: `bash testData/runtests.sh` (this overwrites the `*_output.txt` files in `testData/`). Check with `git diff` that only the intended features changed. Regenerating on a different platform (e.g., macOS rather than the Linux CI) can change the last digits of real-valued features; keep only the intended changes.
+   The committed outputs (catch24, masked) were generated on Linux (GCC 11).
 2. If a feature's hctsa call changed (or for a new hctsa release), regenerate the reference values: `C/run_features --list > tests/reference/features.tsv`, then in MATLAB, from `tests/reference`, `make_hctsa_reference('/path/to/hctsa')`.
 3. Update the expected values in `test_analytic.c` if they are affected.
 4. Note the change in the README, since results are then not comparable across versions.
