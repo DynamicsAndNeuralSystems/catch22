@@ -7,6 +7,6 @@
 
 #include <stdio.h>
 
-extern double DN_Mean(const double a[], const int size);
+extern double DN_mean(const double a[], const int size);
 
 #endif /* DN_MEAN */

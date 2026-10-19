@@ -41,9 +41,10 @@ def read_output(path):
     return values
 
 
-def run_binary(binary, infile, outfile):
-    # The binary asks on stdin whether to compute catch24 (1) or catch22 (0)
-    result = subprocess.run([binary, infile, outfile], input='1\n',
+def run_binary(binary, infile, outfile, flags=()):
+    # Without --catch22/--catch24 the binary asks on stdin whether to compute
+    # catch24 (1) or catch22 (0)
+    result = subprocess.run([binary, *flags, infile, outfile], input='1\n',
                             capture_output=True, text=True)
     if result.returncode != 0:
         raise RuntimeError(f'{binary} exited with code {result.returncode} on {infile}')

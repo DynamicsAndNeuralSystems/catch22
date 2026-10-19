@@ -8,217 +8,112 @@
 #include "SP_Summaries.h"
 #include "CO_AutoCorr.h"
 
-int welch(const double y[], const int size, const int NFFT, const double Fs, const double window[], const int windowWidth, double ** Pxx, double ** f){
-    
-    double dt = 1.0/Fs;
-    double df = 1.0/(nextpow2(windowWidth))/dt;
-    double m = mean(y, size);
-    
-    // number of windows, should be 1
-    int k = floor((double)size/((double)windowWidth/2.0))-1;
-    
-    // normalising scale factor
-    double KMU = k * pow(norm_(window, windowWidth),2);
-    
-    double * P = malloc(NFFT * sizeof(double));
-    for(int i = 0; i < NFFT; i++){
-        P[i] = 0;
+// Single-sided power spectrum of the (z-scored) series, matching hctsa's
+// SP_Summaries(y,'fft'): zero-padded to the next power of two, with the DC bin
+// dropped. On return, S[k] and w[k] (k = 0, ..., nBins-1) hold the power density
+// in angular frequency and the angular frequency of FFT bins 1, ..., NFFT/2.
+// Returns nBins, or 0 if the spectrum cannot be computed.
+static int sp_fft_spectrum(const double y[], const int size, double ** S, double ** w)
+{
+    const double PI = 3.14159265358979323846;
+    const int NFFT = nextpow2(size);
+    const int nBins = NFFT / 2;
+    if (nBins < 1) {
+        return 0;
     }
-    
-    // fft variables
+
     cplx * F = malloc(NFFT * sizeof *F);
     cplx * tw = malloc(NFFT * sizeof *tw);
-    twiddles(tw, NFFT);
-    
-    double * xw = malloc(windowWidth * sizeof(double));
-    for(int i = 0; i<k; i++){
-        
-        // apply window
-        for(int j = 0; j<windowWidth; j++){
-            xw[j] = window[j]*y[j + (int)(i*(double)windowWidth/2.0)];
-        }
-        
-        // initialise F (
-        for (int i = 0; i < windowWidth; i++) {
-            
-	    #if defined(__GNUC__) || defined(__GNUG__)
-		cplx tmp = xw[i] - m + 0.0 * I;
-	    #elif defined(_MSC_VER)
-		cplx tmp = { xw[i] - m, 0.0 };
-	    #endif
-            
-            
-            F[i] = tmp; // CMPLX(xw[i] - m, 0.0);
-        }
-        for (int i = windowWidth; i < NFFT; i++) {
-            // F[i] = CMPLX(0.0, 0.0);
-            //cplx tmp = { 0.0, 0.0 };
-            #if defined(__GNUC__) || defined(__GNUG__)
-		cplx tmp = 0.0 + 0.0 * I;
-	    #elif defined(_MSC_VER)
-		cplx tmp = { 0.0 , 0.0 };
-	    #endif
+    for (int i = 0; i < NFFT; i++) {
+        #if defined(__GNUC__) || defined(__GNUG__)
+            F[i] = (i < size ? y[i] : 0.0) + 0.0 * I;
+        #elif defined(_MSC_VER)
+            cplx tmp = { (i < size ? y[i] : 0.0), 0.0 };
             F[i] = tmp;
-        }
-        
-        fft(F, NFFT, tw);
-        /*
-        for(int i = 0; i < NFFT; i++){
-            printf("F1[%i] real: %1.3f, imag: %1.3f\n", i, creal(F[i]), cimag(F[i]));
-        }
-         */
-        
-        for(int l = 0; l < NFFT; l++){
-            P[l] += pow(cabs(F[l]),2);
-        }
-        /*
-        for(int i = 0; i < NFFT; i++){
-            printf("P[%i]: %1.3f\n", i, P[i]);
-        }
-         */
-        
+        #endif
     }
-    
-    int Nout = (NFFT/2+1);
-    *Pxx = malloc(Nout * sizeof(double));
-    for(int i = 0; i < Nout; i++){
-        (*Pxx)[i] = P[i]/KMU*dt;
-        if(i>0 && i < Nout-1){
-            (*Pxx)[i] *= 2;
+    twiddles(tw, NFFT);
+    fft(F, NFFT, tw);
+
+    *S = malloc(nBins * sizeof **S);
+    *w = malloc(nBins * sizeof **w);
+    for (int k = 0; k < nBins; k++) {
+        const double a = cabs(F[k + 1]);
+        (*S)[k] = 2 * a * a / size / (2 * PI); // single-sided density, in angular frequency
+        (*w)[k] = 2 * PI * (k + 1) / NFFT;
+    }
+    // floor at 1e-12 of the maximum (120 dB below the peak), as hctsa: bins at
+    // the rounding level of the estimator are otherwise arbitrary
+    double Smax = (*S)[0];
+    for (int k = 1; k < nBins; k++) {
+        if ((*S)[k] > Smax) {
+            Smax = (*S)[k];
         }
     }
-    /*
-    for(int i = 0; i < Nout; i++){
-        printf("Pxx[%i]: %1.3f\n", i, Pxx[i]);
+    for (int k = 0; k < nBins; k++) {
+        if ((*S)[k] < 1e-12 * Smax) {
+            (*S)[k] = 1e-12 * Smax;
+        }
     }
-     */
-    
-    *f = malloc(Nout * sizeof(double));
-    for(int i = 0; i < Nout; i++){
-        (*f)[i] = (double)i*df;
-    }
-    /*
-    for(int i = 0; i < Nout; i++){
-        printf("f[%i]: %1.3f\n", i, (*f)[i]);
-    }
-     */
-    
-    free(P);
     free(F);
     free(tw);
-    free(xw);
-    
-    return Nout;
+    return nBins;
 }
 
-double SP_Summaries_welch_rect(const double y[], const int size, const char what[])
+static double sp_fft_summary(const double y[], const int size, const char what[])
 {
-    
-    // NaN check
-    for(int i = 0; i < size; i++)
-    {
-        if(isnan(y[i]))
-        {
+    for (int i = 0; i < size; i++) {
+        if (!isfinite(y[i])) {
             return NAN;
         }
     }
-    
-    // rectangular window for Welch-spectrum
-    double * window = malloc(size * sizeof(double));
-    for(int i = 0; i < size; i++){
-        window[i] = 1;
-    }
-    
-    double Fs = 1.0; // sampling frequency
-    int N = nextpow2(size);
-    
     double * S;
-    double * f;
-    
-    // compute Welch-power
-    int nWelch = welch(y, size, N, Fs, window, size, &S, &f);
-    free(window);
-    
-    // need at least two frequencies
-    if (nWelch < 2) {
-        free(f);
-        free(S);
+    double * w;
+    const int nBins = sp_fft_spectrum(y, size, &S, &w);
+    if (nBins < 2) {
+        if (nBins > 0) {
+            free(S);
+            free(w);
+        }
         return NAN;
     }
-    
-    // angular frequency and spectrum on that
-    double * w = malloc(nWelch * sizeof(double));
-    double * Sw = malloc(nWelch * sizeof(double));
-    
-    double PI = 3.14159265359;
-    for(int i = 0; i < nWelch; i++){
-        w[i] = 2*PI*f[i];
-        Sw[i] = S[i]/(2*PI);
-        //printf("w[%i]=%1.3f, Sw[%i]=%1.3f\n", i, w[i], i, Sw[i]);
-        if(isinf(Sw[i]) || isinf(-Sw[i])){
-            free(w);
-            free(Sw);
-            free(f);
-            free(S);
-            return 0;
+    const double dw = w[1] - w[0];
+
+    double output = NAN;
+    if (strcmp(what, "wq_50") == 0) {
+        // the frequency below which half of the power lies (the median frequency)
+        double total = 0;
+        for (int k = 0; k < nBins; k++) {
+            total += S[k];
         }
-    }
-    
-    double dw = w[1] - w[0];
-    
-    double * csS = malloc(nWelch * sizeof(double));
-    cumsum(Sw, nWelch, csS);
-    /*
-    for(int i=0; i<nWelch; i++)
-    {
-        printf("csS[%i]=%1.3f\n", i, csS[i]);
-    }
-     */
-    
-    double output = 0;
-    
-    if(strcmp(what, "centroid") == 0){
-        
-        double csSThres = csS[nWelch-1]*0.5;
-        double centroid = 0;
-        for(int i = 0; i < nWelch; i ++){
-            if(csS[i] > csSThres){
-                centroid = w[i];
+        double cs = 0;
+        for (int k = 0; k < nBins; k++) {
+            cs += S[k];
+            if (cs >= 0.5 * total) {
+                output = w[k];
                 break;
             }
         }
-        
-        output = centroid;
-        
     }
-    else if(strcmp(what, "area_5_1") == 0){
-        double area_5_1 = 0;;
-        for(int i=0; i<nWelch/5; i++){
-            area_5_1 += Sw[i];
+    else if (strcmp(what, "area_5_1") == 0) {
+        // power in the lowest fifth of the frequency bins
+        double area = 0;
+        for (int k = 0; k < nBins / 5; k++) {
+            area += S[k];
         }
-        area_5_1 *= dw;
-        
-        output = area_5_1;
+        output = area * dw;
     }
-    
-    free(w);
-    free(Sw);
-    free(csS);
-    free(f);
     free(S);
-    
+    free(w);
     return output;
-    
-    
 }
 
-
-double SP_Summaries_welch_rect_area_5_1(const double y[], const int size)
+double SP_Summaries_fft_area_5_1(const double y[], const int size)
 {
-    return SP_Summaries_welch_rect(y, size, "area_5_1");
+    return sp_fft_summary(y, size, "area_5_1");
 }
-double SP_Summaries_welch_rect_centroid(const double y[], const int size)
+
+double SP_Summaries_fft_wq_50(const double y[], const int size)
 {
-    return SP_Summaries_welch_rect(y, size, "centroid");
-    
+    return sp_fft_summary(y, size, "wq_50");
 }

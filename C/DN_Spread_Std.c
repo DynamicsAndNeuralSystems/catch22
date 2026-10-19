@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "stats.h"
 
-double DN_Spread_Std(const double a[], const int size)
+double DN_Spread_std(const double a[], const int size)
 {
     double m = mean(a, size);
     double sd = 0.0;

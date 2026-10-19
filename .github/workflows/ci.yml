@@ -25,8 +25,8 @@ jobs:
       - name: Regression test (testData expected outputs)
         run: python3 tests/check_regression.py C/run_features
 
-      - name: Reference test (C matches MATLAB implementations)
-        run: python3 tests/check_matlab_reference.py C/run_features
+      - name: Reference test (C matches hctsa)
+        run: python3 tests/check_hctsa_reference.py C/run_features
 
       - name: Profile feature timing
         run: |

@@ -184,7 +184,7 @@ void lsqsolve_sub(const int sizeA1, const int sizeA2, const double *A, const int
     double * ATb = malloc(sizeA1 * sizeof(double));
      */
     
-    double * AT = malloc(sizeA2 * sizeA1 * sizeof(double));
+    double * AT = calloc(sizeA2 * sizeA1, sizeof(double)); // zeroed: silences a false maybe-uninitialized warning
     double * ATA = malloc(sizeA2 * sizeA2 * sizeof(double));
     double * ATb = malloc(sizeA2 * sizeof(double));
     

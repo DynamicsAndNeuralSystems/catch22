@@ -1,30 +1,20 @@
-function [featureNamesLong,featureNamesShort] = GetAllFeatureNames(doCatch24)
-% Retrieve all feature names from featureList.txt
+function [featureNamesLong, featureNamesShort, legacyNames, hctsaCalls] = GetAllFeatureNames(doCatch24)
+% GetAllFeatureNames   The catch22 (or catch24) features, in the order of catch22_all
+%
+% ---INPUTS
+% doCatch24: set to true to include the mean and standard deviation. Default: true
+% ---OUTPUTS:
+% featureNamesLong: long names (following hctsa's feature names)
+% featureNamesShort: short names
+% legacyNames: long names in catch22 v0.x (the definitions have since changed to
+%               match hctsa, so values differ)
+% hctsaCalls: the hctsa call that reproduces each feature exactly, on x_z (the
+%               z-scored series) or x (the raw series)
 
 if nargin < 1 || isempty(doCatch24)
     doCatch24 = true;
 end
-%-------------------------------------------------------------------------------
-% Retrieve all (long) feature names from featureList.txt
-fid = fopen('../featureList.txt','r');
-formatSpec = '%s%s';
-dataIn = textscan(fid,formatSpec,'CommentStyle','#','EndOfLine','\r\n','CollectOutput',true);
-fclose(fid);
-dataIn = dataIn{1}; % Collect one big matrix of cells
-featureNamesLong = dataIn(:,1);
-featureNamesShort = dataIn(:,2);
 
-%-------------------------------------------------------------------------------
-% Filter out the two extra features: 'DN_Mean' and 'DN_Spread_Std'
-isMeanStd = strcmp(featureNamesLong,'DN_Mean') | strcmp(featureNamesLong,'DN_Spread_Std');
-assert(sum(isMeanStd) == 2)
-if ~doCatch24
-    keepMe = ~isMeanStd;
-    featureNamesLong = featureNamesLong(keepMe);
-    featureNamesShort = featureNamesShort(keepMe);
-    fprintf(1,'Using catch22.\n');
-else
-    fprintf(1,'Using catch24.\n');
-end
+[featureNamesLong, featureNamesShort, legacyNames, hctsaCalls] = catch22_mex('features', doCatch24);
 
 end

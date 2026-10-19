@@ -11,6 +11,6 @@
 
 #include <stdio.h>
 
-extern int PD_PeriodicityWang_th0_01(const double * y, const int size);
+extern double PD_PeriodicityWang_th0_01(const double * y, const int size);
 
 #endif /* PD_PeriodicityWang_h */

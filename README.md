@@ -45,7 +45,8 @@ results = pycatch22.catch22_all(x, catch24=True)  # a dict of 'names' and 'value
 From the command line, with one value per line in `series.txt`:
 
 ```bash
-./run_features series.txt features.txt  # asks whether to compute catch22 or catch24
+./run_features --catch24 series.txt features.txt
+./run_features --list  # the features, their earlier names, and their hctsa calls
 ```
 
 Each line of the output is a feature value, its name, and its computation time in milliseconds.
@@ -63,28 +64,28 @@ See the [documentation](https://time-series-features.gitbook.io/catch22/) for us
 | `mode_10` | `DN_HistogramMode_10` | Mode of the z-scored distribution (10-bin histogram) |
 | `outlier_timing_pos` | `DN_OutlierInclude_p_001_mdrmd` | Timing of extreme positive values |
 | `outlier_timing_neg` | `DN_OutlierInclude_n_001_mdrmd` | Timing of extreme negative values |
-| `acf_timescale` | `CO_f1ecac` | First 1/_e_ crossing of the autocorrelation function |
+| `acf_timescale` | `CO_FirstCrossing_acf_1e_pointOfCrossing` | First 1/_e_ crossing of the autocorrelation function |
 | `acf_first_min` | `CO_FirstMin_ac` | First minimum of the autocorrelation function |
-| `low_freq_power` | `SP_Summaries_welch_rect_area_5_1` | Power in the lowest fifth of frequencies |
-| `centroid_freq` | `SP_Summaries_welch_rect_centroid` | Centroid of the power spectrum |
-| `forecast_error` | `FC_LocalSimple_mean3_stderr` | Error of a rolling 3-sample mean forecast |
-| `whiten_timescale` | `FC_LocalSimple_mean1_tauresrat` | Change in autocorrelation timescale after differencing |
-| `high_fluctuation` | `MD_hrv_classic_pnn40` | Proportion of large successive differences |
+| `low_freq_power` | `SP_Summaries_fft_area_5_1` | Power in the lowest fifth of frequencies |
+| `median_freq` | `SP_Summaries_fft_wq_50` | Median frequency of the power spectrum |
+| `forecast_error` | `FC_LocalSimple_mean3_stde` | Error of a rolling 3-sample mean forecast |
+| `whiten_timescale` | `FC_LocalSimple_mean1_taurat` | Change in autocorrelation timescale after differencing |
+| `high_fluctuation` | `MD_pNN_pnn40` | Proportion of large successive differences |
 | `stretch_high` | `SB_BinaryStats_mean_longstretch1` | Longest stretch of above-mean values |
 | `stretch_decreasing` | `SB_BinaryStats_diff_longstretch0` | Longest stretch of non-increasing steps |
 | `entropy_pairs` | `SB_MotifThree_quantile_hh` | Entropy of successive pairs in a 3-letter symbolization |
-| `ami2` | `CO_HistogramAMI_even_2_5` | Automutual information at lag 2 (5-bin histogram) |
+| `ami2` | `CO_HistogramAMI_even_5bin_ami2` | Automutual information at lag 2 (5-bin histogram) |
 | `trev` | `CO_trev_1_num` | Time-reversibility statistic |
 | `ami_timescale` | `IN_AutoMutualInfoStats_40_gaussian_fmmi` | First minimum of the automutual information function |
-| `transition_variance` | `SB_TransitionMatrix_3ac_sumdiagcov` | Variance in the transition matrix of a 3-letter symbolization |
+| `transition_variance` | `SB_TransitionMatrix_quantile_3_ac_sumdiagcov` | Variance in the transition matrix of a 3-letter symbolization |
 | `periodicity` | `PD_PeriodicityWang_th0_01` | Periodicity measure of Wang et al. (2007) |
 | `embedding_dist` | `CO_Embed2_Dist_tau_d_expfit_meandiff` | Exponential fit to distances in a 2-d embedding |
 | `rs_range` | `SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1` | Rescaled-range fluctuation analysis |
 | `dfa` | `SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1` | Detrended fluctuation analysis |
-| `mean` | `DN_Mean` | Mean (catch24 only) |
-| `std` | `DN_Spread_Std` | Standard deviation (catch24 only) |
+| `mean` | `DN_mean` | Mean (catch24 only) |
+| `std` | `DN_Spread_std` | Standard deviation (catch24 only) |
 
-The list is also in [`featureList.txt`](featureList.txt).
+The list is also in [`featureList.txt`](featureList.txt), with each feature's name before v1.0 and the _hctsa_ call that reproduces it.
 The [documentation](https://time-series-features.gitbook.io/catch22/information-about-catch22/feature-descriptions) describes each feature in detail.
 
 </details>
@@ -94,6 +95,12 @@ The [documentation](https://time-series-features.gitbook.io/catch22/information-
 - **Location and spread.**
   Each time series is _z_-scored before the 22 features are computed, so they measure its dynamics and are insensitive to its mean and variance.
   If the mean and spread matter for your application, compute _catch24_ (e.g., `catch24=True` in Python, `catch24 = TRUE` in R), which adds the mean and standard deviation.
+- **Features that cannot be estimated** (e.g., for a constant series, or `dfa` on a series shorter than 79 samples) are set by default to a fixed value at the appropriate end of their range, so you always get 22 real numbers.
+  This _masking_ can be switched off to get `NaN` instead (e.g., `--no-mask` on the command line).
+  A series containing `NaN` or `Inf` gives `NaN` for every feature.
+- **Exact match with _hctsa_.**
+  Each feature reproduces a feature of [_hctsa_ v3.0.0](https://github.com/benfulcher/hctsa/tree/v3.0.0), the final MATLAB release, given by a function call listed in [`featureList.txt`](featureList.txt).
+  The C is tested against these calls to a relative tolerance of 10<sup>−9</sup> (see [`tests/`](tests)).
 - **Sampling.**
   A time series is an ordered sequence of values without time stamps, assumed to be evenly sampled.
 
@@ -101,6 +108,11 @@ The [documentation](https://time-series-features.gitbook.io/catch22/information-
 
 Feature values can change between versions, so **report the version of _catch22_ you used** so that your results can be reproduced.
 
+- **v1.0:** every feature now exactly reproduces its _hctsa_ v3.0.0 definition, so values change for most features.
+  Several features are renamed to their _hctsa_ names, and `centroid_freq` is replaced by the median frequency, `median_freq`.
+  Features that cannot be estimated are masked rather than returning `NaN` (see above).
+  Classification accuracy is unchanged across 140 UCR/UEA datasets.
+  The [documentation](https://time-series-features.gitbook.io/catch22/information-about-catch22/feature-descriptions) describes how each feature changed.
 - **v0.6.0:** four features were corrected to match their MATLAB (_hctsa_) definitions.
   `PD_PeriodicityWang_th0_01` and `IN_AutoMutualInfoStats_40_gaussian_fmmi` return the lag itself (previously the lag minus one).
   `SB_BinaryStats_mean_longstretch1` and `SB_BinaryStats_diff_longstretch0` return the exact run length (previously one more for runs not at the start of the series), and zero differences count as non-increases in `SB_BinaryStats_diff_longstretch0`.

@@ -1,33 +1,32 @@
-%-------------------------------------------------------------------------------
-% Get the function names
-[featureNamesLong,featureNamesShort] = GetAllFeatureNames();
+% testing   Check catch22_all against the C outputs in testData/basic (run after mexAll).
+
+here = fileparts(mfilename('fullpath'));
+dataDir = fullfile(here, '..', 'testData', 'basic');
+dataFileNames = {'test', 'test2', 'testShort', 'testSinusoid'};
+[featureNamesLong, featureNamesShort] = GetAllFeatureNames(true);
 numFeatures = length(featureNamesLong);
 
-%-------------------------------------------------------------------------------
-% Get the data
-dataFileNames = {'../testData/basic/test.txt', '../testData/basic/test2.txt'};
-numTestFiles = length(dataFileNames);
+fprintf(1, 'Testing %u features on %u data files.\n', numFeatures, length(dataFileNames));
+numBad = 0;
+for j = 1:length(dataFileNames)
+    data = readmatrix(fullfile(dataDir, [dataFileNames{j}, '.txt']), 'FileType', 'text');
+    featureValues = catch22_all(data, true);
 
-fprintf(1,'Testing %u compiled features on %u data files.\n',numFeatures,numTestFiles);
+    % Expected values: lines of "value, name, time" written by run_features --catch24
+    expected = readcell(fullfile(dataDir, [dataFileNames{j}, '_output.txt']), ...
+                        'FileType', 'text', 'Delimiter', ',');
+    [isListed, ind] = ismember(featureNamesLong, strtrim(expected(:, 2)));
+    assert(all(isListed), 'Not every feature is in %s_output.txt', dataFileNames{j});
+    expectedValues = cell2mat(expected(ind, 1));
 
-%-------------------------------------------------------------------------------
-% Test all functions on all the data files
-for j = 1:numTestFiles
-
-    dataFileName = dataFileNames{j};
-    fprintf('\n%s\n\n', dataFileName)
-
-    fileID = fopen(dataFileName,'r');
-    data = fscanf(fileID,'%f');
-
-    for featureInd = 1:numFeatures
-
-        featureName = featureNamesLong{featureInd};
-        fh = str2func(['catch22_', featureName]);
-        out = fh(data');
-
-        fprintf("%s (%s): %1.6f\n", featureNamesShort{featureInd}, featureName, out);
+    isOK = abs(featureValues - expectedValues) <= 1e-9 * max(1, abs(expectedValues)) ...
+            | (isnan(featureValues) & isnan(expectedValues));
+    fprintf(1, '\n%s: %u/%u match the C\n', dataFileNames{j}, sum(isOK), numFeatures);
+    for i = find(~isOK)'
+        fprintf(1, '  %s (%s): %.14g (C: %.14g)\n', featureNamesShort{i}, ...
+                featureNamesLong{i}, featureValues(i), expectedValues(i));
     end
-
-    fclose(fileID);
+    numBad = numBad + sum(~isOK);
 end
+assert(numBad == 0, '%u feature values differ from the C', numBad);
+fprintf(1, '\nAll features match the C.\n');

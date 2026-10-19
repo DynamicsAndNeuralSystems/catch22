@@ -108,8 +108,21 @@ double SB_MotifThree_quantile_hh(const double y[], const int size)
     }
 
     hh = 0.0;
+    int nonEmpty = 0;
     for (int i = 0; i < alphabet_size; i++) {
         hh += f_entropy(out2[i], alphabet_size);
+        for (int j = 0; j < alphabet_size; j++) {
+            if (out2[i][j] > 0) {
+                nonEmpty++;
+            }
+        }
+    }
+    // Miller-Madow bias correction (as hctsa's SB_MotifThree), with degrees of
+    // freedom constrained by the (fixed, equiprobable) symbol marginals:
+    // df = (non-empty cells) - 1 - wordLength*(alphabetSize - 1)
+    const int df = nonEmpty - 1 - 2 * (alphabet_size - 1);
+    if (df > 0) {
+        hh += df / (2.0 * (size - 1));
     }
 
     free(yt);
