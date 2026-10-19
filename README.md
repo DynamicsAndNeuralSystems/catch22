@@ -7,8 +7,9 @@
   <a href="https://doi.org/10.5281/zenodo.4431165"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.4431165.svg" alt="DOI"/></a>
   <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/license-GPLv3-blue.svg" alt="License: GPL v3"/></a>
   <a href="https://time-series-features.gitbook.io/catch22/"><img src="https://img.shields.io/badge/docs-GitBook-blue" alt="Documentation"/></a>
+  <a href="https://github.com/DynamicsAndNeuralSystems/catch22/actions/workflows/ci.yml"><img src="https://github.com/DynamicsAndNeuralSystems/catch22/actions/workflows/ci.yml/badge.svg" alt="CI"/></a>
   <br>
-  <a href="https://pepy.tech/projects/pycatch22"><img src="https://static.pepy.tech/personalized-badge/pycatch22?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=BLUE&left_text=PyPI%20downloads" alt="pycatch22 downloads"/></a>
+  <a href="https://pepy.tech/projects/pycatch22"><img src="https://static.pepy.tech/personalized-badge/pycatch22?period=total&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=BLUE&left_text=PyPI%20downloads" alt="pycatch22 PyPI downloads"/></a>
   <a href="https://anaconda.org/conda-forge/pycatch22"><img src="https://img.shields.io/conda/dn/conda-forge/pycatch22?label=conda%20downloads&color=blue" alt="pycatch22 conda downloads"/></a>
   <a href="https://cran.r-project.org/package=Rcatch22"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcranlogs.r-pkg.org%2Fdownloads%2Ftotal%2F2015-01-01%3Alast-day%2FRcatch22&query=%24%5B0%5D.downloads&label=CRAN%20downloads&color=blue&cacheSeconds=86400" alt="Rcatch22 CRAN downloads"/></a>
   <a href="https://juliapkgstats.com/pkg/Catch22"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fjuliapkgstats.com%2Fapi%2Fv1%2Fmonthly_downloads%2FCatch22&query=total_requests&suffix=%2Fmonth&label=Julia%20downloads&color=blue&cacheSeconds=86400" alt="Catch22.jl downloads per month"/></a>
@@ -22,13 +23,13 @@ They capture properties of a time series's dynamics, such as its autocorrelation
 
 ## Installation
 
-| Language | Package | Install |
-|---|---|---|
-| Python | [pycatch22](https://github.com/DynamicsAndNeuralSystems/pycatch22) | `pip install pycatch22` or `conda install -c conda-forge pycatch22` |
-| R | [Rcatch22](https://github.com/hendersontrent/Rcatch22) | `install.packages("Rcatch22")` |
-| Julia | [Catch22.jl](https://github.com/brendanjohnharris/Catch22.jl) | `] add Catch22` |
-| MATLAB | [`wrap_Matlab/`](wrap_Matlab) in this repository | compile with `mexAll` ([instructions](https://time-series-features.gitbook.io/catch22/language-specific-docs/matlab)) |
-| C | [`C/`](C) in this repository | `gcc -O2 C/*.c -o run_features -lm` |
+| Language | Package | Latest | Install |
+|---|---|---|---|
+| Python | [pycatch22](https://github.com/DynamicsAndNeuralSystems/pycatch22) | [![PyPI](https://img.shields.io/pypi/v/pycatch22?label=PyPI)](https://pypi.org/project/pycatch22/) [![conda-forge](https://img.shields.io/conda/vn/conda-forge/pycatch22?label=conda-forge)](https://anaconda.org/conda-forge/pycatch22) | `pip install pycatch22` or `conda install -c conda-forge pycatch22` |
+| R | [Rcatch22](https://github.com/hendersontrent/Rcatch22) | [![CRAN](https://img.shields.io/cran/v/Rcatch22?label=CRAN)](https://cran.r-project.org/package=Rcatch22) | `install.packages("Rcatch22")` |
+| Julia | [Catch22.jl](https://github.com/brendanjohnharris/Catch22.jl) | [![Julia](https://img.shields.io/github/v/tag/brendanjohnharris/Catch22.jl?label=Julia)](https://github.com/brendanjohnharris/Catch22.jl) | `] add Catch22` |
+| MATLAB | [`wrap_Matlab/`](wrap_Matlab) in this repository | [![release](https://img.shields.io/github/v/release/DynamicsAndNeuralSystems/catch22?label=release)](https://github.com/DynamicsAndNeuralSystems/catch22/releases) | compile with `mexAll` ([instructions](https://time-series-features.gitbook.io/catch22/language-specific-docs/matlab)) |
+| C | [`C/`](C) in this repository | [![release](https://img.shields.io/github/v/release/DynamicsAndNeuralSystems/catch22?label=release)](https://github.com/DynamicsAndNeuralSystems/catch22/releases) | `gcc -O2 C/*.c -o run_features -lm` |
 
 ## Quick start
 
@@ -93,7 +94,6 @@ The [documentation](https://time-series-features.gitbook.io/catch22/information-
 - **Location and spread.**
   Each time series is _z_-scored before the 22 features are computed, so they measure its dynamics and are insensitive to its mean and variance.
   If the mean and spread matter for your application, compute _catch24_ (e.g., `catch24=True` in Python, `catch24 = TRUE` in R), which adds the mean and standard deviation.
-- **Constant series** cannot be _z_-scored, so they give `NaN` for the 22 features.
 - **Sampling.**
   A time series is an ordered sequence of values without time stamps, assumed to be evenly sampled.
 
