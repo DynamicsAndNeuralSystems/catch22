@@ -161,6 +161,7 @@ static void test_stretches(void)
     for (int i = 14; i < 25; i++) flat[i] = i - 4;          // 10..20
     z = zscored(flat, 25);
     check("stretch_decreasing with 4 flat steps", SB_BinaryStats_diff_longstretch0(z, 25), 4, 0);
+    free(z);
     double tied[12] = {0, 5, 4, 3, 3, 2, 1, 0, 1, 2, 3, 4}; // 6 non-increasing steps, including a tie
     z = zscored(tied, 12);
     check("stretch_decreasing with a tie inside a decrease", SB_BinaryStats_diff_longstretch0(z, 12), 6, 0);
