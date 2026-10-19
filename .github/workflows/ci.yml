@@ -15,38 +15,24 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Compile C code
-        run: gcc -Wall -Wextra -O2 C/*.c -o C/run_features -lm
+        run: gcc -Wall -Wextra -Werror -O2 C/*.c -o C/run_features -lm
 
-      - name: Run tests
+      - name: Analytic unit tests
         run: |
-          bash testData/runtests.sh
+          gcc -Wall -Wextra -Werror -O2 -IC tests/test_analytic.c $(ls C/*.c | grep -v main.c) -o test_analytic -lm
+          ./test_analytic
 
-          compare() {
-            local input="$1"
-            local expected="$2"
-            local actual="${input%.txt}_output.txt"
-            if [ ! -f "$actual" ]; then
-              echo "FAIL: $actual was not produced"
-              exit 1
-            fi
-            # Compare feature values and names only (ignore timing column)
-            if diff <(cut -d',' -f1,2 "$expected") <(cut -d',' -f1,2 "$actual") > /dev/null; then
-              echo "PASS: $actual matches expected output (bit identical)"
-            else
-              echo "FAIL: $actual differs from expected output"
-              diff <(cut -d',' -f1,2 "$expected") <(cut -d',' -f1,2 "$actual")
-              exit 1
-            fi
-          }
+      - name: Regression test (testData expected outputs)
+        run: python3 tests/check_regression.py C/run_features
 
-          for input in $(find testData -name '*.txt' ! -name '*_output.txt' | sort); do
-            expected="${input%.txt}_output.txt"
-            [ -f "$expected" ] && compare "$input" "$expected"
-          done
+      - name: Reference test (C matches MATLAB implementations)
+        run: python3 tests/check_matlab_reference.py C/run_features
 
       - name: Profile feature timing
         run: |
-          for f in testData/simulated/*.txt; do
+          # time a fresh run into a temporary directory (the committed outputs are left untouched)
+          C/runAllTS.sh -i testData/simulated -o /tmp/profile -a _output -s 1 > /dev/null
+          for f in /tmp/profile/*_output.txt; do
             echo "=== $f ==="
             awk -F', ' '{
               t=$3+0
@@ -73,4 +59,29 @@ jobs:
               exit 1
             fi
             echo "PASS: $f handled without crash (exit $status)"
+          done
+
+  sanitizers:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Compile with AddressSanitizer and UndefinedBehaviorSanitizer
+        run: |
+          SAN="-g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all"
+          gcc -Wall -Wextra -Werror $SAN C/*.c -o run_features_san -lm
+          gcc -Wall -Wextra -Werror $SAN -IC tests/test_analytic.c $(ls C/*.c | grep -v main.c) -o test_analytic_san -lm
+
+      - name: Run tests under sanitizers (memory errors, leaks, undefined behaviour)
+        env:
+          ASAN_OPTIONS: detect_leaks=1:abort_on_error=0
+          UBSAN_OPTIONS: print_stacktrace=1
+        run: |
+          ./test_analytic_san
+          python3 tests/check_regression.py ./run_features_san
+          for f in testData/pathological/*.txt; do
+            case "$f" in *_output.txt) continue ;; esac
+            echo 1 | ./run_features_san "$f" /tmp/edge_out.txt > /dev/null
           done

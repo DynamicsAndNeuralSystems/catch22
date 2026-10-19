@@ -172,6 +172,7 @@ void gauss_elimination(int size, double *A, double *b, double *x){
 void lsqsolve_sub(const int sizeA1, const int sizeA2, const double *A, const int sizeb, const double *b, double *x)
 //void lsqsolve_sub(int sizeA1, int sizeA2, double A[sizeA1][sizeA2], int sizeb, double b[sizeb], double x[sizeA1])
 {
+    (void) sizeb; // unused
     // create temp matrix and vector
     /*
     double *AT[sizeA1*sizeA2];

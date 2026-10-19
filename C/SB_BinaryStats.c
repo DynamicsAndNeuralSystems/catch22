@@ -39,6 +39,11 @@ double SB_BinaryStats_diff_longstretch0(const double y[], const int size){
         }
     }
     
+    // need at least one step
+    if (size < 2) {
+        return NAN;
+    }
+    
     // binarize: 1 for a stepwise increase, 0 otherwise (as in hctsa's BF_Binarize)
     int * yBin = malloc((size-1) * sizeof(int));
     for(int i = 0; i < size-1; i++){

@@ -22,6 +22,11 @@ double MD_hrv_classic_pnn40(const double y[], const int size){
     
     const int pNNx = 40;
     
+    // need at least one difference
+    if (size < 2) {
+        return NAN;
+    }
+    
     // compute diff
     double * Dy = malloc((size-1) * sizeof(double));
     diff(y, size, Dy);

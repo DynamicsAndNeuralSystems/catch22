@@ -1,7 +1,9 @@
 function out = CO_f1ecac(y)
 % CO_f1ecac     The 1/e correlation length
 % 
-% Finds where autocorrelation function first crosses 1/e
+% Finds where autocorrelation function first crosses 1/e, linearly interpolated
+% between the two lags either side of the crossing (as in the C implementation,
+% and hctsa's CO_FirstCrossing(y,'ac',1/exp(1),'continuous')).
 %
 %---INPUT:
 % y, the input time series.
@@ -46,8 +48,9 @@ a(1) = 1; % perfect autocorrelation when no lag
 for i = 2:N
     a(i) = CO_AutoCorr(y,i-1,'Fourier');
     if ((a(i-1)-thresh)*(a(i)-thresh) < 0)
-        % Crossed the 1/e line
-        out = i-1; % -1 since i is tau+1
+        % Crossed the 1/e line between lags i-2 and i-1 (a(i) is lag i-1):
+        % interpolate linearly between them
+        out = (i-2) + (thresh - a(i-1))/(a(i) - a(i-1));
         return
     end
 end
