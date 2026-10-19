@@ -190,6 +190,7 @@ void zscore_norm2(const double a[], const int size, double b[])
 
 double moment(const double a[], const int size, const int start, const int end, const int r)
 {
+    (void) size; // unused
     int win_size = end - start + 1;
     a += start;
     double m = mean(a, win_size);
@@ -215,7 +216,6 @@ int linreg(const int n, const double x[], const double y[], double* m, double* b
     double   sumx2 = 0.0;                     /* sum of x**2  */
     double   sumxy = 0.0;                     /* sum of x * y */
     double   sumy = 0.0;                      /* sum of y     */
-    double   sumy2 = 0.0;                     /* sum of y**2  */
     
     /*
     for (int i = 0; i < n; i++)
@@ -229,7 +229,6 @@ int linreg(const int n, const double x[], const double y[], double* m, double* b
         sumx2 += x[i] * x[i];
         sumxy += x[i] * y[i];
         sumy  += y[i];
-        sumy2 += y[i] * y[i];
     }
     
     double denom = (n * sumx2 - sumx * sumx);

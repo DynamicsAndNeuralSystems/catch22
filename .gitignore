@@ -6,3 +6,4 @@
 *.vscode
 *.code-workspace
 */run_features
+__pycache__/

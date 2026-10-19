@@ -201,9 +201,10 @@ double * sb_motifthree(const double y[], int size, const char how[])
     // from yt
     for (i = 0; i < alphabet_size; i++) {
         if (sizes_r1[i] != 0 && r1[i][sizes_r1[i] - 1] == size - 1) {
-            tmp_ar = malloc((sizes_r1[i] - 1) * sizeof(tmp_ar));
+            tmp_ar = malloc(sizes_r1[i] * sizeof * tmp_ar);
             subset(r1[i], tmp_ar, 0, sizes_r1[i]);
-            memcpy(r1[i], tmp_ar, (sizes_r1[i] - 1) * sizeof(tmp_ar));
+            memcpy(r1[i], tmp_ar, (sizes_r1[i] - 1) * sizeof * tmp_ar);
+            free(tmp_ar);
             sizes_r1[i]--;
         }
     }
@@ -244,8 +245,10 @@ double * sb_motifthree(const double y[], int size, const char how[])
     for (i = 0; i < alphabet_size; i++) {
         for (j = 0; j < alphabet_size; j++) {
             if (sizes_r2[i][j] != 0 && r2[i][j][sizes_r2[i][j] - 1] == size - 2) {
+                tmp_ar = malloc(sizes_r2[i][j] * sizeof * tmp_ar);
                 subset(r2[i][j], tmp_ar, 0, sizes_r2[i][j]);
-                memcpy(r2[i][j], tmp_ar, (sizes_r2[i][j] - 1) * sizeof(tmp_ar));
+                memcpy(r2[i][j], tmp_ar, (sizes_r2[i][j] - 1) * sizeof * tmp_ar);
+                free(tmp_ar);
                 sizes_r2[i][j]--;
             }
         }
@@ -293,8 +296,10 @@ double * sb_motifthree(const double y[], int size, const char how[])
         for (j = 0; j < alphabet_size; j++) {
             for (k = 0; k < alphabet_size; k++) {
                 if (sizes_r3[i][j][k] != 0 && r3[i][j][k][sizes_r3[i][j][k] - 1] == size - 3) {
+                    tmp_ar = malloc(sizes_r3[i][j][k] * sizeof * tmp_ar);
                     subset(r3[i][j][k], tmp_ar, 0, sizes_r3[i][j][k]);
-                    memcpy(r3[i][j][k], tmp_ar, (sizes_r3[i][j][k] - 1) * sizeof(tmp_ar));
+                    memcpy(r3[i][j][k], tmp_ar, (sizes_r3[i][j][k] - 1) * sizeof * tmp_ar);
+                    free(tmp_ar);
                     sizes_r3[i][j][k]--;
                 }
             }

@@ -257,14 +257,12 @@ int main(int argc, char * argv[])
     double * y;
     int size;
     double value;
-    // DIR *d;
-    struct dirent *dir;
 
 
     switch (argc) {
         case 1:
             print_help(argv, "");
-            break;
+            return 1;
         case 2:
             if ((infile = fopen(argv[1], "r")) == NULL) {
                 print_help(argv, "Can't open input file\n");
@@ -279,6 +277,9 @@ int main(int argc, char * argv[])
                 print_help(argv, "Can't open output file\n");
             }
             break;
+        default:
+            print_help(argv, "Too many arguments\n");
+            return 1;
     }
 
     /*
@@ -292,7 +293,7 @@ int main(int argc, char * argv[])
     size = 0;
     y = malloc(array_size * sizeof *y);
 
-    while (fscanf(infile, "%lf", &value) != EOF) {
+    while (fscanf(infile, "%lf", &value) == 1) {
         if (size == array_size) {
             y = realloc(y, 2 * array_size * sizeof *y);
             array_size *= 2;
@@ -307,7 +308,9 @@ int main(int argc, char * argv[])
 
     int catch24;
     printf("Do you want to run catch24? Enter 0 for catch22 or 1 for catch24.");
-    scanf("%d", &catch24);
+    if (scanf("%d", &catch24) != 1) {
+        catch24 = 0; // default to catch22 if no valid answer is given
+    }
 
     if (catch24 == 1) {
         run_features(y, size, outfile, true);
@@ -349,7 +352,7 @@ int main(int argc, char * argv[])
     double * y = malloc(array_size * sizeof(double));
     int size = 0;
     double value = 0;
-    while (fscanf(infile, "%lf", &value) != EOF) {
+    while (fscanf(infile, "%lf", &value) == 1) {
         y[size++] = value;
     }
 
@@ -405,7 +408,9 @@ int main(int argc, char * argv[])
 
     int catch24;
     printf("Do you want to run catch24? Enter 0 for catch22 or 1 for catch24.");
-    scanf("%d", &catch24);
+    if (scanf("%d", &catch24) != 1) {
+        catch24 = 0; // default to catch22 if no valid answer is given
+    }
 
     if (catch24 == 1) {
         result = DN_Mean(y, size);

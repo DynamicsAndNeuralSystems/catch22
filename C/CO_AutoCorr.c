@@ -393,6 +393,11 @@ double CO_trev_1_num(const double y[], const int size)
     
     int tau = 1;
     
+    // need at least one difference
+    if (size < 2) {
+        return NAN;
+    }
+    
     double * diffTemp = malloc((size-1) * sizeof * diffTemp);
     
     for(int i = 0; i < size-tau; i++)
@@ -426,6 +431,11 @@ double CO_HistogramAMI_even_2_5(const double y[], const int size)
     
     //const int tau = 2;
     //const int numBins = 5;
+    
+    // need at least one pair of values tau apart
+    if (size <= tau) {
+        return NAN;
+    }
     
     double * y1 = malloc((size-tau) * sizeof(double));
     double * y2 = malloc((size-tau) * sizeof(double));

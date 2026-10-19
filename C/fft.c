@@ -21,7 +21,9 @@ typedef _Dcomplex cplx;
 
 #include "helper_functions.h"
 
+#if defined(__clang__)
 #pragma STDC FP_CONTRACT OFF
+#endif
 
 #if defined(__GNUC__) || defined(__GNUG__)
 #  define RST __restrict__
