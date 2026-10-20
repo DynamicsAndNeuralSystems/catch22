@@ -78,8 +78,8 @@ static void test_sines(void)
 {
     char what[100];
     const int periods[] = {8, 13, 20, 50};
-    for (int k = 0; k < 4; k++) {
-        const int P = periods[k];
+    for (int p = 0; p < 4; p++) {
+        const int P = periods[p];
         double * y = sine(2000, P);
         double * z = zscored(y, 2000);
 
@@ -237,7 +237,7 @@ static void test_catch22_compute(void)
     int nMasked = 0, nNaN = 0;
     for (int i = 0; i < CATCH22_N_FEATURES; i++) {
         nMasked += masked[i];
-        nNaN += isnan(out[i]);
+        nNaN += isnan(out[i]) != 0;
     }
     check("constant series: all 22 features masked", nMasked, 22, 0);
     check("constant series: no NaN when masked", nNaN, 0, 0);
@@ -246,7 +246,7 @@ static void test_catch22_compute(void)
     check("constant series: rs_range masked to one regime", out[20], 1.0, 0);
     catch22_compute(constant, 50, 0, 0, out, masked);
     nNaN = 0;
-    for (int i = 0; i < CATCH22_N_FEATURES; i++) nNaN += isnan(out[i]);
+    for (int i = 0; i < CATCH22_N_FEATURES; i++) nNaN += isnan(out[i]) != 0;
     check("constant series without masking: all NaN", nNaN, 22, 0);
 
     // NaN in the input is a data problem: never masked
@@ -255,7 +255,7 @@ static void test_catch22_compute(void)
     withNaN[10] = NAN;
     check("NaN input: return code", catch22_compute(withNaN, 50, 0, 1, out, masked), CATCH22_BAD_INPUT, 0);
     nNaN = 0;
-    for (int i = 0; i < CATCH22_N_FEATURES; i++) nNaN += isnan(out[i]);
+    for (int i = 0; i < CATCH22_N_FEATURES; i++) nNaN += isnan(out[i]) != 0;
     check("NaN input: all features NaN even with masking", nNaN, 22, 0);
 
     // a short series gets 22 real numbers by default: dfa needs a series of length >= 79
@@ -263,7 +263,7 @@ static void test_catch22_compute(void)
     double * y = gaussian_noise(60);
     catch22_compute(y, 60, 0, 1, out, masked);
     nNaN = 0;
-    for (int i = 0; i < CATCH22_N_FEATURES; i++) nNaN += isnan(out[i]);
+    for (int i = 0; i < CATCH22_N_FEATURES; i++) nNaN += isnan(out[i]) != 0;
     check("length-60 series: no NaN", nNaN, 0, 0);
     check("length-60 series: dfa masked", masked[21], 1, 0);
     check("length-60 series: dfa masked to one regime", out[21], 1.0, 0);
@@ -340,7 +340,7 @@ static void test_catch22_compute_feature(void)
     check("compute_feature: unknown name gives CATCH22_BAD_INDEX",
           catch22_compute_feature(noise, 1000, catch22_feature_index("not_a_feature"), 1, &out, NULL), CATCH22_BAD_INDEX, 0);
     check("compute_feature: index 24 is out of range", catch22_compute_feature(noise, 1000, 24, 1, &out, NULL), CATCH22_BAD_INDEX, 0);
-    check("compute_feature: out of range gives NaN", isnan(out), 1, 0);
+    check("compute_feature: out of range gives NaN", isnan(out) != 0, 1, 0);
     check("compute_feature: index -1 is out of range", catch22_compute_feature(noise, 1000, -1, 1, &out, NULL), CATCH22_BAD_INDEX, 0);
     free(noise);
     free(shortNoise);
@@ -416,9 +416,9 @@ static void test_building_blocks(void)
     }
     check("mask_value: as masked on a constant series", nWrong, 0, 0);
     check("mask_value: ami_timescale for n = 50 is 25", catch22_mask_value(catch22_feature_index("ami_timescale"), 50), 25, 0);
-    check("mask_value: mean is never masked", isnan(catch22_mask_value(CATCH22_N_FEATURES, 50)), 1, 0);
-    check("mask_value: index out of range", isnan(catch22_mask_value(-1, 50)), 1, 0);
-    check("mask_value: n = 0", isnan(catch22_mask_value(0, 0)), 1, 0);
+    check("mask_value: mean is never masked", isnan(catch22_mask_value(CATCH22_N_FEATURES, 50)) != 0, 1, 0);
+    check("mask_value: index out of range", isnan(catch22_mask_value(-1, 50)) != 0, 1, 0);
+    check("mask_value: n = 0", isnan(catch22_mask_value(0, 0)) != 0, 1, 0);
 
     // raw: input checks, and constants
     double out;
@@ -426,7 +426,7 @@ static void test_building_blocks(void)
     check("raw: index 24 is out of range", catch22_compute_feature_raw(noise, 1000, 24, &out), CATCH22_BAD_INDEX, 0);
     check("raw: n = 0", catch22_compute_feature_raw(noise, 0, 0, &out), CATCH22_BAD_INPUT, 0);
     catch22_compute_feature_raw(constant, 50, catch22_feature_index("trev"), &out);
-    check("raw: a catch22 feature of a constant series is NaN", isnan(out), 1, 0);
+    check("raw: a catch22 feature of a constant series is NaN", isnan(out) != 0, 1, 0);
     catch22_compute_feature_raw(constant, 50, catch22_feature_index("mean"), &out);
     check("raw: mean of a constant series", out, 3.0, 0);
     double * zc = malloc(50 * sizeof * zc);
@@ -483,7 +483,7 @@ static void test_building_blocks(void)
     check("raw: far from z-scored input is computed without error", nNotOk, 0, 0);
     for (int t = 0; t < 1000; t++) y[t] = 1e10 * noise[t];
     catch22_compute_feature_raw(y, 1000, catch22_feature_index("outlier_timing_pos"), &out);
-    check("raw: outlier_timing_pos is NaN beyond z-scored range", isnan(out), 1, 0);
+    check("raw: outlier_timing_pos is NaN beyond z-scored range", isnan(out) != 0, 1, 0);
 
     // coarse-graining labels every point however large the values: the minimum used
     // to be left out beyond 2^53, where th[0] - 1 == th[0]
