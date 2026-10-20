@@ -82,20 +82,6 @@ double quantile(const double y[], const int size, const double quant)
     return value;
 }
 
-void binarize(const double a[], const int size, int b[], const char how[])
-{   
-    double m = 0.0;
-    if (strcmp(how, "mean") == 0) {
-        m = mean(a, size);
-    } else if (strcmp(how, "median") == 0) {
-        m = median(a, size);
-    }
-    for (int i = 0; i < size; i++) {
-        b[i] = (a[i] > m) ? 1 : 0;
-    }  
-    return;
-}
-
 double f_entropy(const double a[], const int size)
 {
     double f = 0.0;
