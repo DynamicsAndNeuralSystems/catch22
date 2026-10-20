@@ -60,7 +60,9 @@ static int sp_fft_spectrum(const double y[], const int size, double ** S, double
     return nBins;
 }
 
-static double sp_fft_summary(const double y[], const int size, const char what[])
+// The median frequency (wq_50) if medianFreq is nonzero, otherwise the power in the
+// lowest fifth of the frequencies (area_5_1)
+static double sp_fft_summary(const double y[], const int size, const int medianFreq)
 {
     for (int i = 0; i < size; i++) {
         if (!isfinite(y[i])) {
@@ -80,7 +82,7 @@ static double sp_fft_summary(const double y[], const int size, const char what[]
     const double dw = w[1] - w[0];
 
     double output = NAN;
-    if (strcmp(what, "wq_50") == 0) {
+    if (medianFreq) {
         // the frequency below which half of the power lies (the median frequency)
         double total = 0;
         for (int k = 0; k < nBins; k++) {
@@ -95,7 +97,7 @@ static double sp_fft_summary(const double y[], const int size, const char what[]
             }
         }
     }
-    else if (strcmp(what, "area_5_1") == 0) {
+    else {
         // power in the lowest fifth of the frequency bins
         double area = 0;
         for (int k = 0; k < nBins / 5; k++) {
@@ -110,10 +112,10 @@ static double sp_fft_summary(const double y[], const int size, const char what[]
 
 double SP_Summaries_fft_area_5_1(const double y[], const int size)
 {
-    return sp_fft_summary(y, size, "area_5_1");
+    return sp_fft_summary(y, size, 0);
 }
 
 double SP_Summaries_fft_wq_50(const double y[], const int size)
 {
-    return sp_fft_summary(y, size, "wq_50");
+    return sp_fft_summary(y, size, 1);
 }

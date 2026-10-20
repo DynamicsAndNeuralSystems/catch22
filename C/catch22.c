@@ -7,8 +7,7 @@
 
 #include "catch22.h"
 #include "CO_AutoCorr.h"
-#include "DN_HistogramMode_5.h"
-#include "DN_HistogramMode_10.h"
+#include "DN_HistogramMode.h"
 #include "DN_Mean.h"
 #include "DN_OutlierInclude.h"
 #include "DN_Spread_Std.h"

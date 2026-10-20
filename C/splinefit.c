@@ -27,24 +27,12 @@ void matrix_multiply(const int sizeA1, const int sizeA2, const double *A, const 
         return;
     }
     
-    /*
-    // show input
-    for(int i = 0; i < sizeA1; i++){
-        for(int j = 0; j < sizeA2; j++){
-            printf("A[%i][%i] = %1.3f\n", i, j, A[i*sizeA2 + j]);
-        }
-    }
-     */
-    
     for(int i = 0; i < sizeA1; i++){
         for(int j = 0; j < sizeB2; j++){
             
-            //C[i][j] = 0;
             C[i*sizeB2 + j] = 0;
             for(int k = 0; k < sizeB1; k++){
-                // C[i][j] += A[i][k]*B[k][j];
                 C[i*sizeB2 + j] += A[i * sizeA2 + k]*B[k * sizeB2 + j];
-                //printf("C[%i][%i] (k=%i) = %1.3f\n", i, j, k, C[i * sizeB2 + j]);
             }
             
         }
@@ -77,7 +65,6 @@ void gauss_elimination(int size, double *A, double *b, double *x){
     double factor;
     
     // create temp matrix and vector
-    // double *AElim[size];
     double* AElim[nSpline + 1];
     for (int i = 0; i < size; i++)
         AElim[i] = (double *)malloc(size * sizeof(double));
@@ -92,16 +79,6 @@ void gauss_elimination(int size, double *A, double *b, double *x){
         }
         bElim[i] = b[i];
     }
-    
-    /*
-    printf("AElim\n");
-    for(int i = 0; i < size; i++){
-        for(int j = 0; j < size; j++){
-            printf("%1.3f, ", AElim[i][j]);
-        }
-        printf("\n");
-    }
-     */
     
     // go through columns in outer loop
     for(int i = 0; i < size; i++){
@@ -119,30 +96,9 @@ void gauss_elimination(int size, double *A, double *b, double *x){
                 AElim[j][k] = AElim[j][k] - factor*AElim[i][k];
             }
             
-            /*
-            printf("AElim i=%i, j=%i\n", i, j);
-            for(int i = 0; i < size; i++){
-                for(int j = 0; j < size; j++){
-                    printf("%1.3f, ", AElim[i][j]);
-                }
-                printf("\n");
-            }
-             */
-            
         }
         
     }
-    
-    /*
-    for(int i = 0; i < size; i++){
-        for(int j = 0; j < size; j++){
-            printf("AElim[%i][%i] = %1.3f\n", i, j, AElim[i][j]);
-        }
-    }
-    for(int i = 0; i < size; i++){
-        printf("bElim[%i] = %1.3f\n", i, bElim[i]);
-    }
-     */
     
     
     // -- go backwards through triangular matrix and solve for x
@@ -158,11 +114,6 @@ void gauss_elimination(int size, double *A, double *b, double *x){
         
         x[i] = bMinusATemp/AElim[i][i];
     }
-    /*
-    for(int j = 0; j < size; j++){
-        printf("x[%i] = %1.3f\n", j, x[j]);
-    }
-     */
     
     for (int i = 0; i < size; i++)
         free(AElim[i]);
@@ -174,15 +125,6 @@ void lsqsolve_sub(const int sizeA1, const int sizeA2, const double *A, const int
 {
     (void) sizeb; // unused
     // create temp matrix and vector
-    /*
-    double *AT[sizeA1*sizeA2];
-    for (int i = 0; i < sizeA2; i++)
-        AT[i] = (double *)malloc(sizeA1 * sizeof(double));
-    double *ATA[sizeA2];
-    for (int i = 0; i < sizeA2; i++)
-        ATA[i] = (double *)malloc(sizeA2 * sizeof(double));
-    double * ATb = malloc(sizeA1 * sizeof(double));
-     */
     
     double * AT = calloc(sizeA2 * sizeA1, sizeof(double)); // zeroed: silences a false maybe-uninitialized warning
     double * ATA = malloc(sizeA2 * sizeA2 * sizeof(double));
@@ -196,61 +138,12 @@ void lsqsolve_sub(const int sizeA1, const int sizeA2, const double *A, const int
         }
     }
     
-    /*
-    printf("\n b \n");
-    for(int i = 0; i < sizeA1; i++){
-        printf("%i, %1.3f\n", i, b[i]);
-    }
-     */
-    
-    /*
-    printf("\nA\n");
-     for(int i = 0; i < sizeA2; i++){
-         for(int j = 0; j < sizeA1; j++){
-             printf("%1.3f, ", AT[i * sizeA1 + j]);
-         }
-         printf("\n");
-     }
-     */
-     
     
     matrix_multiply(sizeA2, sizeA1, AT, sizeA1, sizeA2, A, ATA);
-    
-    /*
-    printf("ATA\n");
-    for(int i = 0; i < sizeA2; i++){
-        for(int j = 0; j < sizeA2; j++){
-            printf("%1.3f, ", ATA[i * sizeA2 + j]);
-        }
-        printf("\n");
-    }
-     */
     
     
     
     matrix_times_vector(sizeA2, sizeA1, AT, sizeA1, b, ATb);
-    
-    /*
-    for(int i = 0; i < sizeA2; i++){
-        ATb[i] = 0;
-        for(int j = 0; j < sizeA1; j++){
-            ATb[i] += AT[i*sizeA1 + j]*b[j];
-            //printf("%i, ATb[%i]=%1.3f, AT[i*sizeA1 + j]=%1.3f, b[j]=%1.3f\n", i, i, ATb[i], AT[i*sizeA1 + j],b[j]);
-        }
-    }
-     */
-    
-    /*
-     for(int i = 0; i < nCoeffs; i++){
-     printf("b[%i] = %1.3f\n", i, b[i]);
-     }
-     */
-    
-    /*
-    for(int i = 0; i < sizeA2; i++){
-        printf("ATb[%i] = %1.3f\n", i, ATb[i]);
-    }
-     */
     
     
     gauss_elimination(sizeA2, ATA, ATb, x);
@@ -260,54 +153,6 @@ void lsqsolve_sub(const int sizeA1, const int sizeA2, const double *A, const int
     free(ATb);
     
 }
-
-/*
-int lsqsolve()
-{
-    //const int nPoints = 4;
-    //const int nCoeffs = 3;
-    
-    //double A[nPoints][nCoeffs] = {};
-	double A[4][3];
-    A[0][0] = 1;
-    A[1][0] = 3;
-    A[2][0] = 6;
-    A[3][0] = 8;
-    A[0][1] = 4;
-    A[1][1] = 5;
-    A[2][1] = 3;
-    A[3][1] = 12;
-    A[0][2] = 4;
-    A[1][2] = 1;
-    A[2][2] = 0;
-    A[3][2] = 7;
-    //double b[nPoints] = {};
-	double b[4];
-    b[0] = 2;
-    b[1] = 8;
-    b[2] = 3;
-    b[3] = 1;
-    
-    double x[4];
-    
-    double * Alin = malloc(nPoints * nCoeffs * sizeof(double));
-    
-    for(int i = 0; i < nPoints; i++){
-        for(int j = 0; j < nCoeffs; j++){
-            //AT[i,j] = A[j,i]
-            Alin[i * nCoeffs + j] = A[i][j];
-        }
-    }
-    
-    lsqsolve_sub(nPoints, nCoeffs, Alin, nPoints, b, x);
-    
-    free(Alin);
-    
-    return 0;
-    
-    
-}
-*/
 
 int iLimit(int x, int lim){
     return x<lim ? x : lim;
@@ -416,7 +261,6 @@ int splinefit(const double *y, const int size, double *yOut)
         for(int j = 0; j<k; j++){
             for(int l = 0; l<(nSpline*piecesExt); l++){
                 coefs[l][j] *= H[l]/(k-j);
-                //printf("coefs[%i][%i]=%1.3f\n", l, j, coefs[l][j]);
             }
         }
         
@@ -427,16 +271,6 @@ int splinefit(const double *y, const int size, double *yOut)
             }
         }
         
-        /*
-        printf("\nQ:\n");
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < piecesExt; j ++){
-                printf("%1.3f, ", Q[i][j]);
-            }
-            printf("\n");
-        }
-        */
-        
         //cumsum
         for(int l = 0; l<piecesExt; l++){
             for(int m = 1; m < nSpline; m++){
@@ -444,23 +278,12 @@ int splinefit(const double *y, const int size, double *yOut)
             }
         }
         
-        /*
-        printf("\nQ cumsum:\n");
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < piecesExt; j ++){
-                printf("%1.3f, ", Q[i][j]);
-            }
-            printf("\n");
-        }
-        */
-        
         for(int l = 0; l<nSpline*piecesExt; l++){
             if(l%nSpline == 0)
                 coefs[l][k] = 0;
             else{
                 coefs[l][k] = Q[l%nSpline-1][l/nSpline]; // questionable
             }
-            // printf("coefs[%i][%i]=%1.3f\n", l, k, coefs[l][k]);
         }
         
         // normalise antiderivatives by max value
@@ -473,17 +296,9 @@ int splinefit(const double *y, const int size, double *yOut)
             }
         }
         
-        /*
-        printf("\n fmax:\n");
-        for(int i = 0; i < piecesExt*n; i++){
-            printf("%1.3f, \n", fmax[i]);
-        }
-        */
-        
         for(int j = 0; j < k+1; j++){
             for(int l = 0; l < nSpline*piecesExt; l++){
                 coefs[l][j] /= fmax[l];
-                // printf("coefs[%i][%i]=%1.3f\n", l, j, coefs[l][j]);
             }
         }
 
@@ -491,22 +306,11 @@ int splinefit(const double *y, const int size, double *yOut)
         for(int i = 0; i < (nSpline*piecesExt)-deg; i++){
             for(int j = 0; j < k+1; j ++){
                 coefs[i][j] -= coefs[deg+i][j];
-                //printf("coefs[%i][%i]=%1.3f\n", i, j, coefs[i][j]);
             }
         }
         for(int i = 0; i < nSpline*piecesExt; i += nSpline){
             coefs[i][k] = 0;
         }
-        
-        /*
-        printf("\ncoefs:\n");
-        for(int i = 0; i < (n*piecesExt); i++){
-            for(int j = 0; j < n; j ++){
-                printf("%1.3f, ", coefs[i][j]);
-            }
-            printf("\n");
-        }
-        */
         
     }
     
@@ -525,16 +329,6 @@ int splinefit(const double *y, const int size, double *yOut)
         }
     }
     
-    /*
-    printf("\ncoefs scaled:\n");
-    for(int i = 0; i < (n*piecesExt); i++){
-        for(int j = 0; j < n; j ++){
-            printf("%1.4f, ", coefs[i][j]);
-        }
-        printf("\n");
-    }
-    */
-    
     // reduce pieces and sort coefficients by interval number
     int jj[nSpline][pieces];
     for(int i = 0; i < nSpline; i++){
@@ -546,16 +340,6 @@ int splinefit(const double *y, const int size, double *yOut)
         }
     }
     
-    /*
-    printf("\n jj\n");
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < pieces; j++){
-            printf("%i, ", jj[i][j]);
-        }
-        printf("\n");
-    }
-    */
-        
     
     for(int i = 1; i < nSpline; i++){
         for(int j = 0; j < pieces; j++){
@@ -563,37 +347,15 @@ int splinefit(const double *y, const int size, double *yOut)
         }
     }
     
-    /*
-    printf("\n jj cumsum\n");
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < pieces; j++){
-            printf("%i, ", jj[i][j]);
-        }
-        printf("\n");
-    }
-    */
-    
     double coefsOut[nSpline*pieces][nSpline];
     int jj_flat;
     for(int i = 0; i < nSpline*pieces; i++){
         jj_flat = jj[i%nSpline][i/nSpline]-1;
-        //printf("jj_flat(%i) = %i\n", i, jj_flat);
         for(int j = 0; j < nSpline; j++){
             coefsOut[i][j] = coefs[jj_flat][j];
-            //printf("coefsOut[%i][%i]=%1.3f\n", i, j, coefsOut[i][j]);
         }
         
     }
-    
-    /*
-    printf("\n coefsOut * 1000\n");
-    for(int i = 0; i < n*pieces; i++){
-        for(int j = 0; j < n; j++){
-            printf("%1.3f, ", coefsOut[i][j]*1000);
-        }
-        printf("\n");
-    }
-     */
     
     
     // -- create first B-splines to feed into optimization
@@ -612,47 +374,16 @@ int splinefit(const double *y, const int size, double *yOut)
         }
     }
     
-    /*
-    printf("\nxsB\n");
-    for(int i = 0; i < size*n; i++){
-        printf("%i, %i\n", i, xsB[i]);
-    }
-    printf("\nindexB\n");
-    for(int i = 0; i < size*n; i++){
-        printf("%i, %i\n", i, indexB[i]);
-    }
-     */
-    
     double * vB = malloc((size*nSpline) * sizeof(double));
     for(int i = 0; i < size*nSpline; i++){
         vB[i] = coefsOut[indexB[i]][0];
     }
     
-    /*
-    printf("\nvB first iteration\n");
-    for(int i = 0; i < size*n; i++){
-        printf("%i, %1.4f\n", i, vB[i]);
-    }
-     */
-    
     for(int i = 1; i < nSpline; i ++){
         for(int j = 0; j < size*nSpline; j++){
             vB[j] = vB[j]*xsB[j] + coefsOut[indexB[j]][i];
         }
-        /*
-        printf("\nvB k=%i\n", i+1);
-        for(int i = 0; i < size*n; i++){
-            printf("%i, %1.4f\n", i, vB[i]);
-        }
-         */
     }
-    
-    /*
-    printf("\nvB final\n");
-    for(int i = 0; i < size*n; i++){
-        printf("%i, %1.4f\n", i, vB[i]);
-    }
-     */
     
     
     double * A = malloc(size*(nSpline+1) * sizeof(double));
@@ -667,28 +398,11 @@ int splinefit(const double *y, const int size, double *yOut)
         A[(i%nSpline)+breakInd + (i/nSpline)*(nSpline+1)] = vB[i];
     }
     
-    /*
-    printf("\nA:\n");
-    for(int i = 0; i < size; i++){
-        for(int j = 0; j < n+1; j++){
-            printf("%1.5f, ", A[i * (n+1) + j]);
-        }
-        printf("\n");
-    }
-     */
-    
     
     
     double * x = malloc((nSpline+1)*sizeof(double));
     // lsqsolve_sub(int sizeA1, int sizeA2, double *A, int sizeb, double *b, double *x)
     lsqsolve_sub(size, nSpline+1, A, size, y, x);
-    
-    /*
-    printf("\nsolved x\n");
-    for(int i = 0; i < n+1; i++){
-        printf("%i, %1.4f\n", i, x[i]);
-    }
-    */
     
     // coeffs of B-splines to combine by optimised weighting in x
     double C[pieces+nSpline-1][nSpline*pieces];
@@ -712,16 +426,6 @@ int splinefit(const double *y, const int size, double *yOut)
         
     }
     
-    /*
-    printf("\nC:\n");
-    for(int i = 0; i < n+1; i++){
-        for(int j = 0; j < n*pieces; j++){
-            printf("%1.5f, ", C[i][j]);
-        }
-        printf("\n");
-    }
-    */
-    
     // final coefficients
     double coefsSpline[pieces][nSpline];
     for(int i = 0; i < pieces; i++){
@@ -742,16 +446,6 @@ int splinefit(const double *y, const int size, double *yOut)
         }
     }
     
-    /*
-    printf("\ncoefsSpline:\n");
-    for(int i = 0; i < pieces; i++){
-        for(int j = 0; j < n; j++){
-            printf("%1.5f, ", coefsSpline[i][j]);
-        }
-        printf("\n");
-    }
-     */
-     
     
     // compute piecewise polynomial
     
@@ -761,34 +455,14 @@ int splinefit(const double *y, const int size, double *yOut)
         yOut[i] = coefsSpline[secondHalf][0];
     }
     
-    /*
-    printf("\nvSpline first iter\n");
-    for(int i = 0; i < size; i++){
-        printf("%i, %1.5f\n", i, vSpline[i]);
-    }
-    */
-    
     for(int i = 1; i < nSpline; i ++){
         for(int j = 0; j < size; j++){
             secondHalf = j < breaks[1] ? 0 : 1;
             yOut[j] = yOut[j]*(j - breaks[1]*secondHalf) + coefsSpline[secondHalf][i];
         }
         
-        /*
-        printf("\nvSpline %i th iter\n", i);
-        for(int i = 0; i < size; i++){
-            printf("%i, %1.4f\n", i, vSpline[i]);
-        }
-         */
     }
     
-    /*
-    printf("\nvSpline\n");
-    for(int i = 0; i < size; i++){
-        printf("%i, %1.4f\n", i, yOut[i]);
-    }
-     */
-     
     free(xsB);
     free(indexB);
     free(vB);

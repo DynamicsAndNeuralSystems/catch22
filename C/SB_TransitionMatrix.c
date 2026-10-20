@@ -152,7 +152,7 @@ double SB_TransitionMatrix_quantile_3_ac_sumdiagcov(const double y[], const int 
 
     // transfer to alphabet
     int * yCG = malloc(nDown * sizeof(int));
-    sb_coarsegrain(yDown, nDown, "quantile", numGroups, yCG);
+    sb_coarsegrain(yDown, nDown, numGroups, yCG);
 
     // joint transition probabilities between consecutive symbols
     double T[3][3];

@@ -50,7 +50,6 @@ void icumsum(const int a[], const int size, int b[])
     b[0] = a[0];
     for (int i = 1; i < size; i++) {
         b[i] = a[i] + b[i-1];
-        //printf("b[%i]%1.3f = a[%i]%1.3f + b[%i-1]%1.3f\n", i, b[i], i, a[i], i, a[i-1]);
     }
     
 }
@@ -91,8 +90,6 @@ double cov(const double x[], const double y[], const int size){
     double meanY = mean(y, size);
     
     for(int i = 0; i < size; i++){
-        // double xi =x[i];
-        // double yi =y[i];
         covariance += (x[i] - meanX) * (y[i] - meanY);
         
     }
@@ -115,7 +112,6 @@ double corr(const double x[], const double y[], const int size){
         denomX += (x[i] - meanX) * (x[i] - meanX);
         denomY += (y[i] - meanY) * (y[i] - meanY);
         
-        //printf("x[%i]=%1.3f, y[%i]=%1.3f, nom[%i]=%1.3f, denomX[%i]=%1.3f, denomY[%i]=%1.3f\n", i, x[i], i, y[i], i, nom, i, denomX, i, denomY);
     }
     
     return nom/sqrt(denomX * denomY);
@@ -145,19 +141,12 @@ void diff(const double a[], const int size, double b[])
     }
 }
 
-int linreg(const int n, const double x[], const double y[], double* m, double* b) //, double* r)
+int linreg(const int n, const double x[], const double y[], double* m, double* b)
 {
     double   sumx = 0.0;                      /* sum of x     */
     double   sumx2 = 0.0;                     /* sum of x**2  */
     double   sumxy = 0.0;                     /* sum of x * y */
     double   sumy = 0.0;                      /* sum of y     */
-    
-    /*
-    for (int i = 0; i < n; i++)
-    {
-        fprintf(stdout, "x[%i] = %f, y[%i] = %f\n", i, x[i], i, y[i]);
-    }
-    */
     
     for (int i=0;i<n;i++){
         sumx  += x[i];
@@ -171,19 +160,11 @@ int linreg(const int n, const double x[], const double y[], double* m, double* b
         // singular matrix. can't solve the problem.
         *m = 0;
         *b = 0;
-        //if (r) *r = 0;
         return 1;
     }
     
     *m = (n * sumxy  -  sumx * sumy) / denom;
     *b = (sumy * sumx2  -  sumx * sumxy) / denom;
-    
-    /*if (r!=NULL) {
-        *r = (sumxy - sumx * sumy / n) /    // compute correlation coeff
-        sqrt((sumx2 - sumx * sumx/n) *
-             (sumy2 - sumy * sumy/n));
-    }
-    */
     
     return 0;
 }
