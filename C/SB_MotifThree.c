@@ -16,6 +16,10 @@ double SB_MotifThree_quantile_hh(const double y[], const int size)
         }
     }
 
+    if (size < 1) {
+        return NAN;
+    }
+
     const int alphabet_size = 3;
     int * yt = calloc(size, sizeof * yt); // letters 1..3 (0 if unassigned, so not counted)
     sb_coarsegrain(y, size, alphabet_size, yt);
