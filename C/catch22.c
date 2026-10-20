@@ -58,7 +58,7 @@ typedef struct {
     const char * shortName;
     const char * legacyName; // long name in catch22 v0.x (mostly with an earlier definition)
     const char * hctsaCall;  // the hctsa call (on x_z, the z-scored series) that reproduces it
-    double (*compute)(const double y[], const int size);
+    double (*compute)(const double y[], const int size); // y finite and not constant (checked by the entry points)
     double (*mask)(const int n);
 } catch22_feature;
 
@@ -197,12 +197,59 @@ static int valid_input(const double y[], const int n, int * isConstant)
     return n >= 1;
 }
 
+// Feature i of a series that passed valid_input, the one place features are
+// computed: the catch22 features are NaN for a constant series, which they cannot be
+// computed on
+static double feature_value(const double y[], const int n, const int i, const int isConstant)
+{
+    if (i == CATCH22_N_FEATURES) return DN_mean(y, n);
+    if (i == CATCH22_N_FEATURES + 1) return (n > 1) ? DN_Spread_std(y, n) : NAN;
+    return isConstant ? NAN : FEATURES[i].compute(y, n);
+}
+
+int catch22_zscore(const double y[], const int n, double z[])
+{
+    int isConstant;
+    if (!valid_input(y, n, &isConstant)) {
+        for (int t = 0; t < n; t++) z[t] = NAN;
+        return CATCH22_BAD_INPUT;
+    }
+    if (isConstant) {
+        memcpy(z, y, n * sizeof * z);
+    }
+    else {
+        zscore_norm2(y, n, z);
+    }
+    return CATCH22_OK;
+}
+
+int catch22_compute_feature_raw(const double y[], const int n, const int i, double * out)
+{
+    *out = NAN;
+    if (i < 0 || i >= CATCH24_N_FEATURES) {
+        return CATCH22_BAD_INDEX;
+    }
+    int isConstant;
+    if (!valid_input(y, n, &isConstant)) {
+        return CATCH22_BAD_INPUT;
+    }
+    *out = feature_value(y, n, i, isConstant);
+    return CATCH22_OK;
+}
+
+double catch22_mask_value(const int i, const int n)
+{
+    return (i >= 0 && i < CATCH22_N_FEATURES && n >= 1) ? FEATURES[i].mask(n) : NAN;
+}
+
 int catch22_compute(const double y[], const int n, const int catch24, const int mask_nans,
                     double out[], int masked[])
 {
     return catch22_compute_timed(y, n, catch24, mask_nans, out, masked, NULL);
 }
 
+// The building blocks composed (catch22.h). Where z-scoring overflows or underflows,
+// z is constant or non-finite and the feature NaN.
 int catch22_compute_feature(const double y[], const int n, const int i, const int mask_nans,
                             double * out, int * masked)
 {
@@ -211,36 +258,27 @@ int catch22_compute_feature(const double y[], const int n, const int i, const in
     if (i < 0 || i >= CATCH24_N_FEATURES) {
         return CATCH22_BAD_INDEX;
     }
-
-    int isConstant;
-    if (!valid_input(y, n, &isConstant)) {
+    if (i >= CATCH22_N_FEATURES) { // mean and std: of the series itself, never masked
+        return catch22_compute_feature_raw(y, n, i, out);
+    }
+    if (n < 1) {
         return CATCH22_BAD_INPUT;
     }
 
-    // the catch24 features, of the raw series
-    if (i == CATCH22_N_FEATURES) {
-        *out = DN_mean(y, n);
-        return CATCH22_OK;
+    double * z = malloc(n * sizeof * z);
+    const int status = catch22_zscore(y, n, z);
+    if (status == CATCH22_OK) {
+        catch22_compute_feature_raw(z, n, i, out);
     }
-    if (i == CATCH22_N_FEATURES + 1) {
-        *out = (n > 1) ? DN_Spread_std(y, n) : NAN;
-        return CATCH22_OK;
-    }
-
-    // a feature of the z-scored series
-    if (!isConstant) {
-        double * z = malloc(n * sizeof * z);
-        zscore_norm2(y, n, z);
-        *out = FEATURES[i].compute(z, n);
-        free(z);
-    }
-    if (mask_nans && isnan(*out)) {
-        *out = FEATURES[i].mask(n);
+    free(z);
+    if (status == CATCH22_OK && mask_nans && isnan(*out)) {
+        *out = catch22_mask_value(i, n);
         if (masked) *masked = 1;
     }
-    return CATCH22_OK;
+    return status;
 }
 
+// As catch22_compute_feature for each feature, z-scoring and checking the z-scores once
 int catch22_compute_timed(const double y[], const int n, const int catch24, const int mask_nans,
                           double out[], int masked[], double time_ms[])
 {
@@ -250,33 +288,32 @@ int catch22_compute_timed(const double y[], const int n, const int catch24, cons
         if (masked) masked[i] = 0;
         if (time_ms) time_ms[i] = 0.0;
     }
-
-    int isConstant;
-    if (!valid_input(y, n, &isConstant)) {
+    if (n < 1) {
         return CATCH22_BAD_INPUT;
     }
 
-    if (catch24) {
-        out[CATCH22_N_FEATURES] = DN_mean(y, n);
-        out[CATCH22_N_FEATURES + 1] = (n > 1) ? DN_Spread_std(y, n) : NAN;
-    }
-
-    // features of the z-scored series (left NaN for a constant series, which cannot be z-scored)
-    if (!isConstant) {
-        double * z = malloc(n * sizeof * z);
-        zscore_norm2(y, n, z);
-        for (int i = 0; i < CATCH22_N_FEATURES; i++) {
-            const clock_t begin = clock();
-            out[i] = FEATURES[i].compute(z, n);
-            if (time_ms) time_ms[i] = (double)(clock() - begin) * 1000 / CLOCKS_PER_SEC;
-        }
+    double * z = malloc(n * sizeof * z);
+    if (catch22_zscore(y, n, z) != CATCH22_OK) {
         free(z);
+        return CATCH22_BAD_INPUT;
     }
+    if (catch24) {
+        catch22_compute_feature_raw(y, n, CATCH22_N_FEATURES, &out[CATCH22_N_FEATURES]);
+        catch22_compute_feature_raw(y, n, CATCH22_N_FEATURES + 1, &out[CATCH22_N_FEATURES + 1]);
+    }
+    int zConstant;
+    const int zValid = valid_input(z, n, &zConstant);
+    for (int i = 0; i < CATCH22_N_FEATURES; i++) {
+        const clock_t begin = clock();
+        out[i] = zValid ? feature_value(z, n, i, zConstant) : NAN;
+        if (time_ms) time_ms[i] = (double)(clock() - begin) * 1000 / CLOCKS_PER_SEC;
+    }
+    free(z);
 
     if (mask_nans) {
         for (int i = 0; i < CATCH22_N_FEATURES; i++) {
             if (isnan(out[i])) {
-                out[i] = FEATURES[i].mask(n);
+                out[i] = catch22_mask_value(i, n);
                 if (masked) masked[i] = 1;
             }
         }

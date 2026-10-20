@@ -13,7 +13,7 @@ void sb_coarsegrain(const double y[], const int size, const int num_groups, int 
     for (i = 0; i < num_groups + 1; i++) {
         th[i] = quantile(y, size, ls[i]);
     }
-    th[0] -= 1;
+    th[0] = -INFINITY; // the minimum is in the first group (th[0] - 1 == th[0] beyond 2^53)
     for (i = 0; i < num_groups; i++) {
         for (j = 0; j < size; j++) {
             if (y[j] > th[i] && y[j] <= th[i + 1]) {

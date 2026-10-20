@@ -10,16 +10,7 @@
 #include "stats.h"
 
 double MD_pNN_pnn40(const double y[], const int size){
-    
-    // NaN check
-    for(int i = 0; i < size; i++)
-    {
-        if(isnan(y[i]))
-        {
-            return NAN;
-        }
-    }
-    
+
     const int pNNx = 40;
     
     // need at least one difference

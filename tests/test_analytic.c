@@ -41,7 +41,7 @@ static void check(const char * what, const double got, const double expected, co
 static double * zscored(const double y[], const int size)
 {
     double * z = malloc(size * sizeof * z);
-    zscore_norm2(y, size, z);
+    catch22_zscore(y, size, z);
     return z;
 }
 
@@ -346,6 +346,137 @@ static void test_catch22_compute_feature(void)
     free(sinusoid);
 }
 
+// catch22_zscore, catch22_compute_feature_raw and catch22_mask_value compose to
+// exactly catch22_compute_feature (value, mask flag and return code)
+static void test_building_blocks(void)
+{
+    double constant[50], withNaN[50];
+    for (int i = 0; i < 50; i++) {
+        constant[i] = 3.0;
+        withNaN[i] = i;
+    }
+    withNaN[10] = NAN;
+    double * noise = gaussian_noise(1000);
+    double * shortNoise = gaussian_noise(60);
+    double * sinusoid = sine(500, 20);
+    double oneSample[1] = {2.0};
+    const double * series[] = {noise, shortNoise, sinusoid, constant, withNaN, oneSample};
+    const int sizes[] = {1000, 60, 500, 50, 50, 1};
+    const char * labels[] = {"noise", "length-60 noise", "sine", "constant", "NaN", "one sample"};
+
+    for (int s = 0; s < 6; s++) {
+        double * z = malloc(sizes[s] * sizeof * z);
+        const int zCode = catch22_zscore(series[s], sizes[s], z);
+        for (int mask_nans = 0; mask_nans <= 1; mask_nans++) {
+            int nDiffer = 0;
+            for (int i = 0; i < CATCH24_N_FEATURES; i++) {
+                double one, composed;
+                int oneMasked, composedMasked = 0;
+                const int code = catch22_compute_feature(series[s], sizes[s], i, mask_nans, &one, &oneMasked);
+                int composedCode = zCode;
+                if (i >= CATCH22_N_FEATURES) {
+                    composedCode = catch22_compute_feature_raw(series[s], sizes[s], i, &composed);
+                }
+                else {
+                    composed = NAN;
+                    if (zCode == CATCH22_OK) {
+                        catch22_compute_feature_raw(z, sizes[s], i, &composed);
+                        if (mask_nans && isnan(composed)) {
+                            composed = catch22_mask_value(i, sizes[s]);
+                            composedMasked = 1;
+                        }
+                    }
+                }
+                const int same = (one == composed || (isnan(one) && isnan(composed)));
+                if (!same || oneMasked != composedMasked || code != composedCode) {
+                    nDiffer++;
+                    printf("  %s (mask_nans = %d), feature %d: %.17g vs %.17g\n", labels[s], mask_nans, i, composed, one);
+                }
+            }
+            char what[100];
+            snprintf(what, sizeof what, "building blocks compose to compute_feature: %s, mask_nans = %d", labels[s], mask_nans);
+            check(what, nDiffer, 0, 0);
+        }
+        free(z);
+    }
+
+    // mask values: what a constant series (every feature masked) returns, for each length
+    const int lengths[] = {1, 2, 50, 1000};
+    int nWrong = 0;
+    for (int k = 0; k < 4; k++) {
+        double * y = malloc(lengths[k] * sizeof * y);
+        for (int t = 0; t < lengths[k]; t++) y[t] = 1.5;
+        for (int i = 0; i < CATCH22_N_FEATURES; i++) {
+            double out;
+            catch22_compute_feature(y, lengths[k], i, 1, &out, NULL);
+            nWrong += out != catch22_mask_value(i, lengths[k]);
+        }
+        free(y);
+    }
+    check("mask_value: as masked on a constant series", nWrong, 0, 0);
+    check("mask_value: ami_timescale for n = 50 is 25", catch22_mask_value(catch22_feature_index("ami_timescale"), 50), 25, 0);
+    check("mask_value: mean is never masked", isnan(catch22_mask_value(CATCH22_N_FEATURES, 50)), 1, 0);
+    check("mask_value: index out of range", isnan(catch22_mask_value(-1, 50)), 1, 0);
+    check("mask_value: n = 0", isnan(catch22_mask_value(0, 0)), 1, 0);
+
+    // raw: input checks, and constants
+    double out;
+    check("raw: NaN input gives CATCH22_BAD_INPUT", catch22_compute_feature_raw(withNaN, 50, 0, &out), CATCH22_BAD_INPUT, 0);
+    check("raw: index 24 is out of range", catch22_compute_feature_raw(noise, 1000, 24, &out), CATCH22_BAD_INDEX, 0);
+    check("raw: n = 0", catch22_compute_feature_raw(noise, 0, 0, &out), CATCH22_BAD_INPUT, 0);
+    catch22_compute_feature_raw(constant, 50, catch22_feature_index("trev"), &out);
+    check("raw: a catch22 feature of a constant series is NaN", isnan(out), 1, 0);
+    catch22_compute_feature_raw(constant, 50, catch22_feature_index("mean"), &out);
+    check("raw: mean of a constant series", out, 3.0, 0);
+    double * zc = malloc(50 * sizeof * zc);
+    check("zscore: a constant series is copied", catch22_zscore(constant, 50, zc) == CATCH22_OK && zc[7] == 3.0, 1, 0);
+    check("zscore: NaN input gives CATCH22_BAD_INPUT", catch22_zscore(withNaN, 50, zc), CATCH22_BAD_INPUT, 0);
+    free(zc);
+
+    // where z-scoring over- or underflows, features are NaN (so masked), not computed
+    // on the non-finite or constant z-scores
+    double * scaled = malloc(1000 * sizeof * scaled);
+    const double extremes[] = {1e200, 1e-200};
+    for (int k = 0; k < 2; k++) {
+        for (int t = 0; t < 1000; t++) scaled[t] = extremes[k] * noise[t];
+        int nNotNaN = 0, nNotMasked = 0;
+        for (int i = 0; i < CATCH22_N_FEATURES; i++) {
+            double v;
+            int vMasked;
+            nNotNaN += catch22_compute_feature(scaled, 1000, i, 0, &v, NULL) != CATCH22_OK || !isnan(v);
+            catch22_compute_feature(scaled, 1000, i, 1, &v, &vMasked);
+            nNotMasked += !vMasked;
+        }
+        char what[100];
+        snprintf(what, sizeof what, "z-scoring overflow: noise * %g gives NaN, masked", extremes[k]);
+        check(what, nNotNaN + nNotMasked, 0, 0);
+    }
+    free(scaled);
+
+    // raw on input far from z-scored: every feature returns without error (run under
+    // the sanitizers in CI); outlier timing needs more thresholds than z-scored input can
+    double * y = malloc(1000 * sizeof * y);
+    const double scales[] = {1e-300, 1e10, 1e150, 1e300};
+    int nNotOk = 0;
+    for (int k = 0; k < 4; k++) {
+        for (int offset = 0; offset <= 1; offset++) {
+            for (int t = 0; t < 1000; t++) y[t] = offset * 1e15 + scales[k] * noise[t];
+            for (int i = 0; i < CATCH24_N_FEATURES; i++) {
+                nNotOk += catch22_compute_feature_raw(y, 1000, i, &out) != CATCH22_OK;
+            }
+        }
+    }
+    check("raw: far from z-scored input is computed without error", nNotOk, 0, 0);
+    for (int t = 0; t < 1000; t++) y[t] = 1e10 * noise[t];
+    catch22_compute_feature_raw(y, 1000, catch22_feature_index("outlier_timing_pos"), &out);
+    check("raw: outlier_timing_pos is NaN beyond z-scored range", isnan(out), 1, 0);
+    free(y);
+
+    free(noise);
+    free(shortNoise);
+    free(sinusoid);
+}
+
 int main(void)
 {
     test_sines();
@@ -354,6 +485,7 @@ int main(void)
     test_white_noise();
     test_catch22_compute();
     test_catch22_compute_feature();
+    test_building_blocks();
 
     printf("%d passed, %d failed\n", nPass, nFail);
     return nFail > 0;

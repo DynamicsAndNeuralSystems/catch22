@@ -14,22 +14,20 @@ static int bit_select(const int *bit, int n, int logn, int k) {
 
 double DN_OutlierInclude_np_001_mdrmd(const double y[], const int size, const int sign)
 {
-    for (int i = 0; i < size; i++) if (isnan(y[i])) return NAN;
-
     double inc = 0.01;
     int tot = 0;
     double *yWork = malloc(size * sizeof(double));
 
-    int constantFlag = 1;
     for (int i = 0; i < size; i++) {
-        if (y[i] != y[0]) constantFlag = 0;
         yWork[i] = sign * y[i];
         if (yWork[i] >= 0) tot += 1;
     }
-    if (constantFlag) { free(yWork); return 0; }
 
     double maxVal = max_(yWork, size);
     if (maxVal < inc) { free(yWork); return 0; }
+    // a z-scored series has maxVal <= (size-1)/sqrt(size); larger input (not z-scored)
+    // would need more thresholds than nThresh can count
+    if (maxVal > sqrt(size)) { free(yWork); return NAN; }
 
     int nThresh = maxVal / inc + 1;
 

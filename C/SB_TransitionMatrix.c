@@ -95,23 +95,6 @@ static double * resample_down(const double y[], const int size, const int q, int
 
 double SB_TransitionMatrix_quantile_3_ac_sumdiagcov(const double y[], const int size)
 {
-
-    // NaN and const check
-    int constant = 1;
-    for(int i = 0; i < size; i++)
-    {
-        if(!isfinite(y[i]))
-        {
-            return NAN;
-        }
-        if(y[i] != y[0]){
-            constant = 0;
-        }
-    }
-    if (constant){
-        return NAN;
-    }
-
     const int numGroups = 3;
 
     // tau: first lag with a strictly negative autocorrelation (size-1 if
