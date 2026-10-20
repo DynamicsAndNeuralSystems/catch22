@@ -37,7 +37,8 @@ def read_output(path):
         for line in f:
             parts = [p.strip() for p in line.split(',')]
             if len(parts) >= 2 and parts[1]:
-                values[parts[1]] = float(parts[0])
+                # MSVC prints NaN as -nan(ind), which float() rejects
+                values[parts[1]] = math.nan if 'nan' in parts[0].lower() else float(parts[0])
     return values
 
 

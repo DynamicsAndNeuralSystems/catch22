@@ -6,32 +6,99 @@ on:
   pull_request:
     branches: [main]
 
+# Every platform and compiler the wrappers build on (pycatch22 wheels, Rcatch22,
+# catch22_jll), the flags they use, and a bit-for-bit comparison against the base
+# branch on each, since cross-platform results agree only to a tolerance
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux gcc,                 os: ubuntu-latest,    cc: gcc,   cflags: -Wall -Wextra -Werror -O2 }
+          - { name: linux gcc c99 (pycatch22), os: ubuntu-latest,    cc: gcc,   cflags: -std=c99 -Wall -Wextra -Werror -O2 }
+          - { name: linux gcc-9 c11 (catch22_jll), os: ubuntu-22.04, cc: gcc-9, cflags: -std=c11 -fPIC -Wall -Wextra -Werror -O2, setup: sudo apt-get install -y gcc-9 }
+          - { name: linux gcc -O0,             os: ubuntu-latest,    cc: gcc,   cflags: -Wall -Wextra -Werror -O0 }
+          - { name: linux gcc -O3,             os: ubuntu-latest,    cc: gcc,   cflags: -Wall -Wextra -Werror -O3 }
+          # SSE2 maths: x87's 80-bit intermediates differ from IEEE double in the last bits and do not overflow where doubles do
+          - { name: linux gcc 32-bit,          os: ubuntu-latest,    cc: gcc,   cflags: -m32 -msse2 -mfpmath=sse -Wall -Wextra -Werror -O2, setup: sudo apt-get install -y gcc-multilib }
+          - { name: linux clang,               os: ubuntu-latest,    cc: clang, cflags: -Wall -Wextra -Werror -O2 }
+          - { name: linux arm64 gcc,           os: ubuntu-24.04-arm, cc: gcc,   cflags: -Wall -Wextra -Werror -O2 }
+          - { name: linux arm64 clang,         os: ubuntu-24.04-arm, cc: clang, cflags: -Wall -Wextra -Werror -O2 }
+          - { name: macos arm64 clang,         os: macos-latest,     cc: clang, cflags: -Wall -Wextra -Werror -O2 }
+          - { name: macos x86-64 clang,        os: macos-15-intel,   cc: clang, cflags: -Wall -Wextra -Werror -O2 }
+          # _CRT_SECURE_NO_WARNINGS: MSVC deprecates fopen and scanf (main.c) in favour of its own fopen_s and scanf_s
+          - { name: windows msvc,              os: windows-latest,   cc: cl,    cflags: -W4 -WX -D_CRT_SECURE_NO_WARNINGS -O2 }
+          - { name: windows msvc c11,          os: windows-latest,   cc: cl,    cflags: -std:c11 -W4 -WX -D_CRT_SECURE_NO_WARNINGS -O2 }
+          - { name: windows mingw gcc,         os: windows-latest,   cc: gcc,   cflags: -Wall -Wextra -Werror -O2 }
+          - { name: windows arm64 msvc,        os: windows-11-arm,   cc: cl,    cflags: -W4 -WX -D_CRT_SECURE_NO_WARNINGS -O2, arch: arm64 }
+    env:
+      CC: ${{ matrix.cc }}
+      CFLAGS: ${{ matrix.cflags }}
+    defaults:
+      run:
+        shell: bash
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
-      - name: Compile C code
-        run: gcc -Wall -Wextra -Werror -O2 C/*.c -o C/run_features -lm
+      - name: Install the compiler
+        if: matrix.setup
+        run: ${{ matrix.setup }}
 
-      - name: Compile as strict C99 (as pycatch22 does)
-        run: gcc -std=c99 -Wall -Wextra -Werror -O2 C/*.c -o run_features_c99 -lm
+      - name: Set up MSVC
+        if: matrix.cc == 'cl'
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.arch || 'x64' }}
+
+      - name: Compile C code
+        run: tests/build.sh C/run_features C/*.c
 
       - name: Analytic unit tests
         run: |
-          gcc -Wall -Wextra -Werror -O2 -IC tests/test_analytic.c $(ls C/*.c | grep -v main.c) -o test_analytic -lm
+          tests/build.sh test_analytic tests/test_analytic.c $(ls C/*.c | grep -v main.c) -IC
           ./test_analytic
 
       - name: Regression test (testData expected outputs)
-        run: python3 tests/check_regression.py C/run_features
+        run: ${{ runner.os == 'Windows' && 'python' || 'python3' }} tests/check_regression.py C/run_features
 
       - name: Reference test (C matches hctsa)
-        run: python3 tests/check_hctsa_reference.py C/run_features
+        run: ${{ runner.os == 'Windows' && 'python' || 'python3' }} tests/check_hctsa_reference.py C/run_features
+
+      - name: Verify edge case handling
+        run: |
+          for f in testData/pathological/testNaN.txt testData/pathological/testConstant.txt testData/pathological/testOneSample.txt testData/pathological/testInf.txt testData/pathological/testInfMinus.txt; do
+            echo "0" | C/run_features "$f" edge_out.txt
+            status=$?
+            if [ $status -ge 128 ]; then
+              echo "FAIL: $f caused a crash (exit code $status)"
+              exit 1
+            fi
+            echo "PASS: $f handled without crash (exit $status)"
+          done
+
+      # Fails when a feature value changes anywhere in testData, on this platform and
+      # compiler. A pull request that changes values on purpose says so (and
+      # regenerates the expected outputs, so the regression test fails with it).
+      - name: Feature values unchanged from the base branch (bit for bit)
+        if: github.event_name == 'pull_request'
+        run: |
+          git fetch --depth=1 origin ${{ github.event.pull_request.base.sha }}
+          git worktree add base ${{ github.event.pull_request.base.sha }}
+          tests/build.sh print_features tests/print_features.c $(ls C/*.c | grep -v main.c) -IC
+          CFLAGS=$(echo "$CFLAGS" | sed 's/-Werror//; s/-WX//') tests/build.sh print_features_base tests/print_features.c $(ls base/C/*.c | grep -v main.c) -Ibase/C # the base's warnings are not this PR's
+          ls testData/*/*.txt | grep -v _output > series.txt
+          ./print_features < series.txt > head_features.txt
+          ./print_features_base < series.txt > base_features.txt
+          diff base_features.txt head_features.txt && echo "All feature values unchanged ($(wc -l < head_features.txt) values)."
 
       - name: Profile feature timing
+        if: matrix.name == 'linux gcc'
         run: |
           # time a fresh run into a temporary directory (the committed outputs are left untouched)
           C/runAllTS.sh -i testData/simulated -o /tmp/profile -a _output -s 1 > /dev/null
@@ -52,20 +119,20 @@ jobs:
             }' "$f"
           done
 
-      - name: Verify edge case handling
-        run: |
-          for f in testData/pathological/testNaN.txt testData/pathological/testConstant.txt testData/pathological/testOneSample.txt testData/pathological/testInf.txt testData/pathological/testInfMinus.txt; do
-            echo "0" | C/run_features "$f" /tmp/edge_out.txt
-            status=$?
-            if [ $status -ge 128 ]; then
-              echo "FAIL: $f caused a crash (exit code $status)"
-              exit 1
-            fi
-            echo "PASS: $f handled without crash (exit $status)"
-          done
-
   sanitizers:
-    runs-on: ubuntu-latest
+    name: sanitizers (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: linux gcc,         os: ubuntu-latest,    cc: gcc }
+          - { name: linux clang,       os: ubuntu-latest,    cc: clang }
+          - { name: linux arm64 gcc,   os: ubuntu-24.04-arm, cc: gcc }
+    env:
+      CC: ${{ matrix.cc }}
+      CFLAGS: -Wall -Wextra -Werror -g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all
 
     steps:
       - name: Check out repository
@@ -73,9 +140,8 @@ jobs:
 
       - name: Compile with AddressSanitizer and UndefinedBehaviorSanitizer
         run: |
-          SAN="-g -O1 -fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=all"
-          gcc -Wall -Wextra -Werror $SAN C/*.c -o run_features_san -lm
-          gcc -Wall -Wextra -Werror $SAN -IC tests/test_analytic.c $(ls C/*.c | grep -v main.c) -o test_analytic_san -lm
+          tests/build.sh run_features_san C/*.c
+          tests/build.sh test_analytic_san tests/test_analytic.c $(ls C/*.c | grep -v main.c) -IC
 
       - name: Run tests under sanitizers (memory errors, leaks, undefined behaviour)
         env:
@@ -86,5 +152,27 @@ jobs:
           python3 tests/check_regression.py ./run_features_san
           for f in testData/pathological/*.txt; do
             case "$f" in *_output.txt) continue ;; esac
-            echo 1 | ./run_features_san "$f" /tmp/edge_out.txt > /dev/null
+            echo 1 | ./run_features_san "$f" edge_out.txt > /dev/null
           done
+
+  # Uninitialised reads, which the sanitizers above do not detect
+  valgrind:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CC: gcc
+      CFLAGS: -Wall -Wextra -Werror -g -O1
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install valgrind
+        run: sudo apt-get install -y valgrind
+
+      - name: Run the analytic tests and every pathological, basic and reference series under memcheck
+        run: |
+          tests/build.sh test_analytic tests/test_analytic.c $(ls C/*.c | grep -v main.c) -IC
+          tests/build.sh print_features tests/print_features.c $(ls C/*.c | grep -v main.c) -IC
+          valgrind -q --error-exitcode=1 --leak-check=full ./test_analytic
+          ls testData/pathological/*.txt testData/basic/*.txt tests/reference/series/*.txt | grep -v _output | valgrind -q --error-exitcode=1 --leak-check=full ./print_features > /dev/null
