@@ -7,6 +7,6 @@
 #include "stats.h"
 #include "helper_functions.h"
 
-extern void sb_coarsegrain(const double y[], const int size, const char how[], const int num_groups, int labels[]);
+extern void sb_coarsegrain(const double y[], const int size, const int num_groups, int labels[]);
 
 #endif

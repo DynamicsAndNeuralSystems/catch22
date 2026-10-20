@@ -28,9 +28,9 @@ static int compare_ints(const void * a, const void * b)
 // Fluctuation analysis with a two-regime fit, as hctsa's
 // SC_FluctAnal(x,2,how,50,1,lag,true) output prop_r1: the proportion of the
 // (log-spaced) timescales that fall in the first of two scaling regimes.
-// how is "rsrangefit" (range of linearly detrended windows) or "dfa"
-// (detrended fluctuation analysis, linear detrending).
-double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const int lag, const char how[])
+// isDFA selects "dfa" (detrended fluctuation analysis, linear detrending) over
+// "rsrangefit" (range of linearly detrended windows).
+static double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const int lag, const int isDFA)
 {
     for (int i = 0; i < size; i++) {
         if (!isfinite(y[i])) {
@@ -79,7 +79,6 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
     double * buffer = malloc(tau[nTau - 1] * sizeof * buffer);
     double * logtt = malloc(nTau * sizeof * logtt);
     double * logFF = malloc(nTau * sizeof * logFF);
-    const int isDFA = (strcmp(how, "dfa") == 0);
     for (int i = 0; i < nTau; i++) {
         const int t = tau[i];
         const int nWindows = Ny / t;
@@ -145,9 +144,9 @@ double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const 
 }
 
 double SC_FluctAnal_2_dfa_50_1_2_logi_prop_r1(const double y[], const int size){
-    return SC_FluctAnal_2_50_1_logi_prop_r1(y, size, 2, "dfa");
+    return SC_FluctAnal_2_50_1_logi_prop_r1(y, size, 2, 1);
 }
 
 double SC_FluctAnal_2_rsrangefit_50_1_logi_prop_r1(const double y[], const int size){
-    return SC_FluctAnal_2_50_1_logi_prop_r1(y, size, 1, "rsrangefit");
+    return SC_FluctAnal_2_50_1_logi_prop_r1(y, size, 1, 0);
 }

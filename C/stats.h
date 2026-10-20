@@ -16,6 +16,6 @@ extern double cov(const double x[], const double y[], const int size);
 extern double autocorr_lag(const double x[], const int size, const int lag);
 extern void zscore_norm2(const double a[], const int size, double b[]);
 extern void diff(const double a[], const int size, double b[]);
-extern int linreg(const int n, const double x[], const double y[], double* m, double* b); //, double* r);
+extern int linreg(const int n, const double x[], const double y[], double* m, double* b);
 
 #endif

@@ -38,24 +38,6 @@ int nextpow2(int n)
     return n;
 }
 
-/*
-static void apply_conj(cplx a[], int size, int normalize)
-{   
-    switch(normalize) {
-        case(1):
-            for (int i = 0; i < size; i++) {
-                a[i] = conj(a[i]) / size;
-            }
-            break;
-        default:
-            for (int i = 0; i < size; i++) {
-                a[i] = conj(a[i]);
-            }
-            break;
-    }
-}
- */
-
 void dot_multiply(cplx a[], cplx b[], int size)
 {
     for (int i = 0; i < size; i++) {
@@ -89,7 +71,6 @@ double * co_autocorrs(const double y[], const int size)
             F[i] = tmp;
         #endif
     }
-    //size = nFFT;
     
     twiddles(tw, nFFT);
     fft(F, nFFT, tw);
@@ -112,8 +93,6 @@ double * co_autocorrs(const double y[], const int size)
 int co_firstzero(const double y[], const int size, const int maxtau)
 {
     
-    //double * autocorrs = malloc(size * sizeof * autocorrs);
-    //autocorrs = co_autocorrs(y, size);
     
     double * autocorrs = co_autocorrs(y, size);
     

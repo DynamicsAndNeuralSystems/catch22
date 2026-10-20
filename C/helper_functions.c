@@ -53,15 +53,6 @@ double quantile(const double y[], const int size, const double quant)
     memcpy(tmp, y, size * sizeof(*y));
     sort(tmp, size);
     
-    /*
-    for(int i=0; i < size; i++){
-        printf("y[%i]=%1.4f\n", i, y[i]);
-    }
-    for(int i=0; i < size; i++){
-        printf("sorted[%i]=%1.4f\n", i, tmp[i]);
-    }
-     */
-    
     // out of range limit?
     q = 0.5 / size;
     if (quant < q) {
@@ -104,24 +95,14 @@ void subset(const int a[], int b[], const int start, const int end)
 
 #if defined(__GNUC__) || defined(__GNUG__)
     cplx _Cmulcc(const cplx x, const cplx y) {
-        /*double a = x._Val[0];
-        double b = x._Val[1];
-
-        double c = y._Val[0];
-        double d = y._Val[1];
-
-        cplx result = { (a * c - b * d), (a * d + c * b) };
-         */
         return x*y;
     }
 
     cplx _Cminuscc(const cplx x, const cplx y) {
-        //cplx result = { x._Val[0] - y._Val[0], x._Val[1] - y._Val[1] };
         return x - y;
     }
 
     cplx _Caddcc(const cplx x, const cplx y) {
-        // cplx result = { x._Val[0] + y._Val[0], x._Val[1] + y._Val[1] };
         return x + y;
     }
 
@@ -137,7 +118,6 @@ void subset(const int a[], int b[], const int start, const int end)
         
         return result;
          
-        // return x / y;
     }
 
 #elif defined(_MSC_VER)

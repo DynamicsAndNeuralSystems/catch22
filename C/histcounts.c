@@ -13,16 +13,11 @@
 
 #include "stats.h"
 #include "histcounts.h"
+#include "helper_functions.h"
 
 // ------------------------------------------------------------------------------
 // Equal-width histograms as in hctsa's BF_HistEdges + histcounts
 // ------------------------------------------------------------------------------
-
-static int compare_doubles(const void * a, const void * b)
-{
-    const double x = *(const double *)a, y = *(const double *)b;
-    return (x > y) - (x < y);
-}
 
 // Interquartile range with MATLAB's documented percentile convention: the sorted
 // values are the 100*(i - 0.5)/n percentiles, with linear interpolation between
@@ -31,7 +26,7 @@ double iqr_matlab(const double y[], const int size)
 {
     double * s = malloc(size * sizeof * s);
     memcpy(s, y, size * sizeof * s);
-    qsort(s, size, sizeof * s, compare_doubles);
+    sort(s, size);
     double q[2];
     const double p[2] = {0.25, 0.75};
     for (int k = 0; k < 2; k++) {

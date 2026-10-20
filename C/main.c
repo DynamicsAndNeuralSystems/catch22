@@ -7,7 +7,6 @@
 // --catch22/--catch24, the tool asks interactively. With --no-mask, features
 // that cannot be estimated are reported as NaN instead of being masked.
 
-#include "main.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

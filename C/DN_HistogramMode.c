@@ -2,19 +2,18 @@
 #include <stdlib.h>
 #include "stats.h"
 #include "histcounts.h"
+#include "DN_HistogramMode.h"
 
-// hctsa's DN_HistogramMode(y,10,true): the mean centre of the most populated of
-// 10 equal-width bins (BF_HistEdges edges, histcounts counting)
-double DN_HistogramMode_10(const double y[], const int size)
+// hctsa's DN_HistogramMode(y,nBins,true): the mean centre of the most populated of
+// nBins equal-width bins (BF_HistEdges edges, histcounts counting), using edges[nBins + 1]
+// and counts[nBins] as workspace
+static double histogram_mode(const double y[], const int size, const int nBins, double edges[], int counts[])
 {
     for (int i = 0; i < size; i++) {
         if (isnan(y[i])) {
             return NAN;
         }
     }
-    const int nBins = 10;
-    double edges[10 + 1];
-    int counts[10];
     const int numBins = hist_edges(y, size, nBins, edges);
     hist_counts_edges(y, size, edges, numBins, counts);
 
@@ -33,4 +32,18 @@ double DN_HistogramMode_10(const double y[], const int size)
         }
     }
     return sumCentres / numMaxs;
+}
+
+double DN_HistogramMode_5(const double y[], const int size)
+{
+    double edges[5 + 1];
+    int counts[5];
+    return histogram_mode(y, size, 5, edges, counts);
+}
+
+double DN_HistogramMode_10(const double y[], const int size)
+{
+    double edges[10 + 1];
+    int counts[10];
+    return histogram_mode(y, size, 10, edges, counts);
 }
