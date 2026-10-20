@@ -57,7 +57,7 @@ static double mask_embedding_dist(const int n)
 typedef struct {
     const char * name;      // long name (matches hctsa)
     const char * shortName;
-    const char * legacyName; // long name in catch22 v0.x (same feature, earlier definition)
+    const char * legacyName; // long name in catch22 v0.x (mostly with an earlier definition)
     const char * hctsaCall;  // the hctsa call (on x_z, the z-scored series) that reproduces it
     double (*compute)(const double y[], const int size);
     double (*mask)(const int n);
