@@ -17,6 +17,7 @@
 #include "MD_hrv.h"
 #include "PD_PeriodicityWang.h"
 #include "SB_BinaryStats.h"
+#include "SB_CoarseGrain.h"
 #include "SB_MotifThree.h"
 #include "SP_Summaries.h"
 #include "catch22.h"
@@ -470,6 +471,15 @@ static void test_building_blocks(void)
     for (int t = 0; t < 1000; t++) y[t] = 1e10 * noise[t];
     catch22_compute_feature_raw(y, 1000, catch22_feature_index("outlier_timing_pos"), &out);
     check("raw: outlier_timing_pos is NaN beyond z-scored range", isnan(out), 1, 0);
+
+    // coarse-graining labels every point however large the values: the minimum used
+    // to be left out beyond 2^53, where th[0] - 1 == th[0]
+    int letters[1000] = {0};
+    for (int t = 0; t < 1000; t++) y[t] = ldexp(noise[t], 60);
+    sb_coarsegrain(y, 1000, 3, letters);
+    int nUnlabelled = 0;
+    for (int t = 0; t < 1000; t++) nUnlabelled += letters[t] == 0;
+    check("coarse-graining: every point of noise * 2^60 gets a label", nUnlabelled, 0, 0);
     free(y);
 
     free(noise);
