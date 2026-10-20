@@ -92,7 +92,7 @@ double stddev(const double a[], const int size)
     double sd = 0.0;
     for (int i = 0; i < size; i++) {
         const double d = (a[i] - m) * scale;
-        sd += d * d;
+        sd += pow(d, 2); // as before: written d * d, clang contracts the add into an FMA
     }
     return ldexp(sqrt(sd / (size - 1)), e);
 }
