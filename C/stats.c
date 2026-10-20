@@ -74,16 +74,20 @@ double median(const double a[], const int size)
 // Sample standard deviation. The deviations are scaled by a power of two before
 // squaring, which is exact, so the squares neither overflow nor underflow (below
 // about 1.5e-154 they would lose precision as subnormals) and the result is bit for
-// bit the same wherever the unscaled squares were normal doubles.
+// bit the same wherever the unscaled squares were normal doubles. The scale comes
+// from max |a|, found in the mean's pass (a deviation is at most twice it; a series
+// whose values are 1e154 times their spread is constant to double precision anyway).
 double stddev(const double a[], const int size)
 {
-    double m = mean(a, size);
-    double maxDev = 0.0;
+    double sum = 0.0, maxAbs = 0.0;
     for (int i = 0; i < size; i++) {
-        maxDev = fmax(maxDev, fabs(a[i] - m));
+        sum += a[i];
+        const double d = fabs(a[i]);
+        if (d > maxAbs) maxAbs = d;
     }
+    const double m = sum / size; // as mean()
     int e = 0;
-    frexp(maxDev, &e); // maxDev = f * 2^e with 0.5 <= f < 1 (e = 0 for a constant series)
+    frexp(maxAbs, &e); // maxAbs = f * 2^e with 0.5 <= f < 1 (e = 0 for an all-zero series)
     const double scale = ldexp(1.0, -e);
     double sd = 0.0;
     for (int i = 0; i < size; i++) {
