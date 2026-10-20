@@ -32,11 +32,6 @@ static int compare_ints(const void * a, const void * b)
 // "rsrangefit" (range of linearly detrended windows).
 static double SC_FluctAnal_2_50_1_logi_prop_r1(const double y[], const int size, const int lag, const int isDFA)
 {
-    for (int i = 0; i < size; i++) {
-        if (!isfinite(y[i])) {
-            return NAN;
-        }
-    }
     const int tauStep = 50;
 
     // integrate every lag-th sample

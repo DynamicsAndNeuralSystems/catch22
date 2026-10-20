@@ -38,6 +38,40 @@ extern int catch22_compute_feature(const double y[], const int n, const int i, c
 extern int catch22_compute_timed(const double y[], const int n, const int catch24, const int mask_nans,
                                  double out[], int masked[], double time_ms[]);
 
+// The steps of catch22_compute_feature, for wrappers that compose the pipeline
+// themselves (e.g., z-scoring a series once and then computing features one at a
+// time). For 0 <= i < 22, catch22_compute_feature(y, n, i, mask_nans, &out, &masked) is
+//     catch22_zscore(y, n, z);
+//     catch22_compute_feature_raw(z, n, i, &out);
+//     if (mask_nans && isnan(out)) out = catch22_mask_value(i, n);   // masked = 1
+// (with CATCH22_BAD_INPUT from catch22_zscore returned as is); mean and std
+// (i = 22, 23) are catch22_compute_feature_raw(y, n, i, &out), never masked.
+// These, and catch22_compute, are the library's interface: the per-feature
+// functions (DN_HistogramMode_5 and so on, in their own headers) are implementation
+// details that expect finite, non-constant, z-scored input and check none of it, so
+// wrappers should not call them directly.
+
+// Z-score y[0..n-1] into z[0..n-1] (z may be y) as catch22_compute does. A constant series
+// cannot be z-scored and is copied unchanged (catch22_compute_feature_raw then gives
+// NaN for it). Where the sum of squared deviations overflows, or every squared
+// deviation underflows to zero, z is constant or non-finite, and the features are
+// NaN too. Returns CATCH22_BAD_INPUT (z all NaN) if y contains NaN/Inf or n < 1.
+extern int catch22_zscore(const double y[], const int n, double z[]);
+
+// Feature i of y[0..n-1] as given: no z-scoring and no masking. The catch22
+// features (0 <= i < 22) are defined on the z-scored series (catch22_zscore); on
+// other input they are computed as is, which is not the catch22 feature (e.g.,
+// thresholds in standard deviations become thresholds in the series' units), and
+// some return NaN for input far from z-scored. Features 0-21 are NaN for a constant
+// series. Returns CATCH22_BAD_INPUT if y contains NaN/Inf or n < 1, and
+// CATCH22_BAD_INDEX if i is out of range (both with NaN).
+extern int catch22_compute_feature_raw(const double y[], const int n, const int i, double * out);
+
+// The value that feature i (0 <= i < 22) takes when masked, for a series of
+// length n >= 1 (see catch22.c). NaN for mean and std (never masked), or for an
+// index or length out of range.
+extern double catch22_mask_value(const int i, const int n);
+
 // Number of features (22, or 24 with catch24), and their names (long names
 // follow hctsa's feature names; short names are for readability).
 extern int catch22_n_features(const int catch24);

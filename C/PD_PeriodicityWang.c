@@ -56,15 +56,6 @@ static void PD_acf_block(const double * restrict y, const int n, const int tLo,
 
 double PD_PeriodicityWang_th0_01(const double * y, const int size){
 
-    // NaN check
-    for(int i = 0; i < size; i++)
-    {
-        if(!isfinite(y[i]))
-        {
-            return NAN;
-        }
-    }
-
     const double th = 0.01;
 
     double * ySpline = malloc(size * sizeof(double));

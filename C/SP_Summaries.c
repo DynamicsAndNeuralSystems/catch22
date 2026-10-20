@@ -64,11 +64,6 @@ static int sp_fft_spectrum(const double y[], const int size, double ** S, double
 // lowest fifth of the frequencies (area_5_1)
 static double sp_fft_summary(const double y[], const int size, const int medianFreq)
 {
-    for (int i = 0; i < size; i++) {
-        if (!isfinite(y[i])) {
-            return NAN;
-        }
-    }
     double * S;
     double * w;
     const int nBins = sp_fft_spectrum(y, size, &S, &w);

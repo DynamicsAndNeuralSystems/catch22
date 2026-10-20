@@ -30,15 +30,6 @@ static int longest_run(const int yBin[], const int size, const int val)
 
 double SB_BinaryStats_diff_longstretch0(const double y[], const int size){
     
-    // NaN check
-    for(int i = 0; i < size; i++)
-    {
-        if(isnan(y[i]))
-        {
-            return NAN;
-        }
-    }
-    
     // need at least one step
     if (size < 2) {
         return NAN;
@@ -59,15 +50,6 @@ double SB_BinaryStats_diff_longstretch0(const double y[], const int size){
 }
 
 double SB_BinaryStats_mean_longstretch1(const double y[], const int size){
-    
-    // NaN check
-    for(int i = 0; i < size; i++)
-    {
-        if(isnan(y[i]))
-        {
-            return NAN;
-        }
-    }
     
     // binarize: 1 for values above the mean, 0 otherwise
     int * yBin = malloc(size * sizeof(int));

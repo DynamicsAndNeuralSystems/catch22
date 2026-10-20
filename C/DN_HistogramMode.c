@@ -9,11 +9,6 @@
 // and counts[nBins] as workspace
 static double histogram_mode(const double y[], const int size, const int nBins, double edges[], int counts[])
 {
-    for (int i = 0; i < size; i++) {
-        if (isnan(y[i])) {
-            return NAN;
-        }
-    }
     const int numBins = hist_edges(y, size, nBins, edges);
     hist_counts_edges(y, size, edges, numBins, counts);
 
