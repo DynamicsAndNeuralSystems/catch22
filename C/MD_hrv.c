@@ -10,7 +10,6 @@
 #include "stats.h"
 
 double MD_pNN_pnn40(const double y[], const int size){
-
     const int pNNx = 40;
     
     // need at least one difference

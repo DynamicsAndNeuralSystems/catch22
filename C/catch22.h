@@ -46,6 +46,10 @@ extern int catch22_compute_timed(const double y[], const int n, const int catch2
 //     if (mask_nans && isnan(out)) out = catch22_mask_value(i, n);   // masked = 1
 // (with CATCH22_BAD_INPUT from catch22_zscore returned as is); mean and std
 // (i = 22, 23) are catch22_compute_feature_raw(y, n, i, &out), never masked.
+// These, and catch22_compute, are the library's interface: the per-feature
+// functions (DN_HistogramMode_5 and so on, in their own headers) are implementation
+// details that expect finite, non-constant, z-scored input and check none of it, so
+// wrappers should not call them directly.
 
 // Z-score y[0..n-1] into z[0..n-1] as catch22_compute does. A constant series
 // cannot be z-scored and is copied unchanged (catch22_compute_feature_raw then gives
