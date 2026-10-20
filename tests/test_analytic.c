@@ -433,6 +433,19 @@ static void test_building_blocks(void)
     check("zscore: a constant series is copied", catch22_zscore(constant, 50, zc) == CATCH22_OK && zc[7] == 3.0, 1, 0);
     check("zscore: NaN input gives CATCH22_BAD_INPUT", catch22_zscore(withNaN, 50, zc), CATCH22_BAD_INPUT, 0);
     free(zc);
+    double * zi = malloc(1000 * sizeof * zi);
+    double * zo = malloc(1000 * sizeof * zo);
+    const double * inPlaceSeries[] = {noise, constant};
+    const int inPlaceSizes[] = {1000, 50};
+    for (int s = 0; s < 2; s++) {
+        memcpy(zi, inPlaceSeries[s], inPlaceSizes[s] * sizeof * zi);
+        catch22_zscore(inPlaceSeries[s], inPlaceSizes[s], zo);
+        catch22_zscore(zi, inPlaceSizes[s], zi);
+        check(s == 0 ? "zscore: in place (z == y) equals out of place" : "zscore: in place on a constant series",
+              memcmp(zi, zo, inPlaceSizes[s] * sizeof * zi), 0, 0);
+    }
+    free(zi);
+    free(zo);
 
     // where z-scoring over- or underflows, features are NaN (so masked), not computed
     // on the non-finite or constant z-scores

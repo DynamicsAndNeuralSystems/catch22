@@ -215,7 +215,7 @@ int catch22_zscore(const double y[], const int n, double z[])
         return CATCH22_BAD_INPUT;
     }
     if (isConstant) {
-        memcpy(z, y, n * sizeof * z);
+        if (z != y) memcpy(z, y, n * sizeof * z); // in place: nothing to do
     }
     else {
         zscore_norm2(y, n, z);

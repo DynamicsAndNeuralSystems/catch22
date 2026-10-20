@@ -51,7 +51,7 @@ extern int catch22_compute_timed(const double y[], const int n, const int catch2
 // details that expect finite, non-constant, z-scored input and check none of it, so
 // wrappers should not call them directly.
 
-// Z-score y[0..n-1] into z[0..n-1] as catch22_compute does. A constant series
+// Z-score y[0..n-1] into z[0..n-1] (z may be y) as catch22_compute does. A constant series
 // cannot be z-scored and is copied unchanged (catch22_compute_feature_raw then gives
 // NaN for it). Where the sum of squared deviations overflows, or every squared
 // deviation underflows to zero, z is constant or non-finite, and the features are
