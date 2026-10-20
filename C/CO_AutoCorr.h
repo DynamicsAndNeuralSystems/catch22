@@ -22,11 +22,9 @@ typedef _Dcomplex cplx;
 
 extern int nextpow2(int n);
 extern void dot_multiply(cplx a[], cplx b[], int size);
-extern double * CO_AutoCorr(const double y[], const int size, const int tau[], const int tau_size);
 extern double * co_autocorrs(const double y[], const int size);
 extern int co_firstzero(const double y[], const int size, const int maxtau);
 extern double co_firstcrossing_continuous(const double y[], const int size, const double threshold);
-extern double CO_Embed2_Basic_tau_incircle(const double y[], const int size, const double radius, const int tau);
 extern double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size);
 extern double CO_FirstMin_ac(const double y[], const int size);
 extern double CO_trev_1_num(const double y[], const int size);

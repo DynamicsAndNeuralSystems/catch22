@@ -45,16 +45,6 @@ double sum(const double a[], const int size)
     return m;
 }
 
-void cumsum(const double a[], const int size, double b[])
-{
-    b[0] = a[0];
-    for (int i = 1; i < size; i++) {
-        b[i] = a[i] + b[i-1];
-        //printf("b[%i]%1.3f = a[%i]%1.3f + b[%i-1]%1.3f\n", i, b[i], i, a[i], i, a[i-1]);
-    }
-    
-}
-
 void icumsum(const int a[], const int size, int b[])
 {
     b[0] = a[0];
@@ -63,15 +53,6 @@ void icumsum(const int a[], const int size, int b[])
         //printf("b[%i]%1.3f = a[%i]%1.3f + b[%i-1]%1.3f\n", i, b[i], i, a[i], i, a[i-1]);
     }
     
-}
-
-double isum(const int a[], const int size)
-{
-    double m = 0.0;
-    for (int i = 0; i < size; i++) {
-        m += a[i];
-    }
-    return m;
 }
 
 double median(const double a[], const int size)
@@ -120,21 +101,6 @@ double cov(const double x[], const double y[], const int size){
     
 }
 
-double cov_mean(const double x[], const double y[], const int size){
-    
-    double covariance = 0;
-    
-    for(int i = 0; i < size; i++){
-        // double xi =x[i];
-        // double yi =y[i];
-        covariance += x[i] * y[i];
-        
-    }
-    
-    return covariance/size;
-    
-}
-
 double corr(const double x[], const double y[], const int size){
     
     double nom = 0;
@@ -162,22 +128,6 @@ double autocorr_lag(const double x[], const int size, const int lag){
     
 }
 
-double autocov_lag(const double x[], const int size, const int lag){
-    
-    return cov_mean(x, &(x[lag]), size-lag);
-    
-}
-
-void zscore_norm(double a[], int size)
-{
-    double m = mean(a, size);
-    double sd = stddev(a, size);
-    for (int i = 0; i < size; i++) {
-        a[i] = (a[i] - m) / sd;
-    }
-    return;
-}
-
 void zscore_norm2(const double a[], const int size, double b[])
 {
     double m = mean(a, size);
@@ -186,21 +136,6 @@ void zscore_norm2(const double a[], const int size, double b[])
         b[i] = (a[i] - m) / sd;
     }
     return;
-}
-
-double moment(const double a[], const int size, const int start, const int end, const int r)
-{
-    (void) size; // unused
-    int win_size = end - start + 1;
-    a += start;
-    double m = mean(a, win_size);
-    double mr = 0.0;
-    for (int i = 0; i < win_size; i++) {
-        mr += pow(a[i] - m, r);
-    }
-    mr /= win_size;
-    mr /= stddev(a, win_size); //normalize
-    return mr;
 }
 
 void diff(const double a[], const int size, double b[])
@@ -251,19 +186,4 @@ int linreg(const int n, const double x[], const double y[], double* m, double* b
     */
     
     return 0;
-}
-
-double norm_(const double a[], const int size)
-{
-    
-    double out = 0.0;
-    
-    for (int i = 0; i < size; i++)
-    {
-        out += a[i]*a[i];
-    }
-    
-    out = sqrt(out);
-    
-    return out;
 }

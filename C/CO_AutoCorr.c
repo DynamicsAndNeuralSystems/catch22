@@ -63,54 +63,6 @@ void dot_multiply(cplx a[], cplx b[], int size)
     }
 }
 
-double * CO_AutoCorr(const double y[], const int size, const int tau[], const int tau_size)
-{
-    double m, nFFT;
-    m = mean(y, size);
-    nFFT = nextpow2(size) << 1;
-
-    cplx * F = malloc(nFFT * sizeof *F);
-    cplx * tw = malloc(nFFT * sizeof *tw);
-    for (int i = 0; i < size; i++) {
-        
-        #if defined(__GNUC__) || defined(__GNUG__)
-                F[i] = CMPLX(y[i] - m, 0.0);
-        #elif defined(_MSC_VER)
-                cplx tmp = { y[i] - m, 0.0 };
-                F[i] = tmp;
-        #endif
-        
-    }
-    for (int i = size; i < nFFT; i++) {
-        #if defined(__GNUC__) || defined(__GNUG__)
-                F[i] = CMPLX(0.0, 0.0);
-        #elif defined(_MSC_VER)
-                cplx tmp = { 0.0, 0.0 };
-                F[i] = tmp; // CMPLX(0.0, 0.0);
-        #endif
-        
-    }
-    // size = nFFT;
-
-    twiddles(tw, nFFT);
-    fft(F, nFFT, tw);
-    dot_multiply(F, F, nFFT);
-    fft(F, nFFT, tw);
-    cplx divisor = F[0];
-    for (int i = 0; i < nFFT; i++) {
-        //F[i] = F[i] / divisor;
-        F[i] = _Cdivcc(F[i], divisor);
-    }
-    
-    double * out = malloc(tau_size * sizeof(out));
-    for (int i = 0; i < tau_size; i++) {
-        out[i] = creal(F[tau[i]]);
-    }
-    free(F);
-    free(tw);
-    return out;
-}
-
 double * co_autocorrs(const double y[], const int size)
 {
     double m, nFFT;
@@ -211,30 +163,6 @@ double CO_FirstCrossing_acf_1e_pointOfCrossing(const double y[], const int size)
     }
     // first 1/e crossing of the autocorrelation function
     return co_firstcrossing_continuous(y, size, 1.0/exp(1));
-}
-
-double CO_Embed2_Basic_tau_incircle(const double y[], const int size, const double radius, const int tau)
-{
-    int tauIntern = 0;
-    
-    if(tau < 0)
-    {
-        tauIntern = co_firstzero(y, size, size);
-    }
-    else{
-        tauIntern = tau;
-    }
-    
-    double insidecount = 0;
-    for(int i = 0; i < size-tauIntern; i++)
-    {
-        if(y[i]*y[i] + y[i+tauIntern]*y[i+tauIntern] < radius)
-        {
-            insidecount += 1;
-        }
-    }
-    
-    return insidecount/(size-tauIntern);
 }
 
 double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
