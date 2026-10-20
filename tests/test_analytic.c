@@ -459,8 +459,8 @@ static void test_building_blocks(void)
         catch22_compute_feature(noise, 1000, i, 1, &reference[i], &vMasked);
         nMaskedReference += vMasked;
     }
-    const int exponents[] = {-1000, -500, 500, 1000}; // 2^1000 is about 1e301
-    for (int k = 0; k < 4; k++) {
+    const int exponents[] = {-1000, -520, -500, 500, 1000}; // 2^1000 is about 1e301; at 2^-520 the squares are subnormal
+    for (int k = 0; k < 5; k++) {
         for (int t = 0; t < 1000; t++) scaled[t] = ldexp(noise[t], exponents[k]);
         int nDiffer = 0;
         for (int i = 0; i < CATCH22_N_FEATURES; i++) {
