@@ -10,6 +10,7 @@
 // Return codes of catch22_compute
 #define CATCH22_OK 0
 #define CATCH22_BAD_INPUT 1 // the series contains NaN or Inf: all outputs are NaN
+#define CATCH22_BAD_INDEX 2 // catch22_compute_feature: no feature with that index
 
 // Compute the features of y[0..n-1] into out[], in the order of
 // catch22_feature_name(): 22 features, or 24 if catch24 is nonzero (adding the
@@ -25,6 +26,13 @@
 extern int catch22_compute(const double y[], const int n, const int catch24, const int mask_nans,
                            double out[], int masked[]);
 
+// Compute only feature i (0 <= i < 24, in the order of catch22_feature_name()) of
+// y[0..n-1] into *out, giving exactly the value that catch22_compute gives for it
+// (with the same z-scoring, masking and NaN/Inf handling), but computing only that
+// feature. If masked is not NULL, *masked is set to 1 if the value was masked (0
+// otherwise). Returns CATCH22_BAD_INDEX (and NaN) if i is out of range.
+extern int catch22_compute_feature(const double y[], const int n, const int i, const int mask_nans,
+                                   double * out, int * masked);
 // As catch22_compute, also reporting the computation time of each feature (in
 // milliseconds) in time_ms[] if it is not NULL.
 extern int catch22_compute_timed(const double y[], const int n, const int catch24, const int mask_nans,

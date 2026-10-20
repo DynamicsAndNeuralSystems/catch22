@@ -281,6 +281,54 @@ static void test_catch22_compute(void)
     free(y);
 }
 
+// catch22_compute_feature gives exactly the value (and mask flag) of catch22_compute
+static void test_catch22_compute_feature(void)
+{
+    double constant[50], withNaN[50];
+    for (int i = 0; i < 50; i++) {
+        constant[i] = 3.0;
+        withNaN[i] = i;
+    }
+    withNaN[10] = NAN;
+    double * noise = gaussian_noise(1000);
+    double * shortNoise = gaussian_noise(60);
+    double * sinusoid = sine(500, 20);
+    double oneSample[1] = {2.0};
+    const double * series[] = {noise, shortNoise, sinusoid, constant, withNaN, oneSample};
+    const int sizes[] = {1000, 60, 500, 50, 50, 1};
+    const char * labels[] = {"noise", "length-60 noise", "sine", "constant", "NaN", "one sample"};
+
+    for (int s = 0; s < 6; s++) {
+        for (int mask_nans = 0; mask_nans <= 1; mask_nans++) {
+            double all[CATCH24_N_FEATURES];
+            int allMasked[CATCH24_N_FEATURES];
+            const int allCode = catch22_compute(series[s], sizes[s], 1, mask_nans, all, allMasked);
+            int nDiffer = 0;
+            for (int i = 0; i < CATCH24_N_FEATURES; i++) {
+                double one;
+                int oneMasked;
+                const int code = catch22_compute_feature(series[s], sizes[s], i, mask_nans, &one, &oneMasked);
+                const int same = (one == all[i] || (isnan(one) && isnan(all[i])));
+                if (!same || oneMasked != allMasked[i] || code != allCode) {
+                    nDiffer++;
+                    printf("  %s (mask_nans = %d), feature %d: %.17g vs %.17g\n", labels[s], mask_nans, i, one, all[i]);
+                }
+            }
+            char what[100];
+            snprintf(what, sizeof what, "compute_feature matches compute: %s, mask_nans = %d", labels[s], mask_nans);
+            check(what, nDiffer, 0, 0);
+        }
+    }
+
+    double out = 0.0;
+    check("compute_feature: index 24 is out of range", catch22_compute_feature(noise, 1000, 24, 1, &out, NULL), CATCH22_BAD_INDEX, 0);
+    check("compute_feature: out of range gives NaN", isnan(out), 1, 0);
+    check("compute_feature: index -1 is out of range", catch22_compute_feature(noise, 1000, -1, 1, &out, NULL), CATCH22_BAD_INDEX, 0);
+    free(noise);
+    free(shortNoise);
+    free(sinusoid);
+}
+
 int main(void)
 {
     test_sines();
@@ -288,6 +336,7 @@ int main(void)
     test_symbolic_and_increments();
     test_white_noise();
     test_catch22_compute();
+    test_catch22_compute_feature();
 
     printf("%d passed, %d failed\n", nPass, nFail);
     return nFail > 0;

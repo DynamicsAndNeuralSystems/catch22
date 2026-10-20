@@ -170,10 +170,64 @@ const char * catch22_hctsa_call(const int i)
     return NULL;
 }
 
+// NaN/Inf in the input (or no input) is a data problem, never masked. Also reports
+// whether the series is constant (so cannot be z-scored).
+static int valid_input(const double y[], const int n, int * isConstant)
+{
+    *isConstant = 1;
+    for (int i = 0; i < n; i++) {
+        if (!isfinite(y[i])) {
+            return 0;
+        }
+        if (y[i] != y[0]) {
+            *isConstant = 0;
+        }
+    }
+    return n >= 1;
+}
+
 int catch22_compute(const double y[], const int n, const int catch24, const int mask_nans,
                     double out[], int masked[])
 {
     return catch22_compute_timed(y, n, catch24, mask_nans, out, masked, NULL);
+}
+
+int catch22_compute_feature(const double y[], const int n, const int i, const int mask_nans,
+                            double * out, int * masked)
+{
+    *out = NAN;
+    if (masked) *masked = 0;
+    if (i < 0 || i >= CATCH24_N_FEATURES) {
+        return CATCH22_BAD_INDEX;
+    }
+
+    int isConstant;
+    if (!valid_input(y, n, &isConstant)) {
+        return CATCH22_BAD_INPUT;
+    }
+
+    // the catch24 features, of the raw series
+    if (i == CATCH22_N_FEATURES) {
+        *out = DN_mean(y, n);
+        return CATCH22_OK;
+    }
+    if (i == CATCH22_N_FEATURES + 1) {
+        *out = (n > 1) ? DN_Spread_std(y, n) : NAN;
+        return CATCH22_OK;
+    }
+
+    // a feature of the z-scored series
+    if (!isConstant) {
+        double * z = malloc(n * sizeof * z);
+        zscore_norm2(y, n, z);
+        *out = FEATURES[i].compute(z, n);
+        free(z);
+    }
+    if (mask_nans && isnan(*out)) {
+        *out = FEATURES[i].mask(n);
+        if (masked) *masked = 1;
+    }
+    return CATCH22_OK;
 }
 
 int catch22_compute_timed(const double y[], const int n, const int catch24, const int mask_nans,
@@ -186,17 +240,8 @@ int catch22_compute_timed(const double y[], const int n, const int catch24, cons
         if (time_ms) time_ms[i] = 0.0;
     }
 
-    // NaN/Inf in the input (or no input): a data problem, never masked
-    int isConstant = 1;
-    for (int i = 0; i < n; i++) {
-        if (!isfinite(y[i])) {
-            return CATCH22_BAD_INPUT;
-        }
-        if (y[i] != y[0]) {
-            isConstant = 0;
-        }
-    }
-    if (n < 1) {
+    int isConstant;
+    if (!valid_input(y, n, &isConstant)) {
         return CATCH22_BAD_INPUT;
     }
 
