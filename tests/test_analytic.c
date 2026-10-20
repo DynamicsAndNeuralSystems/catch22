@@ -447,25 +447,80 @@ static void test_building_blocks(void)
     free(zi);
     free(zo);
 
-    // where z-scoring over- or underflows, features are NaN (so masked), not computed
-    // on the non-finite or constant z-scores
+    // z-scoring is accurate at any scale: scaling the series by a power of two leaves
+    // the z-scores, and so every feature, unchanged bit for bit, and other scales
+    // leave every feature finite (the squared deviations used to overflow at 1e200,
+    // underflow to zero at 1e-200 and lose precision as subnormals at 1e-160)
     double * scaled = malloc(1000 * sizeof * scaled);
-    const double extremes[] = {1e200, 1e-200};
-    for (int k = 0; k < 2; k++) {
+    double reference[CATCH22_N_FEATURES];
+    int nMaskedReference = 0;
+    for (int i = 0; i < CATCH22_N_FEATURES; i++) {
+        int vMasked;
+        catch22_compute_feature(noise, 1000, i, 1, &reference[i], &vMasked);
+        nMaskedReference += vMasked;
+    }
+    const int exponents[] = {-1000, -520, -500, 500, 1000}; // 2^1000 is about 1e301; at 2^-520 the squares are subnormal
+    for (int k = 0; k < 5; k++) {
+        for (int t = 0; t < 1000; t++) scaled[t] = ldexp(noise[t], exponents[k]);
+        int nDiffer = 0;
+        for (int i = 0; i < CATCH22_N_FEATURES; i++) {
+            double v;
+            catch22_compute_feature(scaled, 1000, i, 1, &v, NULL);
+            nDiffer += v != reference[i];
+        }
+        char what[100];
+        snprintf(what, sizeof what, "z-scoring: noise * 2^%d gives the same features bit for bit", exponents[k]);
+        check(what, nDiffer, 0, 0);
+    }
+    const double extremes[] = {1e200, 1e-160, 1e-200};
+    for (int k = 0; k < 3; k++) {
         for (int t = 0; t < 1000; t++) scaled[t] = extremes[k] * noise[t];
-        int nNotNaN = 0, nNotMasked = 0;
+        int nMasked = 0, nNotFinite = 0;
         for (int i = 0; i < CATCH22_N_FEATURES; i++) {
             double v;
             int vMasked;
-            nNotNaN += catch22_compute_feature(scaled, 1000, i, 0, &v, NULL) != CATCH22_OK || !isnan(v);
             catch22_compute_feature(scaled, 1000, i, 1, &v, &vMasked);
-            nNotMasked += !vMasked;
+            nMasked += vMasked;
+            nNotFinite += !isfinite(v);
         }
         char what[100];
-        snprintf(what, sizeof what, "z-scoring overflow: noise * %g gives NaN, masked", extremes[k]);
-        check(what, nNotNaN + nNotMasked, 0, 0);
+        snprintf(what, sizeof what, "z-scoring: noise * %g gives finite features, masked as unscaled noise", extremes[k]);
+        check(what, nMasked - nMaskedReference + nNotFinite, 0, 0);
     }
     free(scaled);
+
+    // z-scoring is accurate at any offset: v[0..999] followed by -v[999..0], around 0
+    // and around 2^40 (exactly representable, as v is a multiple of 2^-12), have the
+    // same z-scores exactly, since both means are exact. A single pass gets the offset
+    // series wrong by 1e-3: its running sum rounds at the offset's magnitude
+    double * pairs = malloc(2000 * sizeof * pairs);
+    double * offsetPairs = malloc(2000 * sizeof * offsetPairs);
+    for (int t = 0; t < 1000; t++) {
+        const double v = round(noise[t] * 4096) / 4096;
+        pairs[t] = v;
+        pairs[1999 - t] = -v;
+        offsetPairs[t] = 1099511627776.0 + v;
+        offsetPairs[1999 - t] = 1099511627776.0 - v;
+    }
+    double * zPairs = zscored(pairs, 2000);
+    double * zOffsetPairs = zscored(offsetPairs, 2000);
+    double zMaxDiff = 0, zMean = 0;
+    for (int t = 0; t < 2000; t++) {
+        zMaxDiff = fmax(zMaxDiff, fabs(zPairs[t] - zOffsetPairs[t]));
+        zMean += zOffsetPairs[t] / 2000;
+    }
+    check("z-scoring offset: 2^40 +- v has the z-scores of +- v to 1e-13", zMaxDiff < 1e-13, 1, 0);
+    check("z-scoring offset: mean of z is 0 to 1e-14", fabs(zMean) < 1e-14, 1, 0);
+    check("z-scoring offset: standard deviation of z is 1 to 1e-14", fabs(stddev(zOffsetPairs, 2000) - 1) < 1e-14, 1, 0);
+    int nFeatureDiffer = 0;
+    for (int i = 0; i < CATCH22_N_FEATURES; i++) {
+        double u, v;
+        catch22_compute_feature(pairs, 2000, i, 1, &u, NULL);
+        catch22_compute_feature(offsetPairs, 2000, i, 1, &v, NULL);
+        nFeatureDiffer += fabs(u - v) > 1e-12 * fmax(1.0, fabs(u));
+    }
+    check("z-scoring offset: features of 2^40 +- v match those of +- v to 1e-12", nFeatureDiffer, 0, 0);
+    free(pairs); free(offsetPairs); free(zPairs); free(zOffsetPairs);
 
     // raw on input far from z-scored: every feature returns without error (run under
     // the sanitizers in CI); outlier timing needs more thresholds than z-scored input can

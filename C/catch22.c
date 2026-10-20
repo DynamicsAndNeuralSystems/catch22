@@ -248,8 +248,8 @@ int catch22_compute(const double y[], const int n, const int catch24, const int 
     return catch22_compute_timed(y, n, catch24, mask_nans, out, masked, NULL);
 }
 
-// The building blocks composed (catch22.h). Where z-scoring overflows or underflows,
-// z is constant or non-finite and the feature NaN.
+// The building blocks composed (catch22.h). z is checked as y is, so a non-finite
+// z-score (only if the mean itself overflows) gives NaN rather than a feature of it.
 int catch22_compute_feature(const double y[], const int n, const int i, const int mask_nans,
                             double * out, int * masked)
 {
