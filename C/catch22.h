@@ -53,9 +53,9 @@ extern int catch22_compute_timed(const double y[], const int n, const int catch2
 
 // Z-score y[0..n-1] into z[0..n-1] (z may be y) as catch22_compute does. A constant series
 // cannot be z-scored and is copied unchanged (catch22_compute_feature_raw then gives
-// NaN for it). Where the sum of squared deviations overflows, or every squared
-// deviation underflows to zero, z is constant or non-finite, and the features are
-// NaN too. Returns CATCH22_BAD_INPUT (z all NaN) if y contains NaN/Inf or n < 1.
+// NaN for it). The standard deviation scales the deviations by a power of two
+// before squaring, so z is accurate at any scale a double can represent. Returns
+// CATCH22_BAD_INPUT (z all NaN) if y contains NaN/Inf or n < 1.
 extern int catch22_zscore(const double y[], const int n, double z[]);
 
 // Feature i of y[0..n-1] as given: no z-scoring and no masking. The catch22

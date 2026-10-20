@@ -447,23 +447,45 @@ static void test_building_blocks(void)
     free(zi);
     free(zo);
 
-    // where z-scoring over- or underflows, features are NaN (so masked), not computed
-    // on the non-finite or constant z-scores
+    // z-scoring is accurate at any scale: scaling the series by a power of two leaves
+    // the z-scores, and so every feature, unchanged bit for bit, and other scales
+    // leave every feature finite (the squared deviations used to overflow at 1e200,
+    // underflow to zero at 1e-200 and lose precision as subnormals at 1e-160)
     double * scaled = malloc(1000 * sizeof * scaled);
-    const double extremes[] = {1e200, 1e-200};
-    for (int k = 0; k < 2; k++) {
+    double reference[CATCH22_N_FEATURES];
+    int nMaskedReference = 0;
+    for (int i = 0; i < CATCH22_N_FEATURES; i++) {
+        int vMasked;
+        catch22_compute_feature(noise, 1000, i, 1, &reference[i], &vMasked);
+        nMaskedReference += vMasked;
+    }
+    const int exponents[] = {-1000, -500, 500, 1000}; // 2^1000 is about 1e301
+    for (int k = 0; k < 4; k++) {
+        for (int t = 0; t < 1000; t++) scaled[t] = ldexp(noise[t], exponents[k]);
+        int nDiffer = 0;
+        for (int i = 0; i < CATCH22_N_FEATURES; i++) {
+            double v;
+            catch22_compute_feature(scaled, 1000, i, 1, &v, NULL);
+            nDiffer += v != reference[i];
+        }
+        char what[100];
+        snprintf(what, sizeof what, "z-scoring: noise * 2^%d gives the same features bit for bit", exponents[k]);
+        check(what, nDiffer, 0, 0);
+    }
+    const double extremes[] = {1e200, 1e-160, 1e-200};
+    for (int k = 0; k < 3; k++) {
         for (int t = 0; t < 1000; t++) scaled[t] = extremes[k] * noise[t];
-        int nNotNaN = 0, nNotMasked = 0;
+        int nMasked = 0, nNotFinite = 0;
         for (int i = 0; i < CATCH22_N_FEATURES; i++) {
             double v;
             int vMasked;
-            nNotNaN += catch22_compute_feature(scaled, 1000, i, 0, &v, NULL) != CATCH22_OK || !isnan(v);
             catch22_compute_feature(scaled, 1000, i, 1, &v, &vMasked);
-            nNotMasked += !vMasked;
+            nMasked += vMasked;
+            nNotFinite += !isfinite(v);
         }
         char what[100];
-        snprintf(what, sizeof what, "z-scoring overflow: noise * %g gives NaN, masked", extremes[k]);
-        check(what, nNotNaN + nNotMasked, 0, 0);
+        snprintf(what, sizeof what, "z-scoring: noise * %g gives finite features, masked as unscaled noise", extremes[k]);
+        check(what, nMasked - nMaskedReference + nNotFinite, 0, 0);
     }
     free(scaled);
 
