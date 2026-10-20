@@ -48,8 +48,9 @@ extern const char * catch22_short_name(const int i);
 // catch22_compute_feature(y, n, catch22_feature_index("trev"), 1, &out, NULL)
 // (which returns CATCH22_BAD_INDEX for an unknown name).
 extern int catch22_feature_index(const char * name);
-// The feature's long name in catch22 v0.x, for mapping earlier outputs (the
-// definitions have since changed to match hctsa, so values differ).
+// The feature's long name in catch22 v0.x, for mapping earlier outputs (most
+// definitions have since changed to match hctsa, so values differ; a few features
+// were only renamed, e.g., DN_Mean is now DN_mean).
 extern const char * catch22_legacy_name(const int i);
 // The hctsa call that reproduces the feature exactly, as MATLAB code on x_z (the
 // z-scored series) or x (the raw series), with the output field selected by a

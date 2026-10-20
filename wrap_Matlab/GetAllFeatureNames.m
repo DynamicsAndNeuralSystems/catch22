@@ -6,8 +6,8 @@ function [featureNamesLong, featureNamesShort, legacyNames, hctsaCalls] = GetAll
 % ---OUTPUTS:
 % featureNamesLong: long names (following hctsa's feature names)
 % featureNamesShort: short names
-% legacyNames: long names in catch22 v0.x (the definitions have since changed to
-%               match hctsa, so values differ)
+% legacyNames: long names in catch22 v0.x (most definitions have since changed to
+%               match hctsa, so values differ; a few features were only renamed)
 % hctsaCalls: the hctsa call that reproduces each feature exactly, on x_z (the
 %               z-scored series) or x (the raw series)
 
