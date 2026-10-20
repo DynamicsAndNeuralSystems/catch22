@@ -7,8 +7,8 @@
 void sb_coarsegrain(const double y[], const int size, const int num_groups, int labels[])
 {
     int i, j;
-    double * th = malloc((num_groups + 1) * 2 * sizeof(th));
-    double * ls = malloc((num_groups + 1) * 2 * sizeof(th));
+    double * th = malloc((num_groups + 1) * sizeof *th);
+    double * ls = malloc((num_groups + 1) * sizeof *ls);
     linspace(0, 1, num_groups + 1, ls);
     for (i = 0; i < num_groups + 1; i++) {
         th[i] = quantile(y, size, ls[i]);
