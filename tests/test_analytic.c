@@ -320,7 +320,24 @@ static void test_catch22_compute_feature(void)
         }
     }
 
+    // by name: each long and short name finds its own feature (so no two features share a name)
+    int nWrong = 0;
+    for (int i = 0; i < CATCH24_N_FEATURES; i++) {
+        nWrong += catch22_feature_index(catch22_feature_name(i)) != i;
+        nWrong += catch22_feature_index(catch22_short_name(i)) != i;
+    }
+    check("feature_index: every long and short name finds its feature", nWrong, 0, 0);
+    check("feature_index: unknown name", catch22_feature_index("not_a_feature"), -1, 0);
+    check("feature_index: v0.x name (CO_f1ecac) is not a v1.0 name", catch22_feature_index("CO_f1ecac"), -1, 0);
+    check("feature_index: NULL", catch22_feature_index(NULL), -1, 0);
+
     double out = 0.0;
+    double all[CATCH24_N_FEATURES];
+    catch22_compute(noise, 1000, 1, 1, all, NULL);
+    catch22_compute_feature(noise, 1000, catch22_feature_index("trev"), 1, &out, NULL);
+    check("compute_feature by name: trev", out, all[catch22_feature_index("CO_trev_1_num")], 0);
+    check("compute_feature: unknown name gives CATCH22_BAD_INDEX",
+          catch22_compute_feature(noise, 1000, catch22_feature_index("not_a_feature"), 1, &out, NULL), CATCH22_BAD_INDEX, 0);
     check("compute_feature: index 24 is out of range", catch22_compute_feature(noise, 1000, 24, 1, &out, NULL), CATCH22_BAD_INDEX, 0);
     check("compute_feature: out of range gives NaN", isnan(out), 1, 0);
     check("compute_feature: index -1 is out of range", catch22_compute_feature(noise, 1000, -1, 1, &out, NULL), CATCH22_BAD_INDEX, 0);

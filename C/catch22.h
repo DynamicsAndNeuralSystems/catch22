@@ -43,6 +43,11 @@ extern int catch22_compute_timed(const double y[], const int n, const int catch2
 extern int catch22_n_features(const int catch24);
 extern const char * catch22_feature_name(const int i);
 extern const char * catch22_short_name(const int i);
+// The index of the feature with this long or short name (e.g., "CO_trev_1_num" or
+// "trev"), or -1 if there is none, e.g., to compute a feature by name:
+// catch22_compute_feature(y, n, catch22_feature_index("trev"), 1, &out, NULL)
+// (which returns CATCH22_BAD_INDEX for an unknown name).
+extern int catch22_feature_index(const char * name);
 // The feature's long name in catch22 v0.x, for mapping earlier outputs (the
 // definitions have since changed to match hctsa, so values differ).
 extern const char * catch22_legacy_name(const int i);

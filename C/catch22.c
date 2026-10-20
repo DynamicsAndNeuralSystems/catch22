@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <stdlib.h>
+#include <string.h>
 #include <time.h>
 
 #include "catch22.h"
@@ -154,6 +155,17 @@ const char * catch22_short_name(const int i)
     if (i >= 0 && i < CATCH22_N_FEATURES) return FEATURES[i].shortName;
     if (i >= CATCH22_N_FEATURES && i < CATCH24_N_FEATURES) return CATCH24_SHORT_NAMES[i - CATCH22_N_FEATURES];
     return NULL;
+}
+
+int catch22_feature_index(const char * name)
+{
+    if (name == NULL) return -1;
+    for (int i = 0; i < CATCH24_N_FEATURES; i++) {
+        if (strcmp(name, catch22_feature_name(i)) == 0 || strcmp(name, catch22_short_name(i)) == 0) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 const char * catch22_legacy_name(const int i)
