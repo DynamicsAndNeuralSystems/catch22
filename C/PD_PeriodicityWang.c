@@ -115,7 +115,7 @@ double PD_PeriodicityWang_th0_01(const double * y, const int size){
                 if(jT == -1)
                     continue;
 
-                const int iTrough = troughs[jT];
+                const int iTrough = (int) troughs[jT];
                 const double theTrough = acf[iTrough];
 
                 // (b) difference between peak and trough is at least 0.01

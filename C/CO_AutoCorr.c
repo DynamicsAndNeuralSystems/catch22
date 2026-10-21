@@ -47,9 +47,8 @@ void dot_multiply(cplx a[], cplx b[], int size)
 
 double * co_autocorrs(const double y[], const int size)
 {
-    double m, nFFT;
-    m = mean(y, size);
-    nFFT = nextpow2(size) << 1;
+    const double m = mean(y, size);
+    const int nFFT = nextpow2(size) << 1;
     
     cplx * F = malloc(nFFT * 2 * sizeof *F);
     cplx * tw = malloc(nFFT * 2 * sizeof *tw);
@@ -147,7 +146,7 @@ double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
     // centres. NaN if all distances are equal (to within rounding).
     int tau = co_firstzero(y, size, size);
     if (tau > (double)size / 10) {
-        tau = floor((double)size / 10);
+        tau = (int) floor((double)size / 10);
     }
     const int n = size - tau - 1; // number of successive distances
     if (n < 1) {

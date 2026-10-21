@@ -39,7 +39,6 @@ void print_help(char *argv[], char msg[])
     fprintf(stdout, "Usage is %s [--catch22 | --catch24] [--no-mask] <infile> [<outfile>]\n", argv[0]);
     fprintf(stdout, "\n\tSpecifying outfile is optional, by default it is stdout\n");
     fprintf(stdout, "\n       %s --list\n\n\tList the 24 features (tab-separated: name, short name, v0.x name, hctsa call)\n", argv[0]);
-    exit(1);
 }
 
 int main(int argc, char * argv[])

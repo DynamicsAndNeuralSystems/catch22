@@ -29,7 +29,7 @@ double DN_OutlierInclude_np_001_mdrmd(const double y[], const int size, const in
     // would need more thresholds than nThresh can count
     if (maxVal > sqrt(size)) { free(yWork); return NAN; }
 
-    int nThresh = maxVal / inc + 1;
+    const int nThresh = (int) (maxVal / inc + 1);
 
     /* bucket each position by the HIGHEST threshold index it satisfies.
        derived from the identical `>= j*inc` comparison, never from a bare floor(). */
@@ -97,10 +97,10 @@ double DN_OutlierInclude_np_001_mdrmd(const double y[], const int size, const in
 
 double DN_OutlierInclude_p_001_mdrmd(const double y[], const int size)
 {
-    return DN_OutlierInclude_np_001_mdrmd(y, size, 1.0);
+    return DN_OutlierInclude_np_001_mdrmd(y, size, 1);
 }
 
 double DN_OutlierInclude_n_001_mdrmd(const double y[], const int size)
 {
-    return DN_OutlierInclude_np_001_mdrmd(y, size, -1.0);
+    return DN_OutlierInclude_np_001_mdrmd(y, size, -1);
 }

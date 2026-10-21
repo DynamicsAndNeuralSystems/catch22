@@ -124,6 +124,7 @@ void lsqsolve_sub(const int sizeA1, const int sizeA2, const double *A, const int
 //void lsqsolve_sub(int sizeA1, int sizeA2, double A[sizeA1][sizeA2], int sizeb, double b[sizeb], double x[sizeA1])
 {
     (void) sizeb; // unused
+    if (sizeA1 < 1 || sizeA2 < 1) return; // nothing to solve (and bounds the allocations for GCC)
     // create temp matrix and vector
     
     double * AT = calloc(sizeA2 * sizeA1, sizeof(double)); // zeroed: silences a false maybe-uninitialized warning
